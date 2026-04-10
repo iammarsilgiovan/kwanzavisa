@@ -1,0 +1,1278 @@
+# 🚀 KWANZAVISA — PROMPT COMPLETO PARA GOOGLE AI STUDIO (v3)
+### Plataforma Fintech de Pagamentos Internacionais · Angola
+
+---
+
+## 🧭 CONTEXTO DO PROJECTO
+
+Estás a construir **KwanzaVisa**, uma plataforma fintech angolana que permite a qualquer angolano aceder a serviços financeiros e de compras internacionais pagando em Kwanzas.
+
+**Serviços da plataforma:**
+- 💳 **Cartão Virtual** — gerar cartão virtual para pagamentos online
+- 🖱️ **Acesso Assistido** — o cliente usa as suas próprias plataformas com o nosso cartão/suporte (novo nome para o serviço antes chamado "pagamento assistido" — ver definição abaixo)
+- 🔁 **Transferência com Liquidação Local** — envio de valores entre países
+- 🌍 **Abertura de Conta Internacional** — abertura de conta em Wise, Bybit ou Kast (orçamento sob consulta)
+
+> **Utilizadores-alvo:** Angolanos que precisam pagar serviços internacionais, fazer compras online (Amazon, Shein, Alibaba, etc.) ou ter uma conta financeira internacional, usando Kwanzas.
+
+---
+
+## 🎯 ENTREGÁVEL ESPERADO
+
+Gera o **código completo** de uma plataforma web com:
+
+1. **Landing Page pública** — Next.js 14 + Tailwind CSS
+2. **Sistema de pedidos** — formulário completo + integração WhatsApp
+3. **Simulador de câmbio** — câmbio em tempo real + margem automática
+4. **Área do cliente** — histórico de pedidos + total gasto (sem senha, por email/telefone)
+5. **Painel de administração** — totalmente operacional, acesso via Google OAuth (ícone cadeado no footer)
+6. **Backend** — Firebase (Firestore + Auth + Cloud Functions)
+7. **Câmbio automático** — API de câmbio em tempo real com margem fixa configurada
+
+---
+
+## 🎨 DESIGN — DIRECTRIZES VISUAIS
+
+### Estilo geral
+- **Preto e branco puro**, inspirado directamente no site da **Apple Inc.**
+- Minimalismo absoluto — sem gradientes coloridos, sem elementos decorativos supérfluos
+- **Mobile-first**, responsivo: 375px / 768px / 1440px
+- Animações suaves e cirúrgicas — apenas onde acrescentam clareza
+- Espaço em branco generoso, tipografia como elemento de design principal
+
+### Paleta de cores — ESTRITAMENTE PRETO E BRANCO
+```css
+--color-bg:            #FFFFFF   /* Fundo principal */
+--color-bg-secondary:  #F5F5F7   /* Fundo alternado — cinza Apple */
+--color-bg-dark:       #000000   /* Secções escuras */
+--color-text-primary:  #1D1D1F   /* Texto principal */
+--color-text-secondary:#6E6E73   /* Texto secundário */
+--color-text-light:    #FFFFFF   /* Texto sobre fundo escuro */
+--color-border:        #D2D2D7   /* Bordas claras */
+--color-border-dark:   #3A3A3C   /* Bordas em fundo escuro */
+--color-cta:           #000000   /* Botão principal */
+--color-cta-text:      #FFFFFF
+--color-success:       #1D1D1F   /* Verde substituído por preto */
+--color-error:         #FF3B30   /* Único elemento com cor — erros */
+```
+
+> ⚠️ **REGRA ABSOLUTA:** Zero cores além desta escala. Sem azul, ciano, roxo ou gradientes. A única excepção é `--color-error` (#FF3B30) para mensagens de erro/validação.
+
+### Tipografia
+```
+Fonte principal: system-ui, -apple-system, BlinkMacSystemFont (nativo Apple/iOS)
+Fallback:        "Inter" via Google Fonts
+
+H1 Hero:    72px / weight 700 / line-height 1.05 / tracking -0.02em
+H2 Secção:  48px / weight 600 / line-height 1.1
+H3 Card:    24px / weight 600
+Body:       17px / weight 400 / line-height 1.6
+Label/Small:13px / weight 400 / color: --color-text-secondary
+```
+
+### Referência
+Consultar https://www.apple.com como referência de espaçamento, hierarquia e qualidade de execução. Replicar a sensação, não o conteúdo.
+
+---
+
+## 📖 DEFINIÇÃO DOS SERVIÇOS
+
+### 💳 Cartão Virtual Internacional
+O cliente solicita um cartão virtual KwanzaVisa para usar em pagamentos online internacionais. O cartão é gerado e entregue via WhatsApp com os dados necessários para uso imediato.
+
+### 🖱️ Acesso Assistido ← NOME OFICIAL
+> **Definição:** Serviço em que o cliente usa as suas próprias contas e plataformas digitais — a KwanzaVisa fornece o método de pagamento (cartão) e o suporte técnico para que o cliente conclua a compra de forma autónoma. O cliente mantém total controlo da sua conta; nós facilitamos o pagamento.
+
+**Exemplos de uso:** Comprar na Amazon, Shein, Alibaba, AliExpress, pagar Netflix, Spotify, domínios, software, cursos online.
+
+**Copywriting para o site:**
+- "Tu fazes a compra, nós tratamos do pagamento."
+- "A tua conta. O nosso cartão. A tua independência."
+
+### 🔁 Transferência com Liquidação Local
+Envio e recepção de valores entre países sem transferência bancária directa. O remetente paga em Kz, o destinatário recebe na moeda local do país de destino.
+
+> ⚠️ Nunca usar "remessa internacional" ou "envio internacional directo". Usar sempre "transferência com liquidação local" ou "entrega de valores entre países".
+
+### 🌍 Abertura de Conta Internacional
+Serviço de apoio à abertura de conta em plataformas financeiras internacionais. Disponível para:
+
+| Plataforma | Descrição |
+|------------|-----------|
+| **Wise**   | Conta multi-moeda europeia, ideal para receber pagamentos internacionais |
+| **Bybit**  | Conta em exchange cripto com funcionalidades de pagamento |
+| **Kast**   | Cartão e conta virtual para utilizadores sem acesso bancário tradicional |
+
+**Modelo de preço:** Orçamento sob consulta (sem preço fixo no site). O cliente submete pedido → admin contacta via WhatsApp com orçamento personalizado.
+
+**Copywriting:**
+- "Abre a tua conta internacional hoje. Nós tratamos de tudo."
+- "Wise, Bybit ou Kast — escolhe a plataforma, nós fazemos o resto."
+
+---
+
+## 🏗️ ESTRUTURA DA LANDING PAGE
+
+### Secção 1 — Hero (fundo branco)
+```
+Headline:    "Paga globalmente.
+              Sem limites."
+
+Subheadline: "Cartões virtuais, Acesso Assistido e transferências com 
+              liquidação local — directamente de Angola, em Kwanzas."
+
+CTA primário:   [Começar agora]       → scroll para formulário
+CTA secundário: [Ver como funciona ↓] → scroll para secção 3
+
+Visual: Mockup 3D de cartão preto sobre fundo branco, animação de entrada
+```
+
+### Secção 2 — Compras Internacionais (fundo #F5F5F7)
+```
+Título: "Compra em qualquer loja do mundo."
+Subtítulo: "Com o Acesso Assistido, usas a tua conta com o nosso método 
+            de pagamento. Tu decides, nós facilitamos."
+
+Logos monocromáticos (preto, tamanho uniforme):
+  Amazon · Shein · Alibaba · AliExpress · eBay · Etsy · Netflix · Spotify
+
+Nota: "Não vês a tua plataforma? Fala connosco — processamos qualquer loja internacional."
+```
+
+### Secção 3 — Como Funciona (fundo branco)
+```
+Título: "Simples. Rápido. Seguro."
+
+Passos numerados (números grandes em cinza claro, estilo Apple):
+
+  01  Escolhe o serviço
+      "Cartão virtual, Acesso Assistido, transferência ou conta internacional."
+
+  02  Simula o câmbio
+      "Vê exactamente quanto pagas em Kwanzas. Câmbio actualizado automaticamente."
+
+  03  Submete o pedido
+      "Preenche o formulário. Recebes um ID único do teu pedido."
+
+  04  Confirmação via WhatsApp
+      "A nossa equipa entra em contacto e conclui o processo contigo."
+```
+
+### Secção 4 — Serviços (fundo preto, texto branco)
+```
+Título: "Tudo o que precisas para operar globalmente."
+
+4 cards em grid (2x2 mobile, 4x1 desktop):
+
+Card 1 — Cartão Virtual
+  Ícone: CreditCard (Lucide)
+  Título: "Cartão Virtual"
+  Descrição: "Gera um cartão virtual e paga qualquer serviço online no mundo. 
+               Entregue via WhatsApp em minutos."
+
+Card 2 — Acesso Assistido
+  Ícone: MousePointer (Lucide)
+  Título: "Acesso Assistido"
+  Descrição: "Tu fazes a compra, nós tratamos do pagamento. 
+               A tua conta, o nosso cartão, a tua independência."
+
+Card 3 — Transferência
+  Ícone: ArrowLeftRight (Lucide)
+  Título: "Transferência"
+  Descrição: "Envia valores entre países. Pagas em Kz, 
+               o destinatário recebe na moeda local."
+
+Card 4 — Conta Internacional
+  Ícone: Globe (Lucide)
+  Título: "Conta Internacional"
+  Badge: "Sob consulta"
+  Descrição: "Abrimos a tua conta no Wise, Bybit ou Kast. 
+               Orçamento personalizado via WhatsApp."
+  CTA: [Saber mais →]
+```
+
+### Secção 5 — Simulador de Câmbio (fundo #F5F5F7)
+```
+Título: "Quanto vais pagar?"
+Subtítulo: "Câmbio calculado em tempo real. Sem surpresas."
+
+Interface:
+  Toggle moeda: [USD] [EUR]
+  Input: valor numérico (placeholder: "100")
+  Output grande: "= 94.500 Kz"
+  Label: "Câmbio aplicado: 1 USD = X Kz"
+  Label pequeno: "Câmbio actualizado automaticamente"
+
+  ⚠️ Mostrar apenas o câmbio final. Nunca mostrar a margem ou spread.
+```
+
+### Secção 6 — Conta Internacional — Destaque (fundo branco)
+```
+Título: "A tua conta financeira internacional."
+Subtítulo: "Wise, Bybit ou Kast — escolhe a plataforma que melhor se adapta 
+            às tuas necessidades. Nós tratamos de todo o processo."
+
+3 cards horizontais (logo + nome + descrição de 1 linha):
+  Wise  → "Conta multi-moeda europeia. Ideal para freelancers e negócios."
+  Bybit → "Conta cripto com funcionalidades de pagamento global."
+  Kast  → "Cartão e conta virtual. Perfeito para quem começa."
+
+CTA central: [Pedir orçamento via WhatsApp →]
+  Link: https://wa.me/244957636981?text=Olá%2C+tenho+interesse+em+abrir+uma+conta+internacional.+Podem+dar-me+um+orçamento%3F
+```
+
+### Secção 7 — Prova Social (fundo #F5F5F7)
+```
+Métricas animadas (contador de entrada):
+  +1.200 pedidos · +850 clientes · 7 dias/semana · 4 serviços
+
+3 depoimentos (cards brancos, borda cinza):
+  - Nome angolano realista
+  - Serviço usado
+  - 1-2 frases de depoimento
+  - 5 estrelas pretas
+```
+
+### Secção 8 — Área do Cliente: Histórico de Pedidos (fundo branco)
+```
+Título: "Acompanha os teus pedidos."
+Subtítulo: "Sem conta, sem senha. Usa o teu email ou número WhatsApp."
+
+Formulário de consulta:
+  Input: "Email ou número WhatsApp"
+  Botão: [Consultar]
+
+Resultado (renderizado abaixo, no mesmo ecrã):
+  Se encontrar pedidos:
+    → Cabeçalho: "Olá, [Nome]. Encontrámos [N] pedidos."
+    
+    Tabela/lista de pedidos:
+      ID | Serviço | Plataforma | Valor (USD/EUR) | Valor (Kz) | Status | Data
+    
+    Card de resumo no fundo:
+      "Total gasto em serviços concluídos: XX.XXX Kz"
+      (somar apenas pedidos com status = 'concluido')
+    
+  Se não encontrar:
+    → "Nenhum pedido encontrado. Verifica o email ou número introduzido."
+
+Nota de privacidade (texto pequeno):
+  "Os teus dados são usados apenas para identificar os teus pedidos."
+```
+
+### Secção 9 — Formulário de Pedido (fundo #F5F5F7)
+```
+Título: "Faz o teu pedido agora."
+Subtítulo: "Preenche o formulário. Recebemos e entramos em contacto via WhatsApp."
+
+Campos:
+  Nome completo             [text, obrigatório]
+  Email                     [email, obrigatório — usado para consulta histórico]
+  Número WhatsApp           [tel, obrigatório, formato +244 9XX XXX XXX]
+  Serviço:                  [select, obrigatório]
+    → Cartão Virtual
+    → Acesso Assistido
+    → Transferência com Liquidação Local
+    → Abertura de Conta Internacional (Wise / Bybit / Kast)
+  
+  [Se Acesso Assistido ou Cartão Virtual:]
+    Plataforma/loja           [text, ex: Amazon, Netflix, Shein]
+    Valor desejado            [número]
+    Moeda                     [select: USD | EUR]
+    Descrição / Link          [textarea]
+  
+  [Se Transferência:]
+    País de destino           [text]
+    Valor a enviar            [número]
+    Moeda                     [select: USD | EUR]
+    Nome do destinatário      [text]
+  
+  [Se Conta Internacional:]
+    Plataforma                [select: Wise | Bybit | Kast]
+    Mensagem/contexto         [textarea, opcional]
+    → Mostrar: "O orçamento será enviado via WhatsApp após análise."
+
+Após submissão — FLUXO COMPLETO OBRIGATÓRIO:
+
+  PASSO 1 — Guardar pedido:
+  → Gerar ID: KV-[ANO]-[4 dígitos sequenciais] (ex: KV-2025-0047)
+  → Transacção Firestore atómica para garantir ID único
+  → Guardar documento completo na colecção 'pedidos'
+  → Guardar timestamp exacto: dia, mês, ano, hora e minuto (ex: "14 Jan 2025, 14:32")
+
+  PASSO 2 — Notificação por email ao admin (Gmail via Nodemailer):
+  → Disparado pela Cloud Function 'novoPedido' (trigger onCreate)
+  → Usar conta Gmail da empresa (configurada em variável de ambiente)
+  → Assunto do email:
+      "🔔 Novo pedido KwanzaVisa — [SERVIÇO] — [ID]"
+      ex: "🔔 Novo pedido KwanzaVisa — Acesso Assistido — KV-2025-0047"
+
+  CORPO DO EMAIL (HTML formatado, limpo e profissional):
+  ─────────────────────────────────────────────────────
+  [Logo KwanzaVisa centrado — texto, não imagem]
+  
+  NOVO PEDIDO RECEBIDO
+  ────────────────────
+  
+  👤 CLIENTE
+     Nome:      João Silva
+     Email:     joao@gmail.com
+     WhatsApp:  +244 923 456 789
+  
+  📋 PEDIDO
+     ID do pedido:  KV-2025-0047
+     Serviço:       Acesso Assistido
+     Plataforma:    Amazon
+     Descrição:     Headphones Sony WH-1000XM5
+  
+  💰 VALORES
+     Valor solicitado:  150 USD
+     Câmbio aplicado:   1 USD = 1.050 Kz
+     Total em Kwanzas:  157.500 Kz
+  
+  🕐 DATA E HORA
+     Recebido em: Terça-feira, 14 de Janeiro de 2025 às 14:32
+  
+  ────────────────────────────────────────────────────
+  [Botão verde/preto] → ABRIR WHATSAPP DO CLIENTE
+    Link: https://wa.me/244923456789?text=Olá+João%2C+recebemos+o+teu+pedido+KV-2025-0047+na+KwanzaVisa.+Vamos+tratar+do+teu+pedido+agora.
+  ────────────────────────────────────────────────────
+  
+  Este email foi gerado automaticamente pela plataforma KwanzaVisa.
+  ─────────────────────────────────────────────────────
+
+  PASSO 3 — Notificação Push no painel admin (navegador):
+  → Usar Firebase Cloud Messaging (FCM) para Web Push Notifications
+  → Admin autoriza notificações push no primeiro acesso ao painel (/admin/dashboard)
+  → Ao criar novo pedido, Cloud Function envia FCM message para o token registado do admin
+  
+  Conteúdo da notificação push:
+    Título: "Novo pedido — KwanzaVisa"
+    Corpo:  "João Silva · Acesso Assistido · 150 USD · KV-2025-0047"
+    Ícone:  /favicon.ico (logo da plataforma)
+    Ao clicar: abre /admin/pedidos?id=KV-2025-0047 (foca no pedido)
+  
+  Implementação FCM:
+    → Ficheiro: public/firebase-messaging-sw.js (Service Worker obrigatório)
+    → No dashboard admin: solicitar permissão e guardar FCM token em Firestore
+        colecção: 'admin_tokens' / documento: email do admin / campo: fcm_token
+    → Cloud Function lê todos os tokens de admin_tokens e envia para todos
+    → Badge de notificação no browser persiste até admin abrir o pedido
+
+  PASSO 4 — Modal de confirmação para o cliente (frontend):
+  → Mostrar imediatamente após sucesso do Firestore write
+  → Não esperar pelo email (email é assíncrono)
+  
+  Conteúdo do modal:
+    ✓  Pedido recebido com sucesso!
+    
+    O teu ID é  KV-2025-0047
+    
+    Guardámos o teu pedido. Podes consultá-lo a qualquer momento
+    com o teu email ou número WhatsApp.
+    
+    A nossa equipa vai entrar em contacto via WhatsApp em breve.
+    
+    [Continuar no WhatsApp →]   ← botão preto, destaque máximo
+    [Fechar]                    ← texto simples, sem fundo
+
+  PASSO 5 — Redireccionar para WhatsApp com mensagem pré-formulada:
+  → Ao clicar "Continuar no WhatsApp" no modal
+  → Abrir em nova tab: wa.me com mensagem COMPLETA e personalizada
+  
+  MENSAGEM WHATSAPP (gerada dinamicamente com todos os dados do pedido):
+
+  Para Cartão Virtual / Acesso Assistido:
+  ────────────────────────────────────────
+  Olá, KwanzaVisa! 👋
+
+  Acabei de submeter um pedido na vossa plataforma.
+  Aqui estão os detalhes:
+
+  🔖 *ID do Pedido:* KV-2025-0047
+  👤 *Nome:* João Silva
+  📋 *Serviço:* Acesso Assistido
+  🛒 *Plataforma:* Amazon
+  📝 *Descrição:* Headphones Sony WH-1000XM5
+  💵 *Valor:* 150 USD
+  💰 *Total em Kz:* 157.500 Kz
+  🕐 *Horário:* 14/01/2025 às 14:32
+
+  Fico a aguardar confirmação. Obrigado!
+  ────────────────────────────────────────
+
+  Para Transferência com Liquidação Local:
+  ────────────────────────────────────────
+  Olá, KwanzaVisa! 👋
+
+  Acabei de submeter um pedido de transferência.
+
+  🔖 *ID do Pedido:* KV-2025-0048
+  👤 *Nome:* João Silva
+  📋 *Serviço:* Transferência com Liquidação Local
+  🌍 *País de destino:* Portugal
+  👥 *Destinatário:* Maria Silva
+  💵 *Valor:* 200 EUR
+  💰 *Total em Kz:* 234.000 Kz
+  🕐 *Horário:* 14/01/2025 às 15:10
+
+  Fico a aguardar confirmação. Obrigado!
+  ────────────────────────────────────────
+
+  Para Abertura de Conta Internacional:
+  ────────────────────────────────────────
+  Olá, KwanzaVisa! 👋
+
+  Tenho interesse em abrir uma conta internacional.
+
+  🔖 *ID do Pedido:* KV-2025-0049
+  👤 *Nome:* João Silva
+  📋 *Serviço:* Abertura de Conta Internacional
+  🏦 *Plataforma:* Wise
+  🕐 *Horário:* 14/01/2025 às 16:45
+
+  Aguardo o vosso orçamento. Obrigado!
+  ────────────────────────────────────────
+
+  IMPLEMENTAÇÃO da mensagem WhatsApp:
+  → Função: generateWhatsAppMessage(pedido: Pedido): string
+  → Localizada em: lib/whatsapp.ts
+  → Switch por tipo de serviço → template correspondente
+  → Todos os campos preenchidos com dados reais do pedido
+  → URL encode completo com encodeURIComponent()
+  → Link final: `https://wa.me/244957636981?text=${encodedMessage}`
+  → window.open(link, '_blank') ao clicar no botão
+```
+
+### Secção 10 — FAQ (fundo branco)
+```
+Título: "Perguntas frequentes."
+
+8 perguntas em acordeão (accordion — abre/fecha com animação suave):
+
+  1. "Quanto tempo demora a processar o meu pedido?"
+     "A maioria dos pedidos é processada no mesmo dia, em horário comercial.
+      Após confirmar o teu pedido via WhatsApp, receberás uma estimativa exacta."
+
+  2. "Como recebo o meu cartão virtual?"
+     "Os dados do cartão virtual são entregues directamente no teu WhatsApp,
+      em formato seguro. Ficam disponíveis para uso imediato."
+
+  3. "É seguro partilhar os meus dados?"
+     "Sim. Todos os dados são tratados de forma confidencial pela K Digital (SU),
+      empresa registada em Angola com NIF 5001932500. Nunca partilhamos informações
+      com terceiros."
+
+  4. "Posso usar o cartão para qualquer plataforma internacional?"
+     "Sim. O cartão virtual funciona em qualquer loja ou plataforma que aceite
+      pagamentos com cartão internacional — Amazon, Shein, Netflix, Spotify,
+      cursos online, software, entre outros."
+
+  5. "Qual é o câmbio aplicado?"
+     "Usamos o câmbio de mercado actualizado automaticamente, com uma pequena
+      margem de serviço incluída. Podes ver o câmbio exacto no simulador
+      antes de fazer o pedido."
+
+  6. "Como funciona a Transferência com Liquidação Local?"
+     "Tu pagas em Kwanzas. O destinatário recebe no país de destino na moeda
+      local dele. Não há transferência bancária directa — tudo é feito
+      através da nossa rede de liquidação local."
+
+  7. "Como abro uma conta Wise, Bybit ou Kast através de vocês?"
+     "Submetes o pedido na plataforma, entramos em contacto via WhatsApp
+      e tratamos de todo o processo de abertura. O orçamento é personalizado
+      conforme o tipo de conta e o teu perfil."
+
+  8. "Como posso ver os meus pedidos anteriores?"
+     "Na secção 'Os meus pedidos' desta página, introduz o teu email ou
+      número WhatsApp e vês o histórico completo e o total gasto."
+
+Estilo do acordeão:
+  → Linha divisória entre perguntas
+  → Ícone + / × alinhado à direita
+  → Animação suave de abertura (height transition)
+  → Sem fundo colorido — texto sobre branco
+```
+
+### Secção 11 — CTA Final (fundo preto)
+```
+Headline: "Faz o teu primeiro pagamento hoje."
+Subheadline: "Sem conta bancária internacional. Sem cartão de crédito. Só Kwanzas."
+Botão: [Começar agora →] → scroll para formulário
+```
+
+### Footer (fundo preto)
+```
+Col 1: Logo KwanzaVisa
+       Tagline: "Paga globalmente. Sem limites."
+       Empresa: K Digital (SU)
+       NIF: 5001932500
+       País: Angola
+
+Col 2: Serviços
+       → Cartão Virtual
+       → Acesso Assistido
+       → Transferência
+       → Conta Internacional
+
+Col 3: Plataformas parceiras
+       → Wise
+       → Bybit
+       → Kast
+       → Airtm
+
+Col 4: Suporte
+       WhatsApp: +244 957 636 981
+       Link clicável: https://wa.me/244957636981
+       Horário: "Disponível 7 dias por semana"
+       Email: suporte@kwanzavisa.com (placeholder)
+
+Linha inferior:
+  "© 2025 KwanzaVisa · K Digital (SU) · NIF 5001932500 · Angola"
+  Separador ·  Termos de Uso  ·  Política de Privacidade
+
+ÍCONE ADMIN (obrigatório):
+  → Componente: <LockIcon size={14} /> do Lucide React
+  → Posição: canto inferior direito, inline com a linha de copyright
+  → Cor: #3A3A3C (quase invisível sobre fundo preto)
+  → Cursor: pointer
+  → onClick: router.push('/admin/login')
+  → SEM label, SEM tooltip, SEM hover visível
+  → Apenas quem sabe procura encontra
+```
+
+---
+
+## 💱 SISTEMA DE CÂMBIO EM TEMPO REAL
+
+### Lógica de cálculo
+```
+câmbio_final_usd = câmbio_mercado_usd + 150    (Kz por USD)
+câmbio_final_eur = câmbio_mercado_eur + 190    (Kz por EUR)
+
+valor_kz = valor_input × câmbio_final
+
+Exemplo: mercado USD = 900 Kz → câmbio público = 1.050 Kz/USD
+```
+
+> ⚠️ A margem (150 Kz / 190 Kz) é o lucro da empresa. **Nunca exposta ao utilizador.**
+
+### API de câmbio em tempo real
+```
+Usar a API gratuita: https://api.exchangerate-api.com/v4/latest/USD
+(ou alternativa: https://open.er-api.com/v6/latest/USD)
+
+Fluxo automático:
+1. Cloud Function agendada (Firebase Scheduler) → executa a cada 30 minutos
+2. Faz GET à API de câmbio externo
+3. Obtém USD/AOA e EUR/AOA (Kwanza angolano)
+4. Aplica margem: +150 Kz (USD), +190 Kz (EUR)
+5. Guarda em Firestore na colecção 'configuracoes':
+     cambio_usd_mercado, cambio_eur_mercado,
+     cambio_usd_final, cambio_eur_final,
+     ultima_actualizacao (timestamp)
+
+No frontend:
+  → Simulador lê 'configuracoes' em tempo real (Firestore onSnapshot)
+  → Sempre mostra câmbio actualizado sem refresh
+
+Admin pode forçar actualização manual com botão [Actualizar câmbio agora]
+Admin pode sobrescrever temporariamente o câmbio (override manual)
+```
+
+### Ecrã do simulador no frontend
+```
+"Câmbio aplicado: 1 USD = 1.050 Kz"
+"Actualizado às 14:32 de hoje"  ← timestamp da última actualização
+
+⚠️ Nunca mostrar: câmbio de mercado, margem, spread
+⚠️ Mostrar apenas: câmbio_final e timestamp
+```
+
+---
+
+## ⚙️ BACKEND — FIREBASE
+
+### Stack
+```
+Base de dados:  Cloud Firestore
+Autenticação:   Firebase Auth (Google OAuth para admin)
+Functions:      Cloud Functions v2 (Node.js 20)
+Agendamento:    Cloud Scheduler (actualização automática de câmbio)
+Email:          Nodemailer + Gmail OAuth2 via Cloud Function
+Push (admin):   Firebase Cloud Messaging (FCM) — Web Push Notifications
+Service Worker: public/firebase-messaging-sw.js (FCM obrigatório)
+Hosting:        Vercel (frontend)
+```
+
+### Esquema Firestore
+
+**Colecção: `pedidos`**
+```json
+{
+  "id": "KV-2025-0047",
+  "nome": "João Silva",
+  "email": "joao@gmail.com",
+  "whatsapp": "+244923456789",
+  "servico": "acesso_assistido",
+  "plataforma": "Amazon",
+  "valor_moeda": 150,
+  "moeda": "USD",
+  "valor_kz": 157500,
+  "cambio_aplicado": 1050,
+  "descricao": "Headphones Sony WH-1000XM5",
+  "status": "pendente",
+  "notas_admin": "",
+  "criado_em": "Timestamp",
+  "actualizado_em": "Timestamp",
+  "historico_status": [
+    { "status": "pendente", "data": "Timestamp", "por": "sistema" }
+  ]
+}
+```
+
+**Status possíveis:**
+```
+pendente → em_contacto → aguarda_pagamento → pago → em_processamento → concluido → cancelado
+```
+
+**Colecção: `configuracoes`** (documento único: `cambio`)
+```json
+{
+  "cambio_usd_mercado": 900,
+  "cambio_eur_mercado": 980,
+  "margem_usd": 150,
+  "margem_eur": 190,
+  "cambio_usd_final": 1050,
+  "cambio_eur_final": 1170,
+  "ultima_actualizacao": "Timestamp",
+  "override_ativo": false,
+  "override_usd": null,
+  "override_eur": null
+}
+```
+
+**Colecção: `admin_users`** (whitelist Google)
+```json
+{
+  "email": "admin@kwanzavisa.com",
+  "nome": "Admin KwanzaVisa",
+  "role": "super_admin",
+  "criado_em": "Timestamp"
+}
+```
+
+**Colecção: `financeiro`** (documento único: `saldos`)
+```json
+{
+  "saldo_kz": 5250000,
+  "saldo_usd": 2500,
+  "saldo_eur": 1800,
+  "ultima_actualizacao": "Timestamp",
+  "actualizado_por": "admin@kwanzavisa.com"
+}
+```
+
+**Colecção: `relatorio_mensal`** (documentos por mês: `2025-01`, `2025-02`...)
+```json
+{
+  "mes": "2025-01",
+  "total_pedidos": 47,
+  "pedidos_concluidos": 38,
+  "pedidos_cancelados": 3,
+  "volume_usd": 4250.00,
+  "volume_kz": 4462500.00,
+  "receita_kz": 637500.00,
+  "custo_estimado_kz": 3825000.00,
+  "lucro_kz": 637500.00,
+  "margem_percentagem": 14.28
+}
+```
+
+### Cloud Functions
+
+**`actualizarCambio`** — Scheduler (a cada 30 minutos)
+```
+→ GET https://api.exchangerate-api.com/v4/latest/USD
+→ Extrair USD/AOA e EUR/AOA
+→ Calcular: cambio_usd_final = AOA_por_USD + 150
+→ Calcular: cambio_eur_final = (AOA_por_USD × taxa_EUR_USD) + 190
+→ Guardar em Firestore > configuracoes > cambio
+→ Registo em log de actualizações
+```
+
+**`novoPedido`** — Trigger: onCreate em `pedidos` ← FUNÇÃO CRÍTICA
+```
+Esta função executa 3 acções em paralelo (Promise.all):
+
+ACÇÃO 1 — Email ao admin via Gmail (Nodemailer + Gmail SMTP OAuth2):
+  Credenciais:
+    Gmail da empresa configurado com OAuth2 (não password simples)
+    Variáveis: GMAIL_USER, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN
+
+  Email gerado:
+    Para:     email_admin (de configuracoes)
+    De:       "KwanzaVisa Notificações <noreply@kwanzavisa.com>"
+    Assunto:  "🔔 Novo pedido KwanzaVisa — [SERVIÇO] — [ID]"
+    
+    Corpo HTML (template completo — não simplificar):
+      - Cabeçalho: logo KwanzaVisa em texto grande + linha separadora
+      - Secção CLIENTE: Nome, Email, WhatsApp (cada um numa linha clara)
+      - Secção PEDIDO: ID, Serviço, Plataforma, Descrição
+      - Secção VALORES: Valor USD/EUR, Câmbio aplicado, Total Kz
+      - Secção DATA E HORA: formato completo "Terça-feira, 14 de Janeiro de 2025 às 14h32"
+      - Botão CTA: "Abrir WhatsApp do Cliente" → link wa.me pré-preenchido
+      - Rodapé: "KwanzaVisa · Sistema automático de notificações"
+    
+    O email deve ser legível sem CSS externo (inline styles obrigatório)
+    Fundo do email: #ffffff, fonte: Arial/sans-serif, cor texto: #1D1D1F
+
+ACÇÃO 2 — Notificação Push via Firebase Cloud Messaging (FCM):
+  → Ler todos os documentos da colecção 'admin_tokens'
+  → Para cada documento, enviar FCM message com:
+      notification.title: "Novo pedido — KwanzaVisa"
+      notification.body:  "[Nome] · [Serviço] · [Valor] [Moeda] · [ID]"
+                          ex: "João Silva · Acesso Assistido · 150 USD · KV-2025-0047"
+      notification.icon:  "/favicon.ico"
+      data.pedido_id:     "[ID]"
+      data.url:           "/admin/pedidos?highlight=[ID]"
+  → Se token inválido (FCM error): remover da colecção admin_tokens
+  → Usar firebase-admin.messaging().sendEachForMulticast()
+
+ACÇÃO 3 — Actualizar contador de pedidos pendentes:
+  → Incrementar campo 'pendentes_count' no documento configuracoes/stats
+  → Usado para mostrar badge de alerta no sidebar do admin em tempo real
+
+Tratamento de erros:
+  → Se email falhar: registar erro em Firestore (colecção 'logs_erros')
+  → Se FCM falhar: registar mas não bloquear — email é o canal principal
+  → Nunca lançar excepção que bloqueie o pedido — pedido sempre fica guardado
+```
+
+**`notificarMudancaStatus`** — Trigger: onUpdate em `pedidos` (campo `status`)
+```
+Quando o admin muda o status de um pedido → enviar mensagem WhatsApp ao cliente
+
+Implementação:
+  → Detectar que o campo 'status' mudou (data.before.status !== data.after.status)
+  → Chamar API WhatsApp Business (via CallMeBot gratuito ou Twilio WhatsApp)
+  → Gerar mensagem personalizada por status:
+
+  STATUS: em_contacto
+  ─────────────────────────────────────────────
+  Olá [Nome]! 👋
+  A tua equipa KwanzaVisa recebeu o teu pedido *[ID]*.
+  Estamos a verificar os detalhes e entraremos em contacto brevemente.
+  ─────────────────────────────────────────────
+
+  STATUS: aguarda_pagamento
+  ─────────────────────────────────────────────
+  Olá [Nome]! 💰
+  O teu pedido *[ID]* está pronto para pagamento.
+  A nossa equipa enviará os dados de pagamento via WhatsApp em instantes.
+  ─────────────────────────────────────────────
+
+  STATUS: em_processamento
+  ─────────────────────────────────────────────
+  Olá [Nome]! ⚙️
+  Confirmámos o teu pagamento. O pedido *[ID]* está em processamento.
+  Avisamos quando estiver concluído.
+  ─────────────────────────────────────────────
+
+  STATUS: concluido
+  ─────────────────────────────────────────────
+  Olá [Nome]! ✅
+  O teu pedido *[ID]* foi concluído com sucesso!
+  Obrigado por escolher a KwanzaVisa. Até ao próximo pedido! 🙌
+  ─────────────────────────────────────────────
+
+  STATUS: cancelado
+  ─────────────────────────────────────────────
+  Olá [Nome]. ℹ️
+  O teu pedido *[ID]* foi cancelado.
+  Se tens dúvidas ou queres fazer um novo pedido,
+  fala connosco aqui mesmo.
+  ─────────────────────────────────────────────
+
+Nota de implementação:
+  → Usar CallMeBot API (gratuita, sem aprovação Meta):
+      GET https://api.callmebot.com/whatsapp.php?phone=[numero]&text=[msg]&apikey=[key]
+  → Alternativa paga: Twilio WhatsApp API (mais fiável, $0.005/msg)
+  → O número do cliente deve estar registado no CallMeBot antes de receber mensagens
+  → Registar resultado (sucesso/falha) em campo 'notificacao_enviada' no pedido
+```
+```
+→ Chamada pelo admin ao clicar "Gerar relatório"
+→ Agrega pedidos concluídos do mês solicitado
+→ Calcula: receita = Σ(valor_kz) - Σ(cambio_mercado × valor_moeda)
+→ Guarda em colecção relatorio_mensal
+```
+
+**`consultarPedidosCliente`** — Callable Function (pública)
+```
+→ Recebe: email OU whatsapp
+→ Retorna: lista de pedidos do cliente (campos públicos apenas)
+→ Retorna: total_gasto_kz (soma pedidos com status='concluido')
+→ Rate limiting: máx. 10 consultas/hora por IP
+```
+
+**`registarTokenAdmin`** — Callable Function (admin autenticado)
+```
+→ Chamada pelo frontend admin após obter permissão de notificações push
+→ Recebe: fcm_token (string)
+→ Guarda/actualiza em Firestore:
+    colecção: 'admin_tokens'
+    documento: email do admin autenticado
+    campos: { fcm_token, device_info, registado_em }
+→ Verificar autenticação antes de guardar (auth.token.email in admin_users)
+```
+
+---
+
+## 🔐 PAINEL DE ADMINISTRAÇÃO
+
+### Autenticação — Google OAuth
+```
+→ Firebase Auth com Google Provider
+→ Após login Google, verificar se email está em admin_users (Firestore)
+→ Se não estiver: logout automático + mensagem "Acesso não autorizado."
+→ Se estiver: redirigir para /admin/dashboard
+→ Middleware Next.js protege TODAS as rotas /admin/* excepto /admin/login
+```
+
+### Página de login (/admin/login)
+```
+Design minimalista Apple:
+  - Logo KwanzaVisa centrado
+  - Espaço generoso
+  - Botão: [  G  Entrar com Google  ]  (estilo Google sign-in button)
+  - Nota discreta: "Acesso restrito à equipa KwanzaVisa."
+  - Fundo branco, sem elementos decorativos
+```
+
+### Layout do admin
+```
+Sidebar esquerda (fundo preto, 240px, fixa):
+  Logo KwanzaVisa
+  ─────────────
+  Dashboard
+  Pedidos
+  Câmbio
+  Relatórios
+  Saldos
+  ─────────────
+  [foto + nome do admin logado]
+  [Sair]
+
+Área principal (fundo #F5F5F7):
+  Header: título da página + data actual + botão [Actualizar câmbio agora]
+```
+
+### Dashboard (/admin/dashboard)
+```
+SETUP DE NOTIFICAÇÕES PUSH (executar no primeiro acesso):
+  → Verificar se Notification API é suportada pelo navegador
+  → Se não autorizado: mostrar banner discreto no topo:
+      "🔔 Activa as notificações push para seres alertado de novos pedidos."
+      Botão: [Activar notificações]
+  → Ao clicar: requestPermission() → obter FCM token → chamar registarTokenAdmin
+  → Se autorizado: mostrar ícone de sino verde no header do admin
+  → Token guardado em Firestore: admin_tokens / [email] / { fcm_token, registado_em }
+
+
+Linha 1 — Cards de métricas:
+  Pedidos hoje       | Pedidos esta semana | Pedidos este mês
+  Volume USD/mês     | Volume Kz/mês       | Pedidos pendentes (badge alerta)
+
+Linha 2 — Cards financeiros:
+  Receita estimada mês (Kz)   | Custo estimado mês (Kz) | Lucro estimado mês (Kz)
+
+Cálculo de lucro no dashboard:
+  receita = Σ valor_kz (pedidos concluídos do mês)
+  custo   = Σ (câmbio_mercado × valor_moeda) (pedidos concluídos do mês)
+  lucro   = receita - custo
+  margem  = (lucro / receita) × 100
+
+Linha 3 — Gráfico de linha (Recharts):
+  Pedidos por dia — últimos 30 dias
+
+Linha 4 — Tabela: últimos 10 pedidos (colunas: ID, Nome, Serviço, Valor, Status, Acções rápidas)
+
+Linha 5 — Câmbio actual:
+  "USD: 1 USD = 1.050 Kz  |  EUR: 1 EUR = 1.170 Kz"
+  "Última actualização: HH:MM de DD/MM/YYYY"
+  Botão: [Forçar actualização]
+```
+
+### Gestão de Pedidos (/admin/pedidos)
+```
+Filtros:
+  Status | Serviço | Intervalo de datas | Busca (ID, nome, email)
+
+Tabela paginada (20/página):
+  ID | Nome | Serviço | Plataforma | Valor USD/EUR | Valor Kz | Status | Data | Acções
+
+Acções por linha:
+  [👁 Ver]      → modal completo com todos os campos
+  [💬 WA]       → abre WhatsApp com mensagem pré-preenchida incluindo ID
+  [✏️ Status]   → dropdown inline: pendente / em_contacto / aguarda_pagamento / pago / em_processamento / concluido / cancelado
+  [📝 Nota]     → campo inline para nota interna (não visível ao cliente)
+
+Modal de detalhe:
+  Todos os campos do pedido
+  Campo de nota admin (editável, com botão Guardar)
+  Histórico de alterações de status (data + quem alterou)
+  Botão destacado: [✓ Marcar como concluído]
+  Botão: [💬 Contactar via WhatsApp]
+
+Exportar: botão [Exportar CSV] — pedidos do período filtrado
+```
+
+### Câmbio (/admin/cambio)
+```
+Card 1 — Câmbio actual (leitura em tempo real do Firestore):
+  "Câmbio de mercado:   1 USD = 900 Kz  |  1 EUR = 980 Kz"
+  "Margem configurada:  USD +150 Kz  |  EUR +190 Kz"
+  "Câmbio público:      1 USD = 1.050 Kz  |  1 EUR = 1.170 Kz"
+  "Última actualização: HH:MM — DD/MM/YYYY"
+
+Card 2 — Override manual (temporário):
+  Toggle: [Usar câmbio automático ●] / [Usar câmbio manual]
+  Se manual:
+    Input: Câmbio USD manual
+    Input: Câmbio EUR manual
+    Botão: [Aplicar override]
+    Nota: "Override activo. O câmbio automático fica suspenso."
+
+Card 3 — Configurar margens:
+  Input: Margem USD (Kz): [150]
+  Input: Margem EUR (Kz): [190]
+  Botão: [Guardar margens]
+  Nota: "As margens são aplicadas sobre o câmbio de mercado em tempo real."
+
+Card 4 — Histórico de actualizações (tabela):
+  Data/hora | USD mercado | EUR mercado | USD final | EUR final | Tipo (auto/manual)
+```
+
+### Perfil do Cliente (/admin/clientes)
+```
+Nova página no painel admin — agrega todos os dados por cliente
+
+Listagem de clientes (derivada da colecção pedidos):
+  Nome | Email | WhatsApp | Total pedidos | Total gasto (Kz) | Último pedido
+
+Pesquisa: por nome, email ou WhatsApp
+
+Ao clicar num cliente → Ficha do cliente:
+  ┌─────────────────────────────────────────────┐
+  │  João Silva                                  │
+  │  joao@gmail.com · +244 923 456 789          │
+  │  Cliente desde: 14 Jan 2025                 │
+  ├─────────────────────────────────────────────┤
+  │  Total de pedidos:     12                   │
+  │  Pedidos concluídos:   10                   │
+  │  Total gasto (Kz):     1.575.000 Kz         │
+  │  Serviço mais usado:   Acesso Assistido     │
+  ├─────────────────────────────────────────────┤
+  │  📝 Notas sobre o cliente (campo editável)  │
+  │  ex: "Prefere ser contactado após 18h"      │
+  │  ex: "Cliente habitual — prioridade alta"   │
+  ├─────────────────────────────────────────────┤
+  │  HISTÓRICO DE PEDIDOS (tabela completa)     │
+  │  ID | Serviço | Valor | Status | Data       │
+  └─────────────────────────────────────────────┘
+
+  Botão: [💬 Contactar via WhatsApp]
+  Botão: [Ver todos os pedidos →] → filtra página /admin/pedidos por este cliente
+```
+
+### Contas Operacionais (referência interna — NÃO exposta publicamente)
+```
+A KwanzaVisa opera com as seguintes contas internacionais para liquidar pedidos:
+
+AIRTM
+  → Plataforma: https://www.airtm.com
+  → Uso: receber e enviar USD digitalmente, trocar entre moedas
+  → Ideal para: receber pagamentos de clientes em USD e liquidar transferências
+  → API disponível: Sim (API REST para merchants)
+    Documentação: https://developers.airtm.com
+    Funcionalidades: criar ordens de pagamento, verificar saldo, histórico
+
+WISE (TransferWise)
+  → Plataforma: https://wise.com
+  → Uso: conta multi-moeda EUR/USD/GBP, transferências SEPA, cartão Wise
+  → Ideal para: receber EUR, pagar fornecedores europeus, cartões virtuais
+  → API disponível: Sim (Wise Platform API)
+    Documentação: https://api-docs.transferwise.com
+    Funcionalidades: criar transferências, gerir saldo, webhooks de pagamento
+    Nota: requer aprovação de conta Business para acesso API completo
+
+No admin, adicionar secção "Saldos Operacionais":
+  Saldo Airtm (USD)   → actualizado manualmente
+  Saldo Wise (EUR)    → actualizado manualmente
+  Saldo Wise (USD)    → actualizado manualmente
+  Saldo conta Kz      → actualizado manualmente (conta angolana)
+```
+
+### API de câmbio — Plataformas recomendadas
+```
+OPÇÃO 1 — ExchangeRate-API (RECOMENDADA PRINCIPAL)
+  URL:           https://www.exchangerate-api.com
+  Plano gratuito: 1.500 requests/mês, actualização diária
+  Plano pago:     a partir de $10/mês — actualização horária, AOA incluído
+  Endpoint:       GET https://v6.exchangerate-api.com/v6/{API_KEY}/latest/USD
+  Registo:        https://app.exchangerate-api.com/sign-up
+  Retorna AOA:    ✅ Kwanza angolano incluído
+
+OPÇÃO 2 — Open Exchange Rates (FALLBACK PRIMÁRIO)
+  URL:           https://openexchangerates.org
+  Plano gratuito: 1.000 requests/mês, base USD apenas
+  Plano pago:     a partir de $12/mês
+  Endpoint:       GET https://openexchangerates.org/api/latest.json?app_id={KEY}
+  Registo:        https://openexchangerates.org/signup/free
+  Retorna AOA:    ✅
+
+OPÇÃO 3 — Fixer.io (FALLBACK SECUNDÁRIO)
+  URL:           https://fixer.io
+  Plano gratuito: 100 requests/mês (muito limitado)
+  Plano pago:     a partir de €9.99/mês
+  Endpoint:       GET https://data.fixer.io/api/latest?access_key={KEY}&symbols=AOA
+  Registo:        https://fixer.io/product
+  Retorna AOA:    ✅ (planos pagos)
+
+LÓGICA DE FALLBACK OBRIGATÓRIA na Cloud Function actualizarCambio:
+  1. Tentar ExchangeRate-API (primária)
+  2. Se falhar (timeout / erro 4xx/5xx) → tentar Open Exchange Rates
+  3. Se ambas falharem → manter o último câmbio válido guardado no Firestore
+     Adicionar campo: cambio_congelado: true, motivo: "API indisponível"
+     Enviar FCM push ao admin: "⚠️ Câmbio não actualizado — API indisponível. Verifica manualmente."
+  4. NUNCA mostrar câmbio zero ou erro ao utilizador — usar sempre o último valor válido
+
+VARIÁVEIS DE AMBIENTE necessárias:
+  EXCHANGERATE_API_KEY=...    (obter em exchangerate-api.com)
+  OPENEXCHANGERATES_APP_ID=.. (obter em openexchangerates.org)
+```
+```
+Selector de período: Mês/Ano (dropdown)
+Botão: [Gerar relatório]
+
+Relatório gerado:
+  Resumo do período:
+    Total de pedidos        [N]
+    Pedidos concluídos      [N]
+    Pedidos cancelados      [N]
+    Taxa de conclusão       [%]
+
+  Financeiro:
+    Volume total (USD)      [valor]
+    Volume total (Kz)       [valor]
+    Receita bruta (Kz)      [valor]    ← valor_kz pago pelos clientes
+    Custo estimado (Kz)     [valor]    ← câmbio_mercado × valor_moeda
+    Lucro líquido (Kz)      [valor em destaque]
+    Margem (%)              [percentagem]
+
+  Por serviço (tabela):
+    Serviço | Nº pedidos | Volume Kz | Receita | Lucro | Margem %
+
+  Gráfico de barras (Recharts):
+    Receita vs Custo vs Lucro por semana do mês
+
+Botão: [Exportar PDF] | [Exportar CSV]
+```
+
+### Saldos da Empresa (/admin/saldos)
+```
+Título: "Saldos operacionais"
+Subtítulo: "Actualizado manualmente de acordo com os extractos das contas."
+
+SECÇÃO 1 — Conta Bancária Angola (Kz)
+  Saldo em Kz   [valor grande] [botão ✏️ Editar]
+
+SECÇÃO 2 — Conta Airtm
+  Saldo USD Airtm   [valor] [botão ✏️ Editar]
+  Link rápido: [Abrir Airtm →] → https://www.airtm.com (nova tab)
+
+SECÇÃO 3 — Conta Wise
+  Saldo EUR Wise    [valor] [botão ✏️ Editar]
+  Saldo USD Wise    [valor] [botão ✏️ Editar]
+  Link rápido: [Abrir Wise →] → https://wise.com (nova tab)
+
+Ao clicar Editar qualquer saldo:
+  → Campo numérico inline
+  → Botão [Guardar]
+  → Regista: novo valor + timestamp + email do admin que editou
+
+Card de resumo (calculado automaticamente):
+  "Total equivalente em Kz: [soma de todos os saldos convertidos ao câmbio actual]"
+
+Histórico de actualizações (tabela compacta):
+  Data | Conta | Moeda | Valor anterior | Novo valor | Actualizado por
+  
+Nota: "Actualiza os saldos após cada movimento nas contas Airtm, Wise e bancária."
+```
+
+---
+
+## 🛠️ STACK TÉCNICA
+
+```
+Frontend:      Next.js 14 (App Router) + TypeScript
+Styling:       Tailwind CSS + shadcn/ui
+Base de dados: Cloud Firestore (Firebase)
+Auth:          Firebase Authentication — Google OAuth (admin)
+Functions:     Cloud Functions v2 (Node.js 20)
+Scheduler:     Cloud Scheduler (câmbio automático a cada 30 min)
+Email:         Nodemailer + Gmail OAuth2 via Cloud Function
+Push (admin):  Firebase Cloud Messaging (FCM) — Web Push Notifications
+WhatsApp:      CallMeBot API (gratuito) para notificações de status ao cliente
+Service Worker:public/firebase-messaging-sw.js (FCM obrigatório)
+Deploy:        Vercel (frontend)
+Fontes:        system-ui / -apple-system (nativo) + Inter fallback
+Icons:         Lucide React
+Animações:     Framer Motion
+Gráficos:      Recharts (admin)
+API câmbio:    ExchangeRate-API (primária) + Open Exchange Rates (fallback)
+Contas op.:    Airtm (USD) + Wise (EUR/USD)
+```
+
+---
+
+## 📁 ESTRUTURA DE PASTAS
+
+```
+kwanzavisa/
+├── app/
+│   ├── page.tsx                          ← Landing page
+│   ├── admin/
+│   │   ├── login/page.tsx                ← Login Google OAuth
+│   │   ├── dashboard/page.tsx
+│   │   ├── pedidos/page.tsx
+│   │   ├── clientes/page.tsx             ← NOVO: perfil por cliente
+│   │   ├── cambio/page.tsx
+│   │   ├── relatorios/page.tsx
+│   │   └── saldos/page.tsx               ← Airtm + Wise + Kz
+│   └── api/
+│       ├── pedidos/route.ts              ← POST novo pedido
+│       ├── consulta/route.ts             ← GET histórico cliente (público)
+│       └── cambio/route.ts               ← GET câmbio actual
+├── components/
+│   ├── landing/
+│   │   ├── Hero.tsx
+│   │   ├── ComprasInternacionais.tsx
+│   │   ├── ComoFunciona.tsx
+│   │   ├── Servicos.tsx
+│   │   ├── SimuladorCambio.tsx
+│   │   ├── ContaInternacional.tsx        ← Wise / Bybit / Kast / Airtm
+│   │   ├── ProvasSocial.tsx
+│   │   ├── HistoricoCliente.tsx
+│   │   ├── FormularioPedido.tsx
+│   │   ├── FAQ.tsx                       ← NOVO: acordeão com 8 perguntas
+│   │   ├── CTAFinal.tsx
+│   │   └── Footer.tsx                    ← NIF + empresa + WA real
+│   ├── admin/
+│   │   ├── AdminLayout.tsx
+│   │   ├── Sidebar.tsx
+│   │   ├── DashboardMetrics.tsx
+│   │   ├── TabelaPedidos.tsx
+│   │   ├── ModalPedido.tsx
+│   │   ├── FichaCliente.tsx              ← NOVO: perfil do cliente
+│   │   ├── GestaoCambio.tsx
+│   │   ├── RelatorioFinanceiro.tsx
+│   │   ├── GestaoSaldos.tsx              ← Airtm + Wise + Kz
+│   │   └── GraficosPedidos.tsx
+│   └── ui/
+├── lib/
+│   ├── firebase.ts
+│   ├── firebase-admin.ts
+│   ├── firestore.ts
+│   ├── cambio.ts                         ← inclui fallback para segunda API
+│   ├── relatorios.ts
+│   ├── whatsapp.ts                       ← templates + notificações de status
+│   ├── notifications.ts                  ← FCM frontend
+│   └── utils.ts
+├── middleware.ts
+├── public/
+│   └── firebase-messaging-sw.js
+├── functions/
+│   ├── src/
+│   │   ├── actualizarCambio.ts           ← primária + fallback + alerta FCM
+│   │   ├── novoPedido.ts                 ← email + FCM + contador
+│   │   ├── notificarMudancaStatus.ts     ← NOVO: WA ao cliente por status
+│   │   ├── calcularRelatorio.ts
+│   │   ├── consultarPedidos.ts
+│   │   └── registarTokenAdmin.ts
+│   └── package.json
+└── types/
+    └── index.ts
+```
+
+---
+
+## ✅ REQUISITOS DE QUALIDADE
+
+### UX/UI
+- [ ] Preto e branco absolutamente estrito (único desvio: `#FF3B30` para erros)
+- [ ] 100% responsivo — mobile-first
+- [ ] Animações de entrada staggered em todas as secções (Framer Motion)
+- [ ] Formulário dinâmico: campos mudam consoante o serviço seleccionado
+- [ ] Simulador de câmbio actualiza em tempo real via Firestore `onSnapshot`
+- [ ] Ícone cadeado no footer — absolutamente discreto, sem hover visível
+- [ ] Modal de confirmação após submissão de pedido (com ID gerado)
+- [ ] Loading states em todos os botões e chamadas assíncronas
+
+### Código
+- [ ] TypeScript estrito — sem `any`
+- [ ] Firestore rules: escrita pública só em `pedidos`, leitura/escrita admin autenticado
+- [ ] Middleware Next.js: proteger todas as rotas `/admin/*`
+- [ ] Variáveis sensíveis em `.env.local` (Firebase config, Gmail credentials, API keys)
+- [ ] Rate limiting na API route de consulta pública (10 req/hora por IP)
+- [ ] IDs de pedido gerados atomicamente (Firestore transaction para evitar duplicados)
+
+### Segurança
+- [ ] Só emails em `admin_users` podem aceder ao painel — validado server-side
+- [ ] Consulta pública retorna apenas campos não sensíveis (sem notas admin)
+- [ ] Câmbio de mercado e margem nunca expostos ao frontend público
+- [ ] Firebase Security Rules explícitas para cada colecção
+
+---
+
+## 🚀 INSTRUÇÕES DE GERAÇÃO
+
+**Gera na seguinte ordem:**
+
+1. `types/index.ts` — todos os tipos TypeScript (Pedido, Servico, Cambio, Relatorio, Saldo, AdminUser, FCMToken, Cliente)
+2. `lib/firebase.ts` + `lib/firebase-admin.ts`
+3. `lib/cambio.ts` — lógica câmbio com fallback para segunda API
+4. `lib/firestore.ts` — CRUD completo
+5. `lib/relatorios.ts` — cálculos financeiros
+6. `lib/whatsapp.ts` — templates por serviço + mensagens de status
+7. `lib/notifications.ts` — FCM frontend
+8. `public/firebase-messaging-sw.js` — Service Worker FCM
+9. `middleware.ts`
+10. `functions/src/actualizarCambio.ts` — primária + fallback + alerta FCM se ambas falharem
+11. `functions/src/novoPedido.ts` — email HTML + FCM + contador
+12. `functions/src/notificarMudancaStatus.ts` — WA ao cliente via CallMeBot
+13. `functions/src/calcularRelatorio.ts`
+14. `functions/src/consultarPedidos.ts`
+15. `functions/src/registarTokenAdmin.ts`
+16. `app/api/pedidos/route.ts`
+17. `app/api/consulta/route.ts`
+18. `app/api/cambio/route.ts`
+19. Componentes landing (ordem das secções, incluindo FAQ.tsx)
+20. `components/landing/Footer.tsx` — NIF 5001932500 + K Digital (SU) + WA +244957636981
+21. `app/page.tsx` — landing page completa
+22. `app/admin/login/page.tsx`
+23. Componentes admin (incluindo FichaCliente.tsx e GestaoSaldos.tsx actualizado)
+24. Páginas admin (dashboard, pedidos, clientes, câmbio, relatórios, saldos)
+25. `firestore.rules`
+26. `.env.local.example` — incluindo EXCHANGERATE_API_KEY, OPENEXCHANGERATES_APP_ID, CALLMEBOT_APIKEY, GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, NEXT_PUBLIC_FIREBASE_VAPID_KEY
+27. `README.md` — setup completo, configurar Gmail OAuth2, registar número no CallMeBot, obter API keys de câmbio, criar admin, deploy
+
+**Para cada ficheiro:**
+- Código 100% completo e funcional
+- Zero placeholders (`// TODO`, `/* implementar */`)
+- Comentários apenas onde a lógica é não-óbvia
+
+---
+
+*KwanzaVisa · K Digital (SU) · NIF 5001932500 · Angola · Versão 4.0*

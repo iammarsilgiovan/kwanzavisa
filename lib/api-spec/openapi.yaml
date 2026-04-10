@@ -3,13 +3,17 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: KwanzaVisa API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: orders
+    description: Order management
+  - name: exchange
+    description: Exchange rate operations
 paths:
   /healthz:
     get:
@@ -24,6 +28,189 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /orders:
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderBody"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /orders/lookup:
+    get:
+      operationId: lookupOrders
+      tags: [orders]
+      summary: Look up orders by email or WhatsApp number
+      parameters:
+        - name: contact
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Email or WhatsApp number
+      responses:
+        "200":
+          description: Orders found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderLookupResult"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get a specific order by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /exchange/rate:
+    get:
+      operationId: getExchangeRate
+      tags: [exchange]
+      summary: Get current exchange rate with margin applied
+      parameters:
+        - name: currency
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [USD, EUR]
+        - name: amount
+          in: query
+          required: false
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Exchange rate information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExchangeRateResponse"
+
+  /admin/orders:
+    get:
+      operationId: adminListOrders
+      tags: [orders]
+      summary: Admin - list all orders with filters
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pendente, em_processamento, concluido, cancelado]
+        - name: service
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOrdersResponse"
+
+  /admin/orders/{id}/status:
+    patch:
+      operationId: adminUpdateOrderStatus
+      tags: [orders]
+      summary: Admin - update order status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderStatusBody"
+      responses:
+        "200":
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/stats:
+    get:
+      operationId: adminGetStats
+      tags: [orders]
+      summary: Admin - get platform statistics
+      responses:
+        "200":
+          description: Platform statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +221,206 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          description: "KV-YYYY-NNNN format"
+        name:
+          type: string
+        email:
+          type: string
+        whatsapp:
+          type: string
+        service:
+          type: string
+          enum: [cartao_virtual, acesso_assistido, transferencia, conta_internacional]
+        platform:
+          type: string
+          nullable: true
+        amountUsd:
+          type: number
+          nullable: true
+        amountEur:
+          type: number
+          nullable: true
+        amountKwanza:
+          type: number
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        destinationCountry:
+          type: string
+          nullable: true
+        recipientName:
+          type: string
+          nullable: true
+        intlPlatform:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [pendente, em_processamento, concluido, cancelado]
+        createdAt:
+          type: string
+          format: date-time
+        formattedDate:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - whatsapp
+        - service
+        - status
+        - createdAt
+        - formattedDate
+
+    CreateOrderBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        whatsapp:
+          type: string
+        service:
+          type: string
+          enum: [cartao_virtual, acesso_assistido, transferencia, conta_internacional]
+        platform:
+          type: string
+          nullable: true
+        amount:
+          type: number
+          nullable: true
+        currency:
+          type: string
+          enum: [USD, EUR]
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        destinationCountry:
+          type: string
+          nullable: true
+        recipientName:
+          type: string
+          nullable: true
+        intlPlatform:
+          type: string
+          enum: [Wise, Bybit, Kast]
+          nullable: true
+        message:
+          type: string
+          nullable: true
+      required:
+        - name
+        - email
+        - whatsapp
+        - service
+
+    UpdateOrderStatusBody:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pendente, em_processamento, concluido, cancelado]
+      required:
+        - status
+
+    OrderLookupResult:
+      type: object
+      properties:
+        name:
+          type: string
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        totalSpentKwanza:
+          type: number
+          description: Sum of all completed orders in Kwanza
+      required:
+        - orders
+        - totalSpentKwanza
+
+    ExchangeRateResponse:
+      type: object
+      properties:
+        currency:
+          type: string
+        ratePerUnit:
+          type: number
+          description: Final rate in Kwanza per unit (with margin applied)
+        amount:
+          type: number
+        amountKwanza:
+          type: number
+        updatedAt:
+          type: string
+      required:
+        - currency
+        - ratePerUnit
+        - amount
+        - amountKwanza
+        - updatedAt
+
+    AdminOrdersResponse:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - orders
+        - total
+        - page
+        - limit
+
+    AdminStats:
+      type: object
+      properties:
+        totalOrders:
+          type: integer
+        totalClients:
+          type: integer
+        completedOrders:
+          type: integer
+        pendingOrders:
+          type: integer
+        totalRevenueKwanza:
+          type: number
+        ordersByService:
+          type: object
+          additionalProperties:
+            type: integer
+      required:
+        - totalOrders
+        - totalClients
+        - completedOrders
+        - pendingOrders
+        - totalRevenueKwanza
+        - ordersByService
