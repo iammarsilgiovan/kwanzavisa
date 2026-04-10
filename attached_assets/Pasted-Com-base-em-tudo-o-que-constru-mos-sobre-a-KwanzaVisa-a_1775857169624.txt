@@ -1,0 +1,207 @@
+Com base em tudo o que construímos sobre a KwanzaVisa, aqui está a lista completa e organizada de tudo o que deve constar no painel de administração:
+
+---
+
+## 🔐 ACESSO AO PAINEL
+
+**Página de login**
+- Botão "Entrar com Google" como único método de acesso
+- Verificação se o email está na lista de admins autorizados
+- Logout automático se não autorizado, com mensagem de erro
+- Redirecionamento para o dashboard após login válido
+- Proteção de todas as rotas `/admin/*` por middleware
+
+---
+
+## 🧭 NAVEGAÇÃO — SIDEBAR
+
+Menu lateral fixo com acesso a:
+- Dashboard
+- Pedidos
+- Clientes
+- Câmbio
+- Relatórios
+- Saldos
+
+Em baixo da sidebar: foto e nome do admin logado, e botão **Sair** que redirige para a landing page.
+
+Badge de alerta vermelho no item "Pedidos" quando houver pedidos pendentes por tratar.
+
+---
+
+## 📊 DASHBOARD — PÁGINA PRINCIPAL
+
+**Gestão de câmbio (bloco de destaque no topo)**
+É aqui — e só aqui — que o admin define o câmbio activo em toda a plataforma:
+- Campo: Câmbio USD → Kz (input numérico, botão Guardar)
+- Campo: Câmbio EUR → Kz (input numérico, botão Guardar)
+- Preview em tempo real: "Câmbio activo: 1 USD = X Kz | 1 EUR = Y Kz"
+- Ao guardar: actualiza imediatamente no simulador público da landing page
+- Histórico das últimas alterações: data, hora, valor anterior, novo valor, admin que alterou
+
+**Notificações push (banner de configuração)**
+- Aparece apenas se as notificações do browser ainda não foram activadas
+- Botão "Activar notificações" — ao clicar, pede permissão ao browser e regista o token FCM
+- Após activar: ícone de sino visível no header do painel
+
+**Cards de métricas operacionais**
+- Pedidos hoje
+- Pedidos esta semana
+- Pedidos este mês
+- Volume total em USD este mês
+- Volume total em Kz este mês
+- Pedidos pendentes (com badge vermelho se houver algum)
+
+**Cards financeiros**
+- Receita estimada do mês em Kz
+- Custo estimado do mês em Kz
+- Lucro estimado do mês em Kz
+- Margem percentagem do mês
+
+**Gráfico de pedidos**
+- Gráfico de linha com número de pedidos por dia nos últimos 30 dias
+
+**Tabela de pedidos recentes**
+- Últimos 10 pedidos com ID, nome do cliente, serviço, valor, status e botões de acção rápida
+
+**Botão de logout**
+- Visível no header do dashboard, redirige para a landing page
+
+---
+
+## 📋 PEDIDOS
+
+**Filtros**
+- Por status: todos / pendente / em contacto / aguarda pagamento / pago / em processamento / concluído / cancelado
+- Por serviço: todos / Cartão Virtual / Acesso Assistido / Transferência / Conta Internacional
+- Por intervalo de datas (date picker)
+- Busca por texto: ID, nome, email ou WhatsApp
+
+**Tabela paginada** (20 pedidos por página)
+Colunas: ID · Nome · Serviço · Plataforma · Valor USD/EUR · Valor Kz · Status · Data · Acções
+
+**Acções por linha**
+- **Ver** — abre modal com todos os detalhes do pedido
+- **WhatsApp** — abre wa.me do cliente com mensagem pré-preenchida com o ID
+- **Status** — dropdown inline para alterar o status directamente na tabela
+- **Nota** — campo inline para adicionar nota interna, não visível ao cliente
+
+**Modal de detalhe do pedido**
+Exibe todos os campos do pedido, mais:
+- Campo de custo real editável (valor que a empresa pagou para processar — usado nos relatórios de lucro)
+- Campo de nota interna editável com botão Guardar
+- Histórico de alterações de status: data, hora e quem alterou
+- Botão destacado: "Marcar como concluído"
+- Botão: "Contactar via WhatsApp" — abre conversa com o cliente
+
+**Exportação**
+- Botão "Exportar CSV" com os pedidos do período e filtros activos
+
+**Notificação automática ao cliente**
+Ao alterar o status, o sistema envia mensagem WhatsApp automática ao cliente com texto personalizado por status:
+- Em contacto, Aguarda pagamento, Em processamento, Concluído, Cancelado
+
+---
+
+## 👥 CLIENTES
+
+**Listagem de clientes**
+Derivada automaticamente dos pedidos existentes. Colunas: Nome · Email · WhatsApp · Total de pedidos · Total gasto em Kz · Data do último pedido.
+
+Pesquisa por nome, email ou WhatsApp.
+
+**Ficha individual do cliente**
+Ao clicar num cliente:
+- Dados de identificação: nome, email, WhatsApp, data do primeiro pedido
+- Resumo estatístico: total de pedidos, pedidos concluídos, total gasto em Kz, serviço mais utilizado
+- Campo de notas internas editável (ex: "Prefere ser contactado após as 18h", "Cliente habitual — prioridade alta")
+- Histórico completo de pedidos em tabela
+- Botão "Contactar via WhatsApp"
+- Botão "Ver todos os pedidos" que filtra a página de Pedidos por este cliente
+
+---
+
+## 💱 CÂMBIO
+
+*(O câmbio principal é definido no Dashboard. Esta página serve para histórico e configuração avançada.)*
+
+**Câmbio activo (leitura em tempo real)**
+- Câmbio USD activo em Kz
+- Câmbio EUR activo em Kz
+- Data e hora da última alteração
+- Quem fez a última alteração
+
+**Histórico completo de alterações de câmbio**
+Tabela com: data/hora · moeda · valor anterior · novo valor · alterado por.
+
+---
+
+## 📈 RELATÓRIOS
+
+**Selector de período**
+Dropdown com mês e ano. Botão "Gerar relatório".
+
+**Resumo operacional**
+- Total de pedidos no período
+- Pedidos concluídos
+- Pedidos cancelados
+- Taxa de conclusão em percentagem
+
+**Resumo financeiro**
+- Volume total em USD
+- Volume total em Kz
+- Receita bruta em Kz — o que os clientes pagaram
+- Custo total em Kz — baseado nos custos reais registados em cada pedido pelo admin
+- Lucro líquido em Kz — em destaque
+- Margem percentagem
+
+**Análise por serviço**
+Tabela com: Serviço · Nº de pedidos · Volume em Kz · Receita · Custo · Lucro · Margem %
+
+**Gráfico financeiro**
+Gráfico de barras com Receita vs Custo vs Lucro por semana do mês seleccionado.
+
+**Exportação**
+- Botão "Exportar PDF"
+- Botão "Exportar CSV"
+
+---
+
+## 💰 SALDOS OPERACIONAIS
+
+Página para controlo manual dos saldos das contas da empresa.
+
+**Conta Bancária Angola**
+- Saldo em Kz, editável com botão de edição inline
+
+**Conta Airtm**
+- Saldo em USD, editável
+- Link rápido para abrir Airtm em nova tab
+
+**Conta Wise**
+- Saldo em EUR, editável
+- Saldo em USD, editável
+- Link rápido para abrir Wise em nova tab
+
+**Card de resumo consolidado**
+- Total equivalente em Kz: soma de todos os saldos convertidos ao câmbio activo, calculado automaticamente
+
+**Histórico de actualizações de saldo**
+Tabela compacta: Data · Conta · Moeda · Valor anterior · Novo valor · Actualizado por.
+
+**Nota permanente:** "Actualiza os saldos após cada movimento nas contas Airtm, Wise e bancária."
+
+---
+
+## 🔔 SISTEMA DE NOTIFICAÇÕES (transversal)
+
+Presente em todas as páginas do painel:
+
+- **Email ao admin** quando chega novo pedido — com todos os detalhes do cliente, pedido, valores e botão directo para o WhatsApp do cliente
+- **Notificação push no browser** quando chega novo pedido — com nome, serviço, valor e ID; clicar abre o pedido directamente
+- **Mensagem WhatsApp ao cliente** quando o admin muda o status de qualquer pedido
+- **Alerta push ao admin** se o sistema de câmbio automático falhar (para quando houver integração futura)
+
+---
+
+No total, o painel tem **6 páginas funcionais**, **1 sistema de notificações transversal**, e **mais de 30 funcionalidades individuais** — todas centradas em três objectivos: processar pedidos rapidamente, ter visibilidade financeira completa, e manter o cliente informado sem esforço manual.

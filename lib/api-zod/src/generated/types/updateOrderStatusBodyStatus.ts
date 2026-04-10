@@ -11,6 +11,9 @@ export type UpdateOrderStatusBodyStatus =
 
 export const UpdateOrderStatusBodyStatus = {
   pendente: "pendente",
+  em_contacto: "em_contacto",
+  aguarda_pagamento: "aguarda_pagamento",
+  pago: "pago",
   em_processamento: "em_processamento",
   concluido: "concluido",
   cancelado: "cancelado",

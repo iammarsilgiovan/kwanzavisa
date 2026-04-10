@@ -6,6 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type LookupOrdersParams = {
-  contact: string;
-};
+export interface UpdateBalanceBody {
+  balance: number;
+  currency: string;
+  updatedBy?: string;
+}

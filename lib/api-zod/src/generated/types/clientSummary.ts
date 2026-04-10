@@ -5,10 +5,12 @@
  * KwanzaVisa API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { Order } from "./order";
 
-export interface OrderLookupResult {
-  name?: string;
-  orders: Order[];
+export interface ClientSummary {
+  name: string;
+  email: string;
+  whatsapp: string;
+  totalOrders: number;
   totalSpentKwanza: number;
+  lastOrderDate?: string | null;
 }

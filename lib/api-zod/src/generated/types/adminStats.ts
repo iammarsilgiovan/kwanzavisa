@@ -13,5 +13,11 @@ export interface AdminStats {
   completedOrders: number;
   pendingOrders: number;
   totalRevenueKwanza: number;
+  totalCostKwanza: number;
+  ordersToday: number;
+  ordersThisWeek: number;
+  ordersThisMonth: number;
+  volumeUsdThisMonth: number;
+  volumeKwanzaThisMonth: number;
   ordersByService: AdminStatsOrdersByService;
 }

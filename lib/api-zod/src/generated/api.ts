@@ -8,16 +8,12 @@
 import * as zod from "zod";
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
 
-/**
- * @summary Create a new order
- */
 export const CreateOrderBody = zod.object({
   name: zod.string(),
   email: zod.string(),
@@ -38,27 +34,19 @@ export const CreateOrderBody = zod.object({
   message: zod.string().nullish(),
 });
 
-/**
- * @summary Look up orders by email or WhatsApp number
- */
 export const LookupOrdersQueryParams = zod.object({
-  contact: zod.coerce.string().describe("Email or WhatsApp number"),
+  contact: zod.coerce.string(),
 });
 
 export const LookupOrdersResponse = zod.object({
   name: zod.string().optional(),
   orders: zod.array(
     zod.object({
-      id: zod.string().describe("KV-YYYY-NNNN format"),
+      id: zod.string(),
       name: zod.string(),
       email: zod.string(),
       whatsapp: zod.string(),
-      service: zod.enum([
-        "cartao_virtual",
-        "acesso_assistido",
-        "transferencia",
-        "conta_internacional",
-      ]),
+      service: zod.string(),
       platform: zod.string().nullish(),
       amountUsd: zod.number().nullish(),
       amountEur: zod.number().nullish(),
@@ -68,39 +56,24 @@ export const LookupOrdersResponse = zod.object({
       destinationCountry: zod.string().nullish(),
       recipientName: zod.string().nullish(),
       intlPlatform: zod.string().nullish(),
-      status: zod.enum([
-        "pendente",
-        "em_processamento",
-        "concluido",
-        "cancelado",
-      ]),
+      status: zod.string(),
       createdAt: zod.coerce.date(),
       formattedDate: zod.string(),
     }),
   ),
-  totalSpentKwanza: zod
-    .number()
-    .describe("Sum of all completed orders in Kwanza"),
+  totalSpentKwanza: zod.number(),
 });
 
-/**
- * @summary Get a specific order by ID
- */
 export const GetOrderParams = zod.object({
   id: zod.coerce.string(),
 });
 
 export const GetOrderResponse = zod.object({
-  id: zod.string().describe("KV-YYYY-NNNN format"),
+  id: zod.string(),
   name: zod.string(),
   email: zod.string(),
   whatsapp: zod.string(),
-  service: zod.enum([
-    "cartao_virtual",
-    "acesso_assistido",
-    "transferencia",
-    "conta_internacional",
-  ]),
+  service: zod.string(),
   platform: zod.string().nullish(),
   amountUsd: zod.number().nullish(),
   amountEur: zod.number().nullish(),
@@ -110,14 +83,11 @@ export const GetOrderResponse = zod.object({
   destinationCountry: zod.string().nullish(),
   recipientName: zod.string().nullish(),
   intlPlatform: zod.string().nullish(),
-  status: zod.enum(["pendente", "em_processamento", "concluido", "cancelado"]),
+  status: zod.string(),
   createdAt: zod.coerce.date(),
   formattedDate: zod.string(),
 });
 
-/**
- * @summary Get current exchange rate with margin applied
- */
 export const GetExchangeRateQueryParams = zod.object({
   currency: zod.enum(["USD", "EUR"]),
   amount: zod.coerce.number().optional(),
@@ -125,25 +95,21 @@ export const GetExchangeRateQueryParams = zod.object({
 
 export const GetExchangeRateResponse = zod.object({
   currency: zod.string(),
-  ratePerUnit: zod
-    .number()
-    .describe("Final rate in Kwanza per unit (with margin applied)"),
+  ratePerUnit: zod.number(),
   amount: zod.number(),
   amountKwanza: zod.number(),
   updatedAt: zod.string(),
 });
 
-/**
- * @summary Admin - list all orders with filters
- */
 export const adminListOrdersQueryPageDefault = 1;
 export const adminListOrdersQueryLimitDefault = 20;
 
 export const AdminListOrdersQueryParams = zod.object({
-  status: zod
-    .enum(["pendente", "em_processamento", "concluido", "cancelado"])
-    .optional(),
+  status: zod.coerce.string().optional(),
   service: zod.coerce.string().optional(),
+  search: zod.coerce.string().optional(),
+  dateFrom: zod.coerce.string().optional(),
+  dateTo: zod.coerce.string().optional(),
   page: zod.coerce.number().default(adminListOrdersQueryPageDefault),
   limit: zod.coerce.number().default(adminListOrdersQueryLimitDefault),
 });
@@ -151,16 +117,11 @@ export const AdminListOrdersQueryParams = zod.object({
 export const AdminListOrdersResponse = zod.object({
   orders: zod.array(
     zod.object({
-      id: zod.string().describe("KV-YYYY-NNNN format"),
+      id: zod.string(),
       name: zod.string(),
       email: zod.string(),
       whatsapp: zod.string(),
-      service: zod.enum([
-        "cartao_virtual",
-        "acesso_assistido",
-        "transferencia",
-        "conta_internacional",
-      ]),
+      service: zod.string(),
       platform: zod.string().nullish(),
       amountUsd: zod.number().nullish(),
       amountEur: zod.number().nullish(),
@@ -170,12 +131,7 @@ export const AdminListOrdersResponse = zod.object({
       destinationCountry: zod.string().nullish(),
       recipientName: zod.string().nullish(),
       intlPlatform: zod.string().nullish(),
-      status: zod.enum([
-        "pendente",
-        "em_processamento",
-        "concluido",
-        "cancelado",
-      ]),
+      status: zod.string(),
       createdAt: zod.coerce.date(),
       formattedDate: zod.string(),
     }),
@@ -185,28 +141,28 @@ export const AdminListOrdersResponse = zod.object({
   limit: zod.number(),
 });
 
-/**
- * @summary Admin - update order status
- */
 export const AdminUpdateOrderStatusParams = zod.object({
   id: zod.coerce.string(),
 });
 
 export const AdminUpdateOrderStatusBody = zod.object({
-  status: zod.enum(["pendente", "em_processamento", "concluido", "cancelado"]),
+  status: zod.enum([
+    "pendente",
+    "em_contacto",
+    "aguarda_pagamento",
+    "pago",
+    "em_processamento",
+    "concluido",
+    "cancelado",
+  ]),
 });
 
 export const AdminUpdateOrderStatusResponse = zod.object({
-  id: zod.string().describe("KV-YYYY-NNNN format"),
+  id: zod.string(),
   name: zod.string(),
   email: zod.string(),
   whatsapp: zod.string(),
-  service: zod.enum([
-    "cartao_virtual",
-    "acesso_assistido",
-    "transferencia",
-    "conta_internacional",
-  ]),
+  service: zod.string(),
   platform: zod.string().nullish(),
   amountUsd: zod.number().nullish(),
   amountEur: zod.number().nullish(),
@@ -216,19 +172,383 @@ export const AdminUpdateOrderStatusResponse = zod.object({
   destinationCountry: zod.string().nullish(),
   recipientName: zod.string().nullish(),
   intlPlatform: zod.string().nullish(),
-  status: zod.enum(["pendente", "em_processamento", "concluido", "cancelado"]),
+  status: zod.string(),
   createdAt: zod.coerce.date(),
   formattedDate: zod.string(),
 });
 
-/**
- * @summary Admin - get platform statistics
- */
+export const AdminUpdateOrderNoteParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const AdminUpdateOrderNoteBody = zod.object({
+  note: zod.string(),
+});
+
+export const AdminUpdateOrderNoteResponse = zod
+  .object({
+    id: zod.string(),
+    name: zod.string(),
+    email: zod.string(),
+    whatsapp: zod.string(),
+    service: zod.string(),
+    platform: zod.string().nullish(),
+    amountUsd: zod.number().nullish(),
+    amountEur: zod.number().nullish(),
+    amountKwanza: zod.number().nullish(),
+    currency: zod.string().nullish(),
+    description: zod.string().nullish(),
+    destinationCountry: zod.string().nullish(),
+    recipientName: zod.string().nullish(),
+    intlPlatform: zod.string().nullish(),
+    status: zod.string(),
+    createdAt: zod.coerce.date(),
+    formattedDate: zod.string(),
+  })
+  .and(
+    zod.object({
+      note: zod.string().nullish(),
+      costKwanza: zod.number().nullish(),
+      statusHistory: zod
+        .array(
+          zod.object({
+            fromStatus: zod.string().nullish(),
+            toStatus: zod.string(),
+            changedBy: zod.string(),
+            createdAt: zod.coerce.date(),
+            formattedDate: zod.string(),
+          }),
+        )
+        .optional(),
+    }),
+  );
+
+export const AdminUpdateOrderCostParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const AdminUpdateOrderCostBody = zod.object({
+  costKwanza: zod.number(),
+});
+
+export const AdminUpdateOrderCostResponse = zod
+  .object({
+    id: zod.string(),
+    name: zod.string(),
+    email: zod.string(),
+    whatsapp: zod.string(),
+    service: zod.string(),
+    platform: zod.string().nullish(),
+    amountUsd: zod.number().nullish(),
+    amountEur: zod.number().nullish(),
+    amountKwanza: zod.number().nullish(),
+    currency: zod.string().nullish(),
+    description: zod.string().nullish(),
+    destinationCountry: zod.string().nullish(),
+    recipientName: zod.string().nullish(),
+    intlPlatform: zod.string().nullish(),
+    status: zod.string(),
+    createdAt: zod.coerce.date(),
+    formattedDate: zod.string(),
+  })
+  .and(
+    zod.object({
+      note: zod.string().nullish(),
+      costKwanza: zod.number().nullish(),
+      statusHistory: zod
+        .array(
+          zod.object({
+            fromStatus: zod.string().nullish(),
+            toStatus: zod.string(),
+            changedBy: zod.string(),
+            createdAt: zod.coerce.date(),
+            formattedDate: zod.string(),
+          }),
+        )
+        .optional(),
+    }),
+  );
+
+export const AdminGetOrderDetailParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const AdminGetOrderDetailResponse = zod
+  .object({
+    id: zod.string(),
+    name: zod.string(),
+    email: zod.string(),
+    whatsapp: zod.string(),
+    service: zod.string(),
+    platform: zod.string().nullish(),
+    amountUsd: zod.number().nullish(),
+    amountEur: zod.number().nullish(),
+    amountKwanza: zod.number().nullish(),
+    currency: zod.string().nullish(),
+    description: zod.string().nullish(),
+    destinationCountry: zod.string().nullish(),
+    recipientName: zod.string().nullish(),
+    intlPlatform: zod.string().nullish(),
+    status: zod.string(),
+    createdAt: zod.coerce.date(),
+    formattedDate: zod.string(),
+  })
+  .and(
+    zod.object({
+      note: zod.string().nullish(),
+      costKwanza: zod.number().nullish(),
+      statusHistory: zod
+        .array(
+          zod.object({
+            fromStatus: zod.string().nullish(),
+            toStatus: zod.string(),
+            changedBy: zod.string(),
+            createdAt: zod.coerce.date(),
+            formattedDate: zod.string(),
+          }),
+        )
+        .optional(),
+    }),
+  );
+
 export const AdminGetStatsResponse = zod.object({
   totalOrders: zod.number(),
   totalClients: zod.number(),
   completedOrders: zod.number(),
   pendingOrders: zod.number(),
   totalRevenueKwanza: zod.number(),
+  totalCostKwanza: zod.number(),
+  ordersToday: zod.number(),
+  ordersThisWeek: zod.number(),
+  ordersThisMonth: zod.number(),
+  volumeUsdThisMonth: zod.number(),
+  volumeKwanzaThisMonth: zod.number(),
   ordersByService: zod.record(zod.string(), zod.number()),
+});
+
+export const adminGetDailyStatsQueryDaysDefault = 30;
+
+export const AdminGetDailyStatsQueryParams = zod.object({
+  days: zod.coerce.number().default(adminGetDailyStatsQueryDaysDefault),
+});
+
+export const AdminGetDailyStatsResponse = zod.object({
+  days: zod.array(
+    zod.object({
+      date: zod.string(),
+      count: zod.number(),
+    }),
+  ),
+});
+
+export const AdminGetExchangeRatesResponse = zod.object({
+  activeUsd: zod.number().nullish(),
+  activeEur: zod.number().nullish(),
+  lastUpdated: zod.string().nullish(),
+  lastUpdatedBy: zod.string().nullish(),
+  history: zod.array(
+    zod.object({
+      id: zod.number(),
+      currency: zod.string(),
+      rate: zod.number(),
+      previousRate: zod.number().nullish(),
+      changedBy: zod.string(),
+      createdAt: zod.coerce.date(),
+      formattedDate: zod.string(),
+    }),
+  ),
+});
+
+export const AdminSetExchangeRateBody = zod.object({
+  currency: zod.enum(["USD", "EUR"]),
+  rate: zod.number(),
+  changedBy: zod.string().optional(),
+});
+
+export const AdminSetExchangeRateResponse = zod.object({
+  id: zod.number(),
+  currency: zod.string(),
+  rate: zod.number(),
+  previousRate: zod.number().nullish(),
+  changedBy: zod.string(),
+  createdAt: zod.coerce.date(),
+  formattedDate: zod.string(),
+});
+
+export const AdminListClientsQueryParams = zod.object({
+  search: zod.coerce.string().optional(),
+});
+
+export const AdminListClientsResponse = zod.object({
+  clients: zod.array(
+    zod.object({
+      name: zod.string(),
+      email: zod.string(),
+      whatsapp: zod.string(),
+      totalOrders: zod.number(),
+      totalSpentKwanza: zod.number(),
+      lastOrderDate: zod.string().nullish(),
+    }),
+  ),
+});
+
+export const AdminGetClientParams = zod.object({
+  email: zod.coerce.string(),
+});
+
+export const AdminGetClientResponse = zod.object({
+  name: zod.string(),
+  email: zod.string(),
+  whatsapp: zod.string(),
+  totalOrders: zod.number(),
+  completedOrders: zod.number(),
+  totalSpentKwanza: zod.number(),
+  firstOrderDate: zod.string().nullish(),
+  favoriteService: zod.string().nullish(),
+  note: zod.string().nullish(),
+  orders: zod.array(
+    zod.object({
+      id: zod.string(),
+      name: zod.string(),
+      email: zod.string(),
+      whatsapp: zod.string(),
+      service: zod.string(),
+      platform: zod.string().nullish(),
+      amountUsd: zod.number().nullish(),
+      amountEur: zod.number().nullish(),
+      amountKwanza: zod.number().nullish(),
+      currency: zod.string().nullish(),
+      description: zod.string().nullish(),
+      destinationCountry: zod.string().nullish(),
+      recipientName: zod.string().nullish(),
+      intlPlatform: zod.string().nullish(),
+      status: zod.string(),
+      createdAt: zod.coerce.date(),
+      formattedDate: zod.string(),
+    }),
+  ),
+});
+
+export const AdminUpdateClientNoteParams = zod.object({
+  email: zod.coerce.string(),
+});
+
+export const AdminUpdateClientNoteBody = zod.object({
+  note: zod.string(),
+});
+
+export const AdminUpdateClientNoteResponse = zod.object({
+  name: zod.string(),
+  email: zod.string(),
+  whatsapp: zod.string(),
+  totalOrders: zod.number(),
+  completedOrders: zod.number(),
+  totalSpentKwanza: zod.number(),
+  firstOrderDate: zod.string().nullish(),
+  favoriteService: zod.string().nullish(),
+  note: zod.string().nullish(),
+  orders: zod.array(
+    zod.object({
+      id: zod.string(),
+      name: zod.string(),
+      email: zod.string(),
+      whatsapp: zod.string(),
+      service: zod.string(),
+      platform: zod.string().nullish(),
+      amountUsd: zod.number().nullish(),
+      amountEur: zod.number().nullish(),
+      amountKwanza: zod.number().nullish(),
+      currency: zod.string().nullish(),
+      description: zod.string().nullish(),
+      destinationCountry: zod.string().nullish(),
+      recipientName: zod.string().nullish(),
+      intlPlatform: zod.string().nullish(),
+      status: zod.string(),
+      createdAt: zod.coerce.date(),
+      formattedDate: zod.string(),
+    }),
+  ),
+});
+
+export const AdminGetReportsQueryParams = zod.object({
+  month: zod.coerce.number().optional(),
+  year: zod.coerce.number().optional(),
+});
+
+export const AdminGetReportsResponse = zod.object({
+  month: zod.number(),
+  year: zod.number(),
+  totalOrders: zod.number(),
+  completedOrders: zod.number(),
+  cancelledOrders: zod.number(),
+  completionRate: zod.number(),
+  volumeUsd: zod.number(),
+  volumeKwanza: zod.number(),
+  grossRevenue: zod.number(),
+  totalCost: zod.number(),
+  netProfit: zod.number(),
+  margin: zod.number(),
+  byService: zod.array(
+    zod.object({
+      service: zod.string(),
+      count: zod.number(),
+      volumeKwanza: zod.number(),
+      revenue: zod.number(),
+      cost: zod.number(),
+      profit: zod.number(),
+      margin: zod.number(),
+    }),
+  ),
+  weeklyFinancials: zod.array(
+    zod.object({
+      week: zod.string(),
+      revenue: zod.number(),
+      cost: zod.number(),
+      profit: zod.number(),
+    }),
+  ),
+});
+
+export const AdminGetBalancesResponse = zod.object({
+  balances: zod.array(
+    zod.object({
+      account: zod.string(),
+      currency: zod.string(),
+      balance: zod.number(),
+      updatedBy: zod.string(),
+      updatedAt: zod.coerce.date(),
+      formattedDate: zod.string(),
+    }),
+  ),
+  history: zod.array(
+    zod.object({
+      account: zod.string(),
+      currency: zod.string(),
+      previousBalance: zod.number().nullish(),
+      newBalance: zod.number(),
+      updatedBy: zod.string(),
+      createdAt: zod.coerce.date(),
+      formattedDate: zod.string(),
+    }),
+  ),
+  totalKwanza: zod.number(),
+});
+
+export const AdminUpdateBalanceParams = zod.object({
+  account: zod.coerce.string(),
+});
+
+export const AdminUpdateBalanceBody = zod.object({
+  balance: zod.number(),
+  currency: zod.string(),
+  updatedBy: zod.string().optional(),
+});
+
+export const AdminUpdateBalanceResponse = zod.object({
+  account: zod.string(),
+  currency: zod.string(),
+  balance: zod.number(),
+  updatedBy: zod.string(),
+  updatedAt: zod.coerce.date(),
+  formattedDate: zod.string(),
 });

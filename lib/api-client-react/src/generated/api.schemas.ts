@@ -14,31 +14,12 @@ export interface ErrorResponse {
   message?: string;
 }
 
-export type OrderService = (typeof OrderService)[keyof typeof OrderService];
-
-export const OrderService = {
-  cartao_virtual: "cartao_virtual",
-  acesso_assistido: "acesso_assistido",
-  transferencia: "transferencia",
-  conta_internacional: "conta_internacional",
-} as const;
-
-export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
-
-export const OrderStatus = {
-  pendente: "pendente",
-  em_processamento: "em_processamento",
-  concluido: "concluido",
-  cancelado: "cancelado",
-} as const;
-
 export interface Order {
-  /** KV-YYYY-NNNN format */
   id: string;
   name: string;
   email: string;
   whatsapp: string;
-  service: OrderService;
+  service: string;
   platform?: string | null;
   amountUsd?: number | null;
   amountEur?: number | null;
@@ -48,10 +29,24 @@ export interface Order {
   destinationCountry?: string | null;
   recipientName?: string | null;
   intlPlatform?: string | null;
-  status: OrderStatus;
+  status: string;
   createdAt: string;
   formattedDate: string;
 }
+
+export interface StatusHistoryEntry {
+  fromStatus?: string | null;
+  toStatus: string;
+  changedBy: string;
+  createdAt: string;
+  formattedDate: string;
+}
+
+export type OrderDetail = Order & {
+  note?: string | null;
+  costKwanza?: number | null;
+  statusHistory?: StatusHistoryEntry[];
+};
 
 export type CreateOrderBodyService =
   (typeof CreateOrderBodyService)[keyof typeof CreateOrderBodyService];
@@ -102,6 +97,9 @@ export type UpdateOrderStatusBodyStatus =
 
 export const UpdateOrderStatusBodyStatus = {
   pendente: "pendente",
+  em_contacto: "em_contacto",
+  aguarda_pagamento: "aguarda_pagamento",
+  pago: "pago",
   em_processamento: "em_processamento",
   concluido: "concluido",
   cancelado: "cancelado",
@@ -111,16 +109,22 @@ export interface UpdateOrderStatusBody {
   status: UpdateOrderStatusBodyStatus;
 }
 
+export interface UpdateOrderNoteBody {
+  note: string;
+}
+
+export interface UpdateOrderCostBody {
+  costKwanza: number;
+}
+
 export interface OrderLookupResult {
   name?: string;
   orders: Order[];
-  /** Sum of all completed orders in Kwanza */
   totalSpentKwanza: number;
 }
 
 export interface ExchangeRateResponse {
   currency: string;
-  /** Final rate in Kwanza per unit (with margin applied) */
   ratePerUnit: number;
   amount: number;
   amountKwanza: number;
@@ -142,13 +146,152 @@ export interface AdminStats {
   completedOrders: number;
   pendingOrders: number;
   totalRevenueKwanza: number;
+  totalCostKwanza: number;
+  ordersToday: number;
+  ordersThisWeek: number;
+  ordersThisMonth: number;
+  volumeUsdThisMonth: number;
+  volumeKwanzaThisMonth: number;
   ordersByService: AdminStatsOrdersByService;
 }
 
+export type DailyStatsResponseDaysItem = {
+  date: string;
+  count: number;
+};
+
+export interface DailyStatsResponse {
+  days: DailyStatsResponseDaysItem[];
+}
+
+export interface ExchangeRateRecord {
+  id: number;
+  currency: string;
+  rate: number;
+  previousRate?: number | null;
+  changedBy: string;
+  createdAt: string;
+  formattedDate: string;
+}
+
+export interface AdminExchangeRatesResponse {
+  activeUsd?: number | null;
+  activeEur?: number | null;
+  lastUpdated?: string | null;
+  lastUpdatedBy?: string | null;
+  history: ExchangeRateRecord[];
+}
+
+export type SetExchangeRateBodyCurrency =
+  (typeof SetExchangeRateBodyCurrency)[keyof typeof SetExchangeRateBodyCurrency];
+
+export const SetExchangeRateBodyCurrency = {
+  USD: "USD",
+  EUR: "EUR",
+} as const;
+
+export interface SetExchangeRateBody {
+  currency: SetExchangeRateBodyCurrency;
+  rate: number;
+  changedBy?: string;
+}
+
+export interface ClientSummary {
+  name: string;
+  email: string;
+  whatsapp: string;
+  totalOrders: number;
+  totalSpentKwanza: number;
+  lastOrderDate?: string | null;
+}
+
+export interface AdminClientsResponse {
+  clients: ClientSummary[];
+}
+
+export interface ClientDetail {
+  name: string;
+  email: string;
+  whatsapp: string;
+  totalOrders: number;
+  completedOrders: number;
+  totalSpentKwanza: number;
+  firstOrderDate?: string | null;
+  favoriteService?: string | null;
+  note?: string | null;
+  orders: Order[];
+}
+
+export interface UpdateClientNoteBody {
+  note: string;
+}
+
+export interface ReportByService {
+  service: string;
+  count: number;
+  volumeKwanza: number;
+  revenue: number;
+  cost: number;
+  profit: number;
+  margin: number;
+}
+
+export interface WeeklyFinancials {
+  week: string;
+  revenue: number;
+  cost: number;
+  profit: number;
+}
+
+export interface AdminReportsResponse {
+  month: number;
+  year: number;
+  totalOrders: number;
+  completedOrders: number;
+  cancelledOrders: number;
+  completionRate: number;
+  volumeUsd: number;
+  volumeKwanza: number;
+  grossRevenue: number;
+  totalCost: number;
+  netProfit: number;
+  margin: number;
+  byService: ReportByService[];
+  weeklyFinancials: WeeklyFinancials[];
+}
+
+export interface BalanceRecord {
+  account: string;
+  currency: string;
+  balance: number;
+  updatedBy: string;
+  updatedAt: string;
+  formattedDate: string;
+}
+
+export interface BalanceHistoryEntry {
+  account: string;
+  currency: string;
+  previousBalance?: number | null;
+  newBalance: number;
+  updatedBy: string;
+  createdAt: string;
+  formattedDate: string;
+}
+
+export interface AdminBalancesResponse {
+  balances: BalanceRecord[];
+  history: BalanceHistoryEntry[];
+  totalKwanza: number;
+}
+
+export interface UpdateBalanceBody {
+  balance: number;
+  currency: string;
+  updatedBy?: string;
+}
+
 export type LookupOrdersParams = {
-  /**
-   * Email or WhatsApp number
-   */
   contact: string;
 };
 
@@ -166,18 +309,24 @@ export const GetExchangeRateCurrency = {
 } as const;
 
 export type AdminListOrdersParams = {
-  status?: AdminListOrdersStatus;
+  status?: string;
   service?: string;
+  search?: string;
+  dateFrom?: string;
+  dateTo?: string;
   page?: number;
   limit?: number;
 };
 
-export type AdminListOrdersStatus =
-  (typeof AdminListOrdersStatus)[keyof typeof AdminListOrdersStatus];
+export type AdminGetDailyStatsParams = {
+  days?: number;
+};
 
-export const AdminListOrdersStatus = {
-  pendente: "pendente",
-  em_processamento: "em_processamento",
-  concluido: "concluido",
-  cancelado: "cancelado",
-} as const;
+export type AdminListClientsParams = {
+  search?: string;
+};
+
+export type AdminGetReportsParams = {
+  month?: number;
+  year?: number;
+};

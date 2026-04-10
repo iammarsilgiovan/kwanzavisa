@@ -5,7 +5,8 @@
  * KwanzaVisa API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ClientSummary } from "./clientSummary";
 
-export type LookupOrdersParams = {
-  contact: string;
-};
+export interface AdminClientsResponse {
+  clients: ClientSummary[];
+}

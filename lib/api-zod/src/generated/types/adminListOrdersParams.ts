@@ -5,11 +5,13 @@
  * KwanzaVisa API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { AdminListOrdersStatus } from "./adminListOrdersStatus";
 
 export type AdminListOrdersParams = {
-  status?: AdminListOrdersStatus;
+  status?: string;
   service?: string;
+  search?: string;
+  dateFrom?: string;
+  dateTo?: string;
   page?: number;
   limit?: number;
 };

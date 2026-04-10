@@ -5,16 +5,13 @@
  * KwanzaVisa API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { OrderService } from "./orderService";
-import type { OrderStatus } from "./orderStatus";
 
 export interface Order {
-  /** KV-YYYY-NNNN format */
   id: string;
   name: string;
   email: string;
   whatsapp: string;
-  service: OrderService;
+  service: string;
   platform?: string | null;
   amountUsd?: number | null;
   amountEur?: number | null;
@@ -24,7 +21,7 @@ export interface Order {
   destinationCountry?: string | null;
   recipientName?: string | null;
   intlPlatform?: string | null;
-  status: OrderStatus;
+  status: string;
   createdAt: Date;
   formattedDate: string;
 }

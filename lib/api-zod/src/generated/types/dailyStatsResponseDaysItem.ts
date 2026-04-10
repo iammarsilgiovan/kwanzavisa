@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type LookupOrdersParams = {
-  contact: string;
+export type DailyStatsResponseDaysItem = {
+  date: string;
+  count: number;
 };

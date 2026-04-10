@@ -6,10 +6,11 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface ExchangeRateResponse {
+export interface BalanceRecord {
+  account: string;
   currency: string;
-  ratePerUnit: number;
-  amount: number;
-  amountKwanza: number;
-  updatedAt: string;
+  balance: number;
+  updatedBy: string;
+  updatedAt: Date;
+  formattedDate: string;
 }

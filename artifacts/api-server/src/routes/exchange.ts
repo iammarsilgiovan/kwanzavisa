@@ -1,14 +1,22 @@
 import { Router, type IRouter } from "express";
+import { eq, sql } from "drizzle-orm";
+import { db, exchangeRatesTable } from "@workspace/db";
 import { GetExchangeRateQueryParams } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
-const USD_BASE_RATE = 920;
-const EUR_BASE_RATE = 1010;
-const MARGIN_PERCENT = 3.5;
+const FALLBACK_USD = 952;
+const FALLBACK_EUR = 1045;
 
-function applyMargin(rate: number): number {
-  return Math.round(rate * (1 + MARGIN_PERCENT / 100));
+async function getActiveRate(currency: string): Promise<number> {
+  const [latest] = await db
+    .select()
+    .from(exchangeRatesTable)
+    .where(eq(exchangeRatesTable.currency, currency))
+    .orderBy(sql`${exchangeRatesTable.createdAt} DESC`)
+    .limit(1);
+  if (latest) return parseFloat(latest.rate);
+  return currency === "USD" ? FALLBACK_USD : FALLBACK_EUR;
 }
 
 router.get("/exchange/rate", async (req, res): Promise<void> => {
@@ -19,15 +27,7 @@ router.get("/exchange/rate", async (req, res): Promise<void> => {
   }
 
   const { currency, amount = 1 } = params.data;
-
-  let baseRate: number;
-  if (currency === "USD") {
-    baseRate = USD_BASE_RATE;
-  } else {
-    baseRate = EUR_BASE_RATE;
-  }
-
-  const ratePerUnit = applyMargin(baseRate);
+  const ratePerUnit = await getActiveRate(currency);
   const amountKwanza = Math.round(amount * ratePerUnit);
 
   res.json({

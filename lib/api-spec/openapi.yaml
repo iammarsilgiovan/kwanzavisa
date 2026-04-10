@@ -9,18 +9,15 @@ servers:
     description: Base API path
 tags:
   - name: health
-    description: Health operations
   - name: orders
-    description: Order management
   - name: exchange
-    description: Exchange rate operations
+  - name: admin
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -33,7 +30,6 @@ paths:
     post:
       operationId: createOrder
       tags: [orders]
-      summary: Create a new order
       requestBody:
         required: true
         content:
@@ -58,14 +54,12 @@ paths:
     get:
       operationId: lookupOrders
       tags: [orders]
-      summary: Look up orders by email or WhatsApp number
       parameters:
         - name: contact
           in: query
           required: true
           schema:
             type: string
-          description: Email or WhatsApp number
       responses:
         "200":
           description: Orders found
@@ -73,18 +67,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderLookupResult"
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
 
   /orders/{id}:
     get:
       operationId: getOrder
       tags: [orders]
-      summary: Get a specific order by ID
       parameters:
         - name: id
           in: path
@@ -99,7 +86,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Order"
         "404":
-          description: Order not found
+          description: Not found
           content:
             application/json:
               schema:
@@ -109,7 +96,6 @@ paths:
     get:
       operationId: getExchangeRate
       tags: [exchange]
-      summary: Get current exchange rate with margin applied
       parameters:
         - name: currency
           in: query
@@ -124,7 +110,7 @@ paths:
             type: number
       responses:
         "200":
-          description: Exchange rate information
+          description: Exchange rate
           content:
             application/json:
               schema:
@@ -133,16 +119,29 @@ paths:
   /admin/orders:
     get:
       operationId: adminListOrders
-      tags: [orders]
-      summary: Admin - list all orders with filters
+      tags: [admin]
       parameters:
         - name: status
           in: query
           required: false
           schema:
             type: string
-            enum: [pendente, em_processamento, concluido, cancelado]
         - name: service
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: dateTo
           in: query
           required: false
           schema:
@@ -170,8 +169,7 @@ paths:
   /admin/orders/{id}/status:
     patch:
       operationId: adminUpdateOrderStatus
-      tags: [orders]
-      summary: Admin - update order status
+      tags: [admin]
       parameters:
         - name: id
           in: path
@@ -186,23 +184,82 @@ paths:
               $ref: "#/components/schemas/UpdateOrderStatusBody"
       responses:
         "200":
-          description: Order updated
+          description: Updated
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Order"
-        "404":
-          description: Order not found
+
+  /admin/orders/{id}/note:
+    patch:
+      operationId: adminUpdateOrderNote
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderNoteBody"
+      responses:
+        "200":
+          description: Updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/OrderDetail"
+
+  /admin/orders/{id}/cost:
+    patch:
+      operationId: adminUpdateOrderCost
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderCostBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDetail"
+
+  /admin/orders/{id}/detail:
+    get:
+      operationId: adminGetOrderDetail
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order detail with note, cost, history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDetail"
 
   /admin/stats:
     get:
       operationId: adminGetStats
-      tags: [orders]
-      summary: Admin - get platform statistics
+      tags: [admin]
       responses:
         "200":
           description: Platform statistics
@@ -211,6 +268,172 @@ paths:
               schema:
                 $ref: "#/components/schemas/AdminStats"
 
+  /admin/stats/daily:
+    get:
+      operationId: adminGetDailyStats
+      tags: [admin]
+      parameters:
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: Daily order counts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyStatsResponse"
+
+  /admin/exchange-rates:
+    get:
+      operationId: adminGetExchangeRates
+      tags: [admin]
+      responses:
+        "200":
+          description: Current rates and history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminExchangeRatesResponse"
+    put:
+      operationId: adminSetExchangeRate
+      tags: [admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetExchangeRateBody"
+      responses:
+        "200":
+          description: Rate updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExchangeRateRecord"
+
+  /admin/clients:
+    get:
+      operationId: adminListClients
+      tags: [admin]
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Client list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminClientsResponse"
+
+  /admin/clients/{email}:
+    get:
+      operationId: adminGetClient
+      tags: [admin]
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Client detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientDetail"
+
+  /admin/clients/{email}/note:
+    patch:
+      operationId: adminUpdateClientNote
+      tags: [admin]
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateClientNoteBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientDetail"
+
+  /admin/reports:
+    get:
+      operationId: adminGetReports
+      tags: [admin]
+      parameters:
+        - name: month
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Financial and operational report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminReportsResponse"
+
+  /admin/balances:
+    get:
+      operationId: adminGetBalances
+      tags: [admin]
+      responses:
+        "200":
+          description: Current balances
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminBalancesResponse"
+
+  /admin/balances/{account}:
+    put:
+      operationId: adminUpdateBalance
+      tags: [admin]
+      parameters:
+        - name: account
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBalanceBody"
+      responses:
+        "200":
+          description: Balance updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BalanceRecord"
+
 components:
   schemas:
     HealthStatus:
@@ -218,8 +441,7 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
     ErrorResponse:
       type: object
@@ -228,15 +450,13 @@ components:
           type: string
         message:
           type: string
-      required:
-        - error
+      required: [error]
 
     Order:
       type: object
       properties:
         id:
           type: string
-          description: "KV-YYYY-NNNN format"
         name:
           type: string
         email:
@@ -245,7 +465,6 @@ components:
           type: string
         service:
           type: string
-          enum: [cartao_virtual, acesso_assistido, transferencia, conta_internacional]
         platform:
           type: string
           nullable: true
@@ -275,21 +494,45 @@ components:
           nullable: true
         status:
           type: string
-          enum: [pendente, em_processamento, concluido, cancelado]
         createdAt:
           type: string
           format: date-time
         formattedDate:
           type: string
-      required:
-        - id
-        - name
-        - email
-        - whatsapp
-        - service
-        - status
-        - createdAt
-        - formattedDate
+      required: [id, name, email, whatsapp, service, status, createdAt, formattedDate]
+
+    OrderDetail:
+      allOf:
+        - $ref: "#/components/schemas/Order"
+        - type: object
+          properties:
+            note:
+              type: string
+              nullable: true
+            costKwanza:
+              type: number
+              nullable: true
+            statusHistory:
+              type: array
+              items:
+                $ref: "#/components/schemas/StatusHistoryEntry"
+
+    StatusHistoryEntry:
+      type: object
+      properties:
+        fromStatus:
+          type: string
+          nullable: true
+        toStatus:
+          type: string
+        changedBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        formattedDate:
+          type: string
+      required: [toStatus, changedBy, createdAt, formattedDate]
 
     CreateOrderBody:
       type: object
@@ -329,20 +572,29 @@ components:
         message:
           type: string
           nullable: true
-      required:
-        - name
-        - email
-        - whatsapp
-        - service
+      required: [name, email, whatsapp, service]
 
     UpdateOrderStatusBody:
       type: object
       properties:
         status:
           type: string
-          enum: [pendente, em_processamento, concluido, cancelado]
-      required:
-        - status
+          enum: [pendente, em_contacto, aguarda_pagamento, pago, em_processamento, concluido, cancelado]
+      required: [status]
+
+    UpdateOrderNoteBody:
+      type: object
+      properties:
+        note:
+          type: string
+      required: [note]
+
+    UpdateOrderCostBody:
+      type: object
+      properties:
+        costKwanza:
+          type: number
+      required: [costKwanza]
 
     OrderLookupResult:
       type: object
@@ -355,10 +607,7 @@ components:
             $ref: "#/components/schemas/Order"
         totalSpentKwanza:
           type: number
-          description: Sum of all completed orders in Kwanza
-      required:
-        - orders
-        - totalSpentKwanza
+      required: [orders, totalSpentKwanza]
 
     ExchangeRateResponse:
       type: object
@@ -367,19 +616,13 @@ components:
           type: string
         ratePerUnit:
           type: number
-          description: Final rate in Kwanza per unit (with margin applied)
         amount:
           type: number
         amountKwanza:
           type: number
         updatedAt:
           type: string
-      required:
-        - currency
-        - ratePerUnit
-        - amount
-        - amountKwanza
-        - updatedAt
+      required: [currency, ratePerUnit, amount, amountKwanza, updatedAt]
 
     AdminOrdersResponse:
       type: object
@@ -394,11 +637,7 @@ components:
           type: integer
         limit:
           type: integer
-      required:
-        - orders
-        - total
-        - page
-        - limit
+      required: [orders, total, page, limit]
 
     AdminStats:
       type: object
@@ -413,6 +652,18 @@ components:
           type: integer
         totalRevenueKwanza:
           type: number
+        totalCostKwanza:
+          type: number
+        ordersToday:
+          type: integer
+        ordersThisWeek:
+          type: integer
+        ordersThisMonth:
+          type: integer
+        volumeUsdThisMonth:
+          type: number
+        volumeKwanzaThisMonth:
+          type: number
         ordersByService:
           type: object
           additionalProperties:
@@ -423,4 +674,291 @@ components:
         - completedOrders
         - pendingOrders
         - totalRevenueKwanza
+        - totalCostKwanza
+        - ordersToday
+        - ordersThisWeek
+        - ordersThisMonth
+        - volumeUsdThisMonth
+        - volumeKwanzaThisMonth
         - ordersByService
+
+    DailyStatsResponse:
+      type: object
+      properties:
+        days:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              count:
+                type: integer
+            required: [date, count]
+      required: [days]
+
+    ExchangeRateRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        currency:
+          type: string
+        rate:
+          type: number
+        previousRate:
+          type: number
+          nullable: true
+        changedBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        formattedDate:
+          type: string
+      required: [id, currency, rate, changedBy, createdAt, formattedDate]
+
+    AdminExchangeRatesResponse:
+      type: object
+      properties:
+        activeUsd:
+          type: number
+          nullable: true
+        activeEur:
+          type: number
+          nullable: true
+        lastUpdated:
+          type: string
+          nullable: true
+        lastUpdatedBy:
+          type: string
+          nullable: true
+        history:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExchangeRateRecord"
+      required: [history]
+
+    SetExchangeRateBody:
+      type: object
+      properties:
+        currency:
+          type: string
+          enum: [USD, EUR]
+        rate:
+          type: number
+        changedBy:
+          type: string
+      required: [currency, rate]
+
+    ClientSummary:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        whatsapp:
+          type: string
+        totalOrders:
+          type: integer
+        totalSpentKwanza:
+          type: number
+        lastOrderDate:
+          type: string
+          nullable: true
+      required: [name, email, whatsapp, totalOrders, totalSpentKwanza]
+
+    AdminClientsResponse:
+      type: object
+      properties:
+        clients:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientSummary"
+      required: [clients]
+
+    ClientDetail:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        whatsapp:
+          type: string
+        totalOrders:
+          type: integer
+        completedOrders:
+          type: integer
+        totalSpentKwanza:
+          type: number
+        firstOrderDate:
+          type: string
+          nullable: true
+        favoriteService:
+          type: string
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+      required: [name, email, whatsapp, totalOrders, completedOrders, totalSpentKwanza, orders]
+
+    UpdateClientNoteBody:
+      type: object
+      properties:
+        note:
+          type: string
+      required: [note]
+
+    ReportByService:
+      type: object
+      properties:
+        service:
+          type: string
+        count:
+          type: integer
+        volumeKwanza:
+          type: number
+        revenue:
+          type: number
+        cost:
+          type: number
+        profit:
+          type: number
+        margin:
+          type: number
+      required: [service, count, volumeKwanza, revenue, cost, profit, margin]
+
+    WeeklyFinancials:
+      type: object
+      properties:
+        week:
+          type: string
+        revenue:
+          type: number
+        cost:
+          type: number
+        profit:
+          type: number
+      required: [week, revenue, cost, profit]
+
+    AdminReportsResponse:
+      type: object
+      properties:
+        month:
+          type: integer
+        year:
+          type: integer
+        totalOrders:
+          type: integer
+        completedOrders:
+          type: integer
+        cancelledOrders:
+          type: integer
+        completionRate:
+          type: number
+        volumeUsd:
+          type: number
+        volumeKwanza:
+          type: number
+        grossRevenue:
+          type: number
+        totalCost:
+          type: number
+        netProfit:
+          type: number
+        margin:
+          type: number
+        byService:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportByService"
+        weeklyFinancials:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeeklyFinancials"
+      required:
+        - month
+        - year
+        - totalOrders
+        - completedOrders
+        - cancelledOrders
+        - completionRate
+        - volumeUsd
+        - volumeKwanza
+        - grossRevenue
+        - totalCost
+        - netProfit
+        - margin
+        - byService
+        - weeklyFinancials
+
+    BalanceRecord:
+      type: object
+      properties:
+        account:
+          type: string
+        currency:
+          type: string
+        balance:
+          type: number
+        updatedBy:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        formattedDate:
+          type: string
+      required: [account, currency, balance, updatedBy, updatedAt, formattedDate]
+
+    BalanceHistoryEntry:
+      type: object
+      properties:
+        account:
+          type: string
+        currency:
+          type: string
+        previousBalance:
+          type: number
+          nullable: true
+        newBalance:
+          type: number
+        updatedBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        formattedDate:
+          type: string
+      required: [account, currency, newBalance, updatedBy, createdAt, formattedDate]
+
+    AdminBalancesResponse:
+      type: object
+      properties:
+        balances:
+          type: array
+          items:
+            $ref: "#/components/schemas/BalanceRecord"
+        history:
+          type: array
+          items:
+            $ref: "#/components/schemas/BalanceHistoryEntry"
+        totalKwanza:
+          type: number
+      required: [balances, history, totalKwanza]
+
+    UpdateBalanceBody:
+      type: object
+      properties:
+        balance:
+          type: number
+        currency:
+          type: string
+        updatedBy:
+          type: string
+      required: [balance, currency]
