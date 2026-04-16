@@ -31,7 +31,13 @@ KwanzaVisa is an Angolan fintech platform that allows Angolans to access interna
 ## Key Pages
 
 - `/` — Full landing page (Hero, Brands, How It Works, Services, Exchange Simulator, International Accounts, Social Proof, Order Form, Order Tracking, Footer)
-- `/admin` — Admin panel (password: `kwanza2025admin`) with order management, status updates, stats
+- `/admin` — Login do painel admin (password: `kwanza2025admin`)
+- `/admin/dashboard` — Dashboard com estatísticas, pedidos recentes, taxa de câmbio rápida
+- `/admin/pedidos` — Gestão completa de pedidos (status, custo, notas, histórico)
+- `/admin/clientes` — Lista de clientes com vista de detalhe por cliente
+- `/admin/cambio` — Gestão de taxas USD/EUR com histórico
+- `/admin/relatorios` — Relatórios de receita e volume
+- `/admin/saldos` — Acompanhamento de saldos (Angola Bank, AirTM, Wise EUR/USD)
 
 ## Architecture
 
@@ -61,9 +67,26 @@ KwanzaVisa is an Angolan fintech platform that allows Angolans to access interna
 
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
+- `pnpm run build:netlify` — build frontend only for Netlify deployment
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
+
+## Netlify Deployment (Frontend Only)
+
+O frontend (landing page + admin) pode ser hospedado no Netlify como site estático.
+O API server precisa de ser hospedado separadamente (ex: Render, Railway, Fly.io).
+
+Configuração automática via `netlify.toml` na raiz do projecto.
+
+Variável de ambiente obrigatória no painel do Netlify:
+- `VITE_API_BASE_URL` = URL completa do servidor API (ex: `https://api.kwanzavisa.com`)
+
+Passos para deploy:
+1. Conectar repositório ao Netlify
+2. Build command: `pnpm run build:netlify` (já configurado no netlify.toml)
+3. Publish directory: `artifacts/kwanzavisa/dist/public` (já configurado)
+4. Definir `VITE_API_BASE_URL` nas variáveis de ambiente do site no Netlify
 
 ## Design System
 
