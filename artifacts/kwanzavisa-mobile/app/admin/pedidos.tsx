@@ -1,8 +1,5 @@
-import { Feather } from "@expo/vector-icons";
-import {
-  useAdminListOrders,
-  useAdminUpdateOrderStatus,
-} from "@workspace/api-client-react";
+import { Ionicons } from "@expo/vector-icons";
+import { useAdminListOrders, useAdminUpdateOrderStatus } from "@workspace/api-client-react";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
 import {
@@ -30,7 +27,6 @@ const STATUS_LABELS: Record<string, string> = {
   concluido: "Concluído",
   cancelado: "Cancelado",
 };
-
 const STATUS_COLORS: Record<string, string> = {
   pendente: "#FF9500",
   em_contacto: "#007AFF",
@@ -40,14 +36,18 @@ const STATUS_COLORS: Record<string, string> = {
   concluido: "#34C759",
   cancelado: "#FF3B30",
 };
-
+const SERVICE_ICONS: Record<string, React.ComponentProps<typeof Ionicons>["name"]> = {
+  cartao_virtual: "card-outline",
+  acesso_assistido: "globe-outline",
+  transferencia: "swap-horizontal-outline",
+  conta_internacional: "business-outline",
+};
 const SERVICE_LABELS: Record<string, string> = {
   cartao_virtual: "Cartão Virtual",
   acesso_assistido: "Acesso Assistido",
   transferencia: "Transferência",
   conta_internacional: "Conta Internacional",
 };
-
 const ALL_STATUSES = Object.keys(STATUS_LABELS);
 
 type Order = {
@@ -61,28 +61,32 @@ type Order = {
   amountUsd?: number | null;
 };
 
-function OrderItem({ order, onChangeStatus, colors }: {
+function OrderCard({
+  order,
+  onChangeStatus,
+  colors,
+}: {
   order: Order;
   onChangeStatus: (id: string, status: string) => void;
   colors: ReturnType<typeof useColors>;
 }) {
-  const handleStatusPress = () => {
+  const statusColor = STATUS_COLORS[order.status] ?? "#6E6E73";
+
+  const handleStatus = () => {
     if (Platform.OS === "ios") {
       ActionSheetIOS.showActionSheetWithOptions(
         {
           options: ["Cancelar", ...ALL_STATUSES.map((s) => STATUS_LABELS[s])],
           cancelButtonIndex: 0,
         },
-        (buttonIndex) => {
-          if (buttonIndex > 0) {
-            onChangeStatus(order.id, ALL_STATUSES[buttonIndex - 1]);
-          }
+        (i) => {
+          if (i > 0) onChangeStatus(order.id, ALL_STATUSES[i - 1]);
         }
       );
     } else {
       Alert.alert(
         "Alterar estado",
-        "Seleccione o novo estado",
+        undefined,
         ALL_STATUSES.map((s) => ({
           text: STATUS_LABELS[s],
           onPress: () => onChangeStatus(order.id, s),
@@ -95,55 +99,86 @@ function OrderItem({ order, onChangeStatus, colors }: {
     const num = order.whatsapp.replace(/\D/g, "");
     const url = `https://wa.me/${num}`;
     if (Platform.OS === "web") {
-      // @ts-ignore
-      window.open(url, "_blank");
+      (window as Window).open(url, "_blank");
     } else {
       import("expo-linking").then(({ openURL }) => openURL(url));
     }
   };
 
   return (
-    <View style={[itemStyles.card, { borderColor: colors.border, backgroundColor: colors.background }]}>
-      <View style={itemStyles.top}>
-        <Text style={[itemStyles.service, { color: colors.foreground }]}>
-          {SERVICE_LABELS[order.service] ?? order.service}
-        </Text>
-        <Pressable onPress={handleStatusPress} style={[itemStyles.badge, { backgroundColor: (STATUS_COLORS[order.status] ?? "#6E6E73") + "20" }]}>
-          <Text style={[itemStyles.badgeText, { color: STATUS_COLORS[order.status] ?? "#6E6E73" }]}>
-            {STATUS_LABELS[order.status] ?? order.status}
+    <View style={[cardStyles.card, { borderColor: colors.border, backgroundColor: colors.background }]}>
+      <View style={[cardStyles.bar, { backgroundColor: statusColor }]} />
+      <View style={cardStyles.body}>
+        <View style={cardStyles.top}>
+          <View style={[cardStyles.serviceIcon, { backgroundColor: colors.secondary }]}>
+            <Ionicons name={SERVICE_ICONS[order.service] ?? "help-outline"} size={16} color={colors.foreground} />
+          </View>
+          <Text style={[cardStyles.serviceName, { color: colors.foreground }]}>
+            {SERVICE_LABELS[order.service] ?? order.service}
           </Text>
-          <Feather name="chevron-down" size={11} color={STATUS_COLORS[order.status] ?? "#6E6E73"} />
-        </Pressable>
-      </View>
-      <Text style={[itemStyles.name, { color: colors.foreground }]}>{order.name}</Text>
-      <Text style={[itemStyles.meta, { color: colors.mutedForeground }]}>{order.email}</Text>
-      {order.amountUsd != null && (
-        <Text style={[itemStyles.meta, { color: colors.mutedForeground }]}>{order.amountUsd} USD</Text>
-      )}
-      <View style={itemStyles.footer}>
-        <Text style={[itemStyles.date, { color: colors.mutedForeground }]}>{order.formattedDate}</Text>
-        <Pressable onPress={openWhatsApp} style={[itemStyles.waBtn, { backgroundColor: "#25D366" }]}>
-          <Feather name="message-circle" size={14} color="#fff" />
-          <Text style={itemStyles.waText}>WhatsApp</Text>
-        </Pressable>
+          <Pressable
+            onPress={handleStatus}
+            style={[cardStyles.badge, { backgroundColor: statusColor + "20" }]}
+          >
+            <Text style={[cardStyles.badgeText, { color: statusColor }]}>
+              {STATUS_LABELS[order.status] ?? order.status}
+            </Text>
+            <Ionicons name="chevron-down" size={11} color={statusColor} />
+          </Pressable>
+        </View>
+
+        <Text style={[cardStyles.clientName, { color: colors.foreground }]}>{order.name}</Text>
+        <Text style={[cardStyles.meta, { color: colors.mutedForeground }]}>{order.email}</Text>
+
+        <View style={cardStyles.footer}>
+          <Text style={[cardStyles.date, { color: colors.mutedForeground }]}>
+            {order.formattedDate}
+          </Text>
+          {order.amountUsd != null && (
+            <Text style={[cardStyles.amount, { color: colors.foreground }]}>
+              {order.amountUsd} USD
+            </Text>
+          )}
+          <Pressable
+            onPress={openWhatsApp}
+            style={({ pressed }) => [
+              cardStyles.waBtn,
+              { backgroundColor: "#25D366", opacity: pressed ? 0.8 : 1 },
+            ]}
+          >
+            <Ionicons name="logo-whatsapp" size={14} color="#fff" />
+          </Pressable>
+        </View>
       </View>
     </View>
   );
 }
-
-const itemStyles = StyleSheet.create({
-  card: { borderWidth: StyleSheet.hairlineWidth, borderRadius: 12, padding: 14, marginBottom: 10 },
-  top: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 6 },
-  service: { fontFamily: "Inter_600SemiBold", fontSize: 14 },
-  badge: { flexDirection: "row", alignItems: "center", gap: 4, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4 },
-  badgeText: { fontFamily: "Inter_600SemiBold", fontSize: 12 },
-  name: { fontFamily: "Inter_500Medium", fontSize: 15, marginBottom: 2 },
-  meta: { fontFamily: "Inter_400Regular", fontSize: 13 },
-  footer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10 },
-  date: { fontFamily: "Inter_400Regular", fontSize: 12 },
-  waBtn: { flexDirection: "row", alignItems: "center", gap: 6, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 },
-  waText: { color: "#fff", fontFamily: "Inter_500Medium", fontSize: 12 },
+const cardStyles = StyleSheet.create({
+  card: {
+    flexDirection: "row",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 14,
+    marginBottom: 10,
+    overflow: "hidden",
+  },
+  bar: { width: 4 },
+  body: { flex: 1, padding: 14 },
+  top: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 },
+  serviceIcon: { width: 28, height: 28, borderRadius: 7, alignItems: "center", justifyContent: "center" },
+  serviceName: { flex: 1, fontFamily: "Inter_600SemiBold", fontSize: 14 },
+  badge: { flexDirection: "row", alignItems: "center", gap: 3, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4 },
+  badgeText: { fontFamily: "Inter_600SemiBold", fontSize: 11 },
+  clientName: { fontFamily: "Inter_500Medium", fontSize: 15, marginBottom: 2 },
+  meta: { fontFamily: "Inter_400Regular", fontSize: 13, marginBottom: 10 },
+  footer: { flexDirection: "row", alignItems: "center", gap: 8 },
+  date: { flex: 1, fontFamily: "Inter_400Regular", fontSize: 12 },
+  amount: { fontFamily: "Inter_500Medium", fontSize: 13 },
+  waBtn: { width: 32, height: 32, borderRadius: 8, alignItems: "center", justifyContent: "center" },
 });
+
+type ListItem =
+  | { type: "filters" }
+  | { type: "order"; order: Order };
 
 export default function AdminPedidosScreen() {
   const colors = useColors();
@@ -151,13 +186,12 @@ export default function AdminPedidosScreen() {
   const isWeb = Platform.OS === "web";
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
 
   const { data, isLoading, refetch, isRefetching } = useAdminListOrders(
-    { search: search || undefined, status: statusFilter || undefined, page, limit: 20 },
+    { search: search || undefined, status: statusFilter || undefined, page, limit: 30 },
     { refetchInterval: 30_000 }
   );
-
   const { mutateAsync: updateStatus } = useAdminUpdateOrderStatus();
 
   const handleChangeStatus = async (id: string, status: string) => {
@@ -171,48 +205,70 @@ export default function AdminPedidosScreen() {
   };
 
   const filterChips = ["", ...ALL_STATUSES];
+  const listData: ListItem[] = [
+    { type: "filters" },
+    ...(data?.orders ?? []).map<ListItem>((o) => ({ type: "order", order: o as Order })),
+  ];
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.searchRow, { borderBottomColor: colors.border, paddingTop: isWeb ? 67 : 0 }]}>
-        <View style={[styles.searchInput, { borderColor: colors.border }]}>
-          <Feather name="search" size={16} color={colors.mutedForeground} />
+      <View
+        style={[
+          styles.searchBar,
+          { borderBottomColor: colors.border, paddingTop: isWeb ? 67 : 0 },
+        ]}
+      >
+        <View style={[styles.searchInput, { borderColor: colors.border, backgroundColor: colors.secondary }]}>
+          <Ionicons name="search-outline" size={16} color={colors.mutedForeground} />
           <TextInput
             value={search}
-            onChangeText={(t) => { setSearch(t); setPage(1); }}
-            placeholder="Pesquisar por nome, e-mail..."
+            onChangeText={setSearch}
+            placeholder="Nome, e-mail, WhatsApp..."
             placeholderTextColor={colors.mutedForeground}
             style={[styles.searchText, { color: colors.foreground }]}
             autoCapitalize="none"
           />
           {search ? (
             <Pressable onPress={() => setSearch("")}>
-              <Feather name="x" size={16} color={colors.mutedForeground} />
+              <Ionicons name="close-circle" size={17} color={colors.mutedForeground} />
             </Pressable>
           ) : null}
         </View>
       </View>
 
       <FlatList
-        data={[{ type: "filters" as const }, ...(data?.orders ?? []).map((o) => ({ type: "order" as const, order: o }))]}
-        keyExtractor={(item, i) => (item.type === "filters" ? "filters" : (item as { type: "order"; order: Order }).order.id)}
+        data={listData}
+        keyExtractor={(item, i) =>
+          item.type === "filters" ? "filters" : (item as { type: "order"; order: Order }).order.id
+        }
         renderItem={({ item }) => {
           if (item.type === "filters") {
             return (
-              <View style={styles.filtersScroll}>
+              <View style={styles.filtersRow}>
                 {filterChips.map((s) => (
                   <Pressable
                     key={s || "all"}
-                    onPress={() => { setStatusFilter(s); setPage(1); }}
+                    onPress={() => setStatusFilter(s)}
                     style={[
                       styles.chip,
                       {
-                        backgroundColor: statusFilter === s ? colors.foreground : colors.secondary,
+                        backgroundColor:
+                          statusFilter === s ? colors.foreground : colors.secondary,
                         borderColor: colors.border,
                       },
                     ]}
                   >
-                    <Text style={[styles.chipText, { color: statusFilter === s ? colors.primaryForeground : colors.foreground }]}>
+                    <Text
+                      style={[
+                        styles.chipText,
+                        {
+                          color:
+                            statusFilter === s
+                              ? colors.primaryForeground
+                              : colors.foreground,
+                        },
+                      ]}
+                    >
                       {s ? STATUS_LABELS[s] : "Todos"}
                     </Text>
                   </Pressable>
@@ -220,17 +276,13 @@ export default function AdminPedidosScreen() {
               </View>
             );
           }
+          const { order } = item as { type: "order"; order: Order };
           return (
-            <View style={{ paddingHorizontal: 16 }}>
-              <OrderItem
-                order={(item as { type: "order"; order: Order }).order}
-                onChangeStatus={handleChangeStatus}
-                colors={colors}
-              />
+            <View style={{ paddingHorizontal: 14 }}>
+              <OrderCard order={order} onChangeStatus={handleChangeStatus} colors={colors} />
             </View>
           );
         }}
-        ListHeaderComponent={null}
         ListEmptyComponent={
           isLoading ? (
             <View style={styles.center}>
@@ -238,14 +290,18 @@ export default function AdminPedidosScreen() {
             </View>
           ) : (
             <View style={styles.center}>
-              <Feather name="inbox" size={32} color={colors.mutedForeground} />
-              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Nenhum pedido</Text>
+              <Ionicons name="inbox-outline" size={40} color={colors.mutedForeground} />
+              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                Nenhum pedido encontrado
+              </Text>
             </View>
           )
         }
         onRefresh={refetch}
         refreshing={isRefetching}
-        contentContainerStyle={{ paddingBottom: isWeb ? 34 : insets.bottom + 16 }}
+        contentContainerStyle={{
+          paddingBottom: isWeb ? 34 : insets.bottom + 16,
+        }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={!!(data?.orders.length)}
       />
@@ -255,24 +311,34 @@ export default function AdminPedidosScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  searchRow: {
-    paddingHorizontal: 16,
+  searchBar: {
+    paddingHorizontal: 14,
     paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   searchInput: {
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 1,
-    borderRadius: 10,
+    gap: 8,
+    borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    gap: 8,
   },
   searchText: { flex: 1, fontFamily: "Inter_400Regular", fontSize: 15 },
-  filtersScroll: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingHorizontal: 16, paddingVertical: 12 },
-  chip: { borderRadius: 20, borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: 12, paddingVertical: 6 },
-  chipText: { fontFamily: "Inter_500Medium", fontSize: 13 },
+  filtersRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  chip: {
+    borderRadius: 20,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  chipText: { fontFamily: "Inter_500Medium", fontSize: 12 },
   center: { alignItems: "center", paddingVertical: 60, gap: 12 },
   emptyText: { fontFamily: "Inter_400Regular", fontSize: 14 },
 });

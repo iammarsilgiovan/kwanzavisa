@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -57,22 +57,28 @@ export default function AdminLoginScreen() {
         ]}
       >
         <View style={styles.top}>
-          <View style={[styles.iconWrap, { backgroundColor: colors.secondary }]}>
-            <Feather name="shield" size={32} color={colors.foreground} />
+          <View style={[styles.iconCircle, { backgroundColor: colors.primary }]}>
+            <Ionicons name="shield-checkmark-outline" size={34} color={colors.primaryForeground} />
           </View>
           <Text style={[styles.title, { color: colors.foreground }]}>Área Reservada</Text>
-          <Text style={[styles.sub, { color: colors.mutedForeground }]}>
-            Apenas para administradores KwanzaVisa
+          <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
+            Acesso exclusivo para administradores KwanzaVisa
           </Text>
         </View>
 
-        <View style={styles.form}>
+        <View>
           <Text style={[styles.label, { color: colors.mutedForeground }]}>Palavra-passe</Text>
-          <View style={[styles.passwordRow, { borderColor: colors.border }]}>
+          <View
+            style={[
+              styles.inputRow,
+              { borderColor: colors.border, backgroundColor: colors.secondary },
+            ]}
+          >
+            <Ionicons name="lock-closed-outline" size={17} color={colors.mutedForeground} style={{ marginLeft: 14 }} />
             <TextInput
               value={password}
               onChangeText={setPassword}
-              placeholder="••••••••••"
+              placeholder="Introduza a palavra-passe"
               placeholderTextColor={colors.mutedForeground}
               secureTextEntry={!showPassword}
               style={[styles.input, { color: colors.foreground }]}
@@ -80,7 +86,11 @@ export default function AdminLoginScreen() {
               returnKeyType="go"
             />
             <Pressable onPress={() => setShowPassword(!showPassword)} style={styles.eyeBtn}>
-              <Feather name={showPassword ? "eye-off" : "eye"} size={18} color={colors.mutedForeground} />
+              <Ionicons
+                name={showPassword ? "eye-off-outline" : "eye-outline"}
+                size={19}
+                color={colors.mutedForeground}
+              />
             </Pressable>
           </View>
 
@@ -88,14 +98,20 @@ export default function AdminLoginScreen() {
             onPress={handleLogin}
             disabled={loading || !password}
             style={({ pressed }) => [
-              styles.submitBtn,
-              { backgroundColor: colors.primary, opacity: pressed || loading || !password ? 0.6 : 1 },
+              styles.loginBtn,
+              {
+                backgroundColor: colors.primary,
+                opacity: pressed || loading || !password ? 0.6 : 1,
+              },
             ]}
           >
             {loading ? (
               <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <Text style={styles.submitText}>Entrar</Text>
+              <>
+                <Ionicons name="log-in-outline" size={18} color="#fff" />
+                <Text style={styles.loginText}>Entrar</Text>
+              </>
             )}
           </Pressable>
         </View>
@@ -107,15 +123,44 @@ export default function AdminLoginScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   inner: { flex: 1, paddingHorizontal: 28, justifyContent: "center" },
-  top: { alignItems: "center", marginBottom: 40, gap: 12 },
-  iconWrap: { width: 72, height: 72, borderRadius: 36, alignItems: "center", justifyContent: "center" },
-  title: { fontFamily: "Inter_700Bold", fontSize: 24 },
-  sub: { fontFamily: "Inter_400Regular", fontSize: 14, textAlign: "center" },
-  form: { gap: 0 },
+  top: { alignItems: "center", marginBottom: 48, gap: 14 },
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: { fontFamily: "Inter_700Bold", fontSize: 26 },
+  subtitle: {
+    fontFamily: "Inter_400Regular",
+    fontSize: 14,
+    textAlign: "center",
+    lineHeight: 21,
+  },
   label: { fontFamily: "Inter_500Medium", fontSize: 13, marginBottom: 8 },
-  passwordRow: { flexDirection: "row", alignItems: "center", borderWidth: 1, borderRadius: 12, marginBottom: 16 },
-  input: { flex: 1, paddingHorizontal: 16, paddingVertical: 14, fontFamily: "Inter_400Regular", fontSize: 16 },
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 14,
+    marginBottom: 16,
+  },
+  input: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 15,
+    fontFamily: "Inter_400Regular",
+    fontSize: 16,
+  },
   eyeBtn: { padding: 14 },
-  submitBtn: { borderRadius: 12, paddingVertical: 15, alignItems: "center" },
-  submitText: { color: "#fff", fontFamily: "Inter_600SemiBold", fontSize: 16 },
+  loginBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    borderRadius: 14,
+    paddingVertical: 15,
+  },
+  loginText: { color: "#fff", fontFamily: "Inter_600SemiBold", fontSize: 16 },
 });

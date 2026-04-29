@@ -3,7 +3,7 @@ import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SymbolView } from "expo-symbols";
-import { Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Platform, StyleSheet, View, useColorScheme } from "react-native";
 
@@ -17,7 +17,7 @@ function NativeTabLayout() {
         <Label>Início</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="pedidos">
-        <Icon sf={{ default: "list.bullet", selected: "list.bullet" }} />
+        <Icon sf={{ default: "doc.text", selected: "doc.text.fill" }} />
         <Label>Pedidos</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="cartoes">
@@ -25,7 +25,7 @@ function NativeTabLayout() {
         <Label>Cartões</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="conta">
-        <Icon sf={{ default: "person", selected: "person.fill" }} />
+        <Icon sf={{ default: "person.circle", selected: "person.circle.fill" }} />
         <Label>Conta</Label>
       </NativeTabs.Trigger>
     </NativeTabs>
@@ -46,40 +46,55 @@ function ClassicTabLayout() {
         tabBarInactiveTintColor: colors.mutedForeground,
         headerShown: true,
         headerStyle: { backgroundColor: colors.background },
-        headerTitleStyle: { fontFamily: "Inter_600SemiBold", fontSize: 16, color: colors.foreground },
+        headerTitleStyle: {
+          fontFamily: "Inter_600SemiBold",
+          fontSize: 17,
+          color: colors.foreground,
+        },
         headerShadowVisible: false,
         tabBarStyle: {
           position: "absolute",
           backgroundColor: isIOS ? "transparent" : colors.background,
-          borderTopWidth: isWeb ? 1 : StyleSheet.hairlineWidth,
+          borderTopWidth: StyleSheet.hairlineWidth,
           borderTopColor: colors.border,
           elevation: 0,
-          ...(isWeb ? { height: 84 } : {}),
+          height: isWeb ? 84 : 60,
         },
         tabBarBackground: () =>
           isIOS ? (
             <BlurView
-              intensity={100}
-              tint={isDark ? "dark" : "light"}
+              intensity={80}
+              tint={isDark ? "dark" : "extraLight"}
               style={StyleSheet.absoluteFill}
             />
           ) : isWeb ? (
-            <View
-              style={[StyleSheet.absoluteFill, { backgroundColor: colors.background }]}
-            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.background }]} />
           ) : null,
-        tabBarLabelStyle: { fontFamily: "Inter_500Medium", fontSize: 11 },
+        tabBarLabelStyle: {
+          fontFamily: "Inter_500Medium",
+          fontSize: 10,
+          marginBottom: 2,
+        },
+        tabBarIconStyle: { marginTop: 4 },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: "Início",
-          tabBarIcon: ({ color }) =>
+          tabBarIcon: ({ color, focused }) =>
             isIOS ? (
-              <SymbolView name="house" tintColor={color} size={22} />
+              <SymbolView
+                name={focused ? "house.fill" : "house"}
+                tintColor={color}
+                size={22}
+              />
             ) : (
-              <Feather name="home" size={22} color={color} />
+              <Ionicons
+                name={focused ? "home" : "home-outline"}
+                size={23}
+                color={color}
+              />
             ),
         }}
       />
@@ -87,11 +102,19 @@ function ClassicTabLayout() {
         name="pedidos"
         options={{
           title: "Pedidos",
-          tabBarIcon: ({ color }) =>
+          tabBarIcon: ({ color, focused }) =>
             isIOS ? (
-              <SymbolView name="list.bullet" tintColor={color} size={22} />
+              <SymbolView
+                name={focused ? "doc.text.fill" : "doc.text"}
+                tintColor={color}
+                size={22}
+              />
             ) : (
-              <Feather name="list" size={22} color={color} />
+              <Ionicons
+                name={focused ? "document-text" : "document-text-outline"}
+                size={23}
+                color={color}
+              />
             ),
         }}
       />
@@ -99,11 +122,19 @@ function ClassicTabLayout() {
         name="cartoes"
         options={{
           title: "Cartões",
-          tabBarIcon: ({ color }) =>
+          tabBarIcon: ({ color, focused }) =>
             isIOS ? (
-              <SymbolView name="creditcard" tintColor={color} size={22} />
+              <SymbolView
+                name={focused ? "creditcard.fill" : "creditcard"}
+                tintColor={color}
+                size={22}
+              />
             ) : (
-              <Feather name="credit-card" size={22} color={color} />
+              <Ionicons
+                name={focused ? "card" : "card-outline"}
+                size={23}
+                color={color}
+              />
             ),
         }}
       />
@@ -111,11 +142,19 @@ function ClassicTabLayout() {
         name="conta"
         options={{
           title: "Conta",
-          tabBarIcon: ({ color }) =>
+          tabBarIcon: ({ color, focused }) =>
             isIOS ? (
-              <SymbolView name="person" tintColor={color} size={22} />
+              <SymbolView
+                name={focused ? "person.circle.fill" : "person.circle"}
+                tintColor={color}
+                size={22}
+              />
             ) : (
-              <Feather name="user" size={22} color={color} />
+              <Ionicons
+                name={focused ? "person-circle" : "person-circle-outline"}
+                size={24}
+                color={color}
+              />
             ),
         }}
       />
