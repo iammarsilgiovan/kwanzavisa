@@ -42,11 +42,30 @@ KwanzaVisa is an Angolan fintech platform that allows Angolans to access interna
 ## Architecture
 
 - `artifacts/kwanzavisa/` — React + Vite frontend (served at `/`)
+- `artifacts/kwanzavisa-mobile/` — Expo React Native app (served at `/kwanzavisa-mobile`)
 - `artifacts/api-server/` — Express backend (served at `/api`)
 - `lib/api-spec/openapi.yaml` — OpenAPI contract
 - `lib/api-client-react/` — Generated React Query hooks
 - `lib/api-zod/` — Generated Zod validation schemas
 - `lib/db/` — Drizzle ORM schema and connection
+
+## Mobile App (KwanzaVisa Mobile)
+
+Expo app (React Native) with 4 tabs:
+
+- **Início** — Taxa de câmbio em tempo real, 4 botões de serviço, botão WhatsApp
+- **Pedidos** — Novo pedido (formulário completo) e Rastrear (busca por e-mail/WhatsApp)
+- **Cartões** — Placeholder para gestão de cartões virtuais (em desenvolvimento)
+- **Conta** — Suporte, links, acesso de admin
+
+Admin móvel (acedido via tab Conta → "Acesso Restrito"):
+- Login com password `kwanza2025admin`
+- Dashboard com estatísticas em tempo real
+- Gestão de pedidos (alterar estado, contactar via WhatsApp)
+- Taxa de câmbio (visualizar e actualizar)
+
+APK Android: não suportado directamente no Replit — usar EAS Build externamente.
+iOS: publicação via Replit Expo Launch.
 
 ## Database Schema
 
