@@ -38,7 +38,7 @@ const orderFormSchema = z.object({
   // Conditional fields will be validated conditionally or just marked optional
   platform: z.string().optional(),
   amount: z.coerce.number().positive("Valor deve ser positivo").optional().or(z.literal("")),
-  currency: z.enum(["USD", "EUR"]).optional(),
+  currency: z.enum(["USD"]).optional(),
   description: z.string().optional(),
   destinationCountry: z.string().optional(),
   recipientName: z.string().optional(),
@@ -413,7 +413,7 @@ export default function Home() {
 }
 
 function SimulatorSection() {
-  const [currency, setCurrency] = useState<"USD" | "EUR">("USD");
+  const currency = "USD" as const;
   const [amount, setAmount] = useState<string>("100");
   const parsedAmount = parseFloat(amount) || 0;
 
@@ -431,9 +431,7 @@ function SimulatorSection() {
         <div className="bg-secondary p-8 rounded-3xl max-w-xl mx-auto border border-border">
           <div className="flex items-center gap-4 mb-8 bg-white p-2 rounded-2xl border border-border shadow-sm">
             <div className="flex-1 relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">
-                {currency === "USD" ? "$" : "€"}
-              </span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">$</span>
               <Input 
                 type="number" 
                 value={amount} 
@@ -442,16 +440,10 @@ function SimulatorSection() {
                 placeholder="0"
               />
             </div>
-            <div className="w-[120px]">
-              <Select value={currency} onValueChange={(v: "USD" | "EUR") => setCurrency(v)}>
-                <SelectTrigger className="h-12 bg-secondary border-0 font-bold">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="USD">USD</SelectItem>
-                  <SelectItem value="EUR">EUR</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="w-[100px]">
+              <div className="h-12 bg-secondary border-0 font-bold flex items-center justify-center text-sm rounded-md">
+                USD
+              </div>
             </div>
           </div>
 
@@ -460,10 +452,14 @@ function SimulatorSection() {
           </div>
 
           <div className="space-y-1 text-sm font-medium">
-            <p className="text-foreground">Câmbio aplicado: 1 {currency} = {rateData ? rateData.ratePerUnit.toLocaleString('pt-PT') : "0"} Kz</p>
+            <p className="text-foreground">Câmbio aplicado: 1 USD = {rateData ? rateData.ratePerUnit.toLocaleString('pt-PT') : "0"} Kz</p>
             <p className="text-muted-foreground">Câmbio actualizado automaticamente</p>
           </div>
         </div>
+
+        <p className="mt-6 text-sm text-muted-foreground max-w-md mx-auto">
+          Pagamentos em Euro poderão ser processados mediante conversão do valor para USD à taxa do dia.
+        </p>
       </div>
     </section>
   );
@@ -600,7 +596,6 @@ function OrderForm() {
                       <FormControl><SelectTrigger className="h-12 bg-white"><SelectValue /></SelectTrigger></FormControl>
                       <SelectContent>
                         <SelectItem value="USD">USD</SelectItem>
-                        <SelectItem value="EUR">EUR</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -648,7 +643,6 @@ function OrderForm() {
                       <FormControl><SelectTrigger className="h-12 bg-white"><SelectValue /></SelectTrigger></FormControl>
                       <SelectContent>
                         <SelectItem value="USD">USD</SelectItem>
-                        <SelectItem value="EUR">EUR</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -779,7 +773,7 @@ function OrderTracker() {
                         <div className="text-xs text-muted-foreground">{o.platform || o.intlPlatform}</div>
                       </TableCell>
                       <TableCell className="font-medium whitespace-nowrap">
-                        {o.amountUsd ? `$${o.amountUsd}` : o.amountEur ? `€${o.amountEur}` : '-'}
+                        {o.amountUsd ? `$${o.amountUsd}` : '-'}
                       </TableCell>
                       <TableCell>{getStatusBadge(o.status)}</TableCell>
                       <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{o.formattedDate}</TableCell>

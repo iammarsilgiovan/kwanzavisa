@@ -26,7 +26,6 @@ export default function Dashboard() {
   const { toast } = useToast();
   
   const [usdRateInput, setUsdRateInput] = useState("");
-  const [eurRateInput, setEurRateInput] = useState("");
 
   const isAuthenticated = localStorage.getItem('kv_admin_auth') === 'true';
 
@@ -50,7 +49,7 @@ export default function Dashboard() {
 
   const setExchangeRate = useAdminSetExchangeRate();
 
-  const handleUpdateRate = (currency: "USD" | "EUR", rateStr: string) => {
+  const handleUpdateRate = (rateStr: string): void => {
     const rate = parseFloat(rateStr);
     if (isNaN(rate) || rate <= 0) {
       toast({ title: "Valor inválido", variant: "destructive" });
@@ -58,16 +57,15 @@ export default function Dashboard() {
     }
     
     setExchangeRate.mutate(
-      { data: { currency, rate, changedBy: "Administrador" } },
+      { data: { currency: "USD", rate, changedBy: "Administrador" } },
       {
         onSuccess: () => {
-          toast({ title: `Câmbio ${currency} actualizado com sucesso` });
-          if (currency === "USD") setUsdRateInput("");
-          if (currency === "EUR") setEurRateInput("");
+          toast({ title: "Câmbio USD actualizado com sucesso" });
+          setUsdRateInput("");
           queryClient.invalidateQueries({ queryKey: getAdminGetExchangeRatesQueryKey() });
         },
         onError: () => {
-          toast({ title: `Erro ao actualizar câmbio ${currency}`, variant: "destructive" });
+          toast({ title: "Erro ao actualizar câmbio USD", variant: "destructive" });
         }
       }
     );
@@ -107,34 +105,20 @@ export default function Dashboard() {
             <CardTitle className="text-lg">Gestão de Câmbio</CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Câmbio USD → Kz</label>
-                <div className="flex items-center gap-2">
-                  <Input 
-                    type="number" 
-                    placeholder={`Activo: ${exchangeRates?.activeUsd || '---'}`} 
-                    value={usdRateInput}
-                    onChange={e => setUsdRateInput(e.target.value)}
-                  />
-                  <Button onClick={() => handleUpdateRate("USD", usdRateInput)} className="bg-[#1D1D1F]">Guardar</Button>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Câmbio EUR → Kz</label>
-                <div className="flex items-center gap-2">
-                  <Input 
-                    type="number" 
-                    placeholder={`Activo: ${exchangeRates?.activeEur || '---'}`} 
-                    value={eurRateInput}
-                    onChange={e => setEurRateInput(e.target.value)}
-                  />
-                  <Button onClick={() => handleUpdateRate("EUR", eurRateInput)} className="bg-[#1D1D1F]">Guardar</Button>
-                </div>
+            <div className="max-w-sm">
+              <label className="text-sm font-medium mb-2 block">Câmbio USD → Kz</label>
+              <div className="flex items-center gap-2">
+                <Input 
+                  type="number" 
+                  placeholder={`Activo: ${exchangeRates?.activeUsd || '---'}`} 
+                  value={usdRateInput}
+                  onChange={e => setUsdRateInput(e.target.value)}
+                />
+                <Button onClick={() => handleUpdateRate(usdRateInput)} className="bg-[#1D1D1F]">Guardar</Button>
               </div>
             </div>
             <div className="mt-4 pt-4 border-t text-sm text-gray-500">
-              Câmbio activo: 1 USD = <strong className="text-gray-900">{exchangeRates?.activeUsd || '---'} Kz</strong> | 1 EUR = <strong className="text-gray-900">{exchangeRates?.activeEur || '---'} Kz</strong>
+              Câmbio activo: 1 USD = <strong className="text-gray-900">{exchangeRates?.activeUsd || '---'} Kz</strong>
             </div>
           </CardContent>
         </Card>
@@ -219,9 +203,7 @@ export default function Dashboard() {
                       <TableCell className="font-medium">{order.name}</TableCell>
                       <TableCell className="text-sm">{getServiceLabel(order.service)}</TableCell>
                       <TableCell className="text-sm">
-                        {order.amountUsd ? `$${order.amountUsd}` : ''}
-                        {order.amountEur ? `€${order.amountEur}` : ''}
-                        {!order.amountUsd && !order.amountEur && order.amountKwanza ? `${order.amountKwanza.toLocaleString()} Kz` : ''}
+                        {order.amountUsd ? `$${order.amountUsd}` : order.amountKwanza ? `${order.amountKwanza.toLocaleString()} Kz` : ''}
                       </TableCell>
                       <TableCell>{getStatusBadge(order.status)}</TableCell>
                     </TableRow>

@@ -12,5 +12,4 @@ export type CreateOrderBodyCurrency =
 
 export const CreateOrderBodyCurrency = {
   USD: "USD",
-  EUR: "EUR",
 } as const;

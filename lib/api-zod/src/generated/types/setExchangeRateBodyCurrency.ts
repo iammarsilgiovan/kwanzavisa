@@ -11,5 +11,4 @@ export type SetExchangeRateBodyCurrency =
 
 export const SetExchangeRateBodyCurrency = {
   USD: "USD",
-  EUR: "EUR",
 } as const;

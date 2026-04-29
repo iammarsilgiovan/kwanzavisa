@@ -102,7 +102,7 @@ paths:
           required: true
           schema:
             type: string
-            enum: [USD, EUR]
+            enum: [USD]
         - name: amount
           in: query
           required: false
@@ -471,9 +471,6 @@ components:
         amountUsd:
           type: number
           nullable: true
-        amountEur:
-          type: number
-          nullable: true
         amountKwanza:
           type: number
           nullable: true
@@ -554,7 +551,7 @@ components:
           nullable: true
         currency:
           type: string
-          enum: [USD, EUR]
+          enum: [USD]
           nullable: true
         description:
           type: string
@@ -724,9 +721,6 @@ components:
         activeUsd:
           type: number
           nullable: true
-        activeEur:
-          type: number
-          nullable: true
         lastUpdated:
           type: string
           nullable: true
@@ -744,7 +738,7 @@ components:
       properties:
         currency:
           type: string
-          enum: [USD, EUR]
+          enum: [USD]
         rate:
           type: number
         changedBy:

@@ -26,7 +26,7 @@ export const CreateOrderBody = zod.object({
   ]),
   platform: zod.string().nullish(),
   amount: zod.number().nullish(),
-  currency: zod.enum(["USD", "EUR"]).nullish(),
+  currency: zod.enum(["USD"]).nullish(),
   description: zod.string().nullish(),
   destinationCountry: zod.string().nullish(),
   recipientName: zod.string().nullish(),
@@ -49,7 +49,6 @@ export const LookupOrdersResponse = zod.object({
       service: zod.string(),
       platform: zod.string().nullish(),
       amountUsd: zod.number().nullish(),
-      amountEur: zod.number().nullish(),
       amountKwanza: zod.number().nullish(),
       currency: zod.string().nullish(),
       description: zod.string().nullish(),
@@ -76,7 +75,6 @@ export const GetOrderResponse = zod.object({
   service: zod.string(),
   platform: zod.string().nullish(),
   amountUsd: zod.number().nullish(),
-  amountEur: zod.number().nullish(),
   amountKwanza: zod.number().nullish(),
   currency: zod.string().nullish(),
   description: zod.string().nullish(),
@@ -89,7 +87,7 @@ export const GetOrderResponse = zod.object({
 });
 
 export const GetExchangeRateQueryParams = zod.object({
-  currency: zod.enum(["USD", "EUR"]),
+  currency: zod.enum(["USD"]),
   amount: zod.coerce.number().optional(),
 });
 
@@ -124,7 +122,6 @@ export const AdminListOrdersResponse = zod.object({
       service: zod.string(),
       platform: zod.string().nullish(),
       amountUsd: zod.number().nullish(),
-      amountEur: zod.number().nullish(),
       amountKwanza: zod.number().nullish(),
       currency: zod.string().nullish(),
       description: zod.string().nullish(),
@@ -165,7 +162,6 @@ export const AdminUpdateOrderStatusResponse = zod.object({
   service: zod.string(),
   platform: zod.string().nullish(),
   amountUsd: zod.number().nullish(),
-  amountEur: zod.number().nullish(),
   amountKwanza: zod.number().nullish(),
   currency: zod.string().nullish(),
   description: zod.string().nullish(),
@@ -194,7 +190,6 @@ export const AdminUpdateOrderNoteResponse = zod
     service: zod.string(),
     platform: zod.string().nullish(),
     amountUsd: zod.number().nullish(),
-    amountEur: zod.number().nullish(),
     amountKwanza: zod.number().nullish(),
     currency: zod.string().nullish(),
     description: zod.string().nullish(),
@@ -240,7 +235,6 @@ export const AdminUpdateOrderCostResponse = zod
     service: zod.string(),
     platform: zod.string().nullish(),
     amountUsd: zod.number().nullish(),
-    amountEur: zod.number().nullish(),
     amountKwanza: zod.number().nullish(),
     currency: zod.string().nullish(),
     description: zod.string().nullish(),
@@ -282,7 +276,6 @@ export const AdminGetOrderDetailResponse = zod
     service: zod.string(),
     platform: zod.string().nullish(),
     amountUsd: zod.number().nullish(),
-    amountEur: zod.number().nullish(),
     amountKwanza: zod.number().nullish(),
     currency: zod.string().nullish(),
     description: zod.string().nullish(),
@@ -343,7 +336,6 @@ export const AdminGetDailyStatsResponse = zod.object({
 
 export const AdminGetExchangeRatesResponse = zod.object({
   activeUsd: zod.number().nullish(),
-  activeEur: zod.number().nullish(),
   lastUpdated: zod.string().nullish(),
   lastUpdatedBy: zod.string().nullish(),
   history: zod.array(
@@ -360,7 +352,7 @@ export const AdminGetExchangeRatesResponse = zod.object({
 });
 
 export const AdminSetExchangeRateBody = zod.object({
-  currency: zod.enum(["USD", "EUR"]),
+  currency: zod.enum(["USD"]),
   rate: zod.number(),
   changedBy: zod.string().optional(),
 });
@@ -415,7 +407,6 @@ export const AdminGetClientResponse = zod.object({
       service: zod.string(),
       platform: zod.string().nullish(),
       amountUsd: zod.number().nullish(),
-      amountEur: zod.number().nullish(),
       amountKwanza: zod.number().nullish(),
       currency: zod.string().nullish(),
       description: zod.string().nullish(),
@@ -456,7 +447,6 @@ export const AdminUpdateClientNoteResponse = zod.object({
       service: zod.string(),
       platform: zod.string().nullish(),
       amountUsd: zod.number().nullish(),
-      amountEur: zod.number().nullish(),
       amountKwanza: zod.number().nullish(),
       currency: zod.string().nullish(),
       description: zod.string().nullish(),

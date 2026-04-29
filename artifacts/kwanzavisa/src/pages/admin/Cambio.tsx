@@ -13,17 +13,11 @@ export default function Cambio() {
 
   return (
     <AdminLayout title="Histórico de Câmbio">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="mb-8 max-w-xs">
         <Card className="border-border bg-[#1D1D1F] text-white">
           <CardContent className="pt-6">
             <p className="text-sm text-gray-400 font-medium uppercase tracking-wider mb-2">Câmbio USD Activo</p>
             <p className="text-4xl font-bold">{rates?.activeUsd ? `${rates.activeUsd} Kz` : '---'}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border bg-[#1D1D1F] text-white">
-          <CardContent className="pt-6">
-            <p className="text-sm text-gray-400 font-medium uppercase tracking-wider mb-2">Câmbio EUR Activo</p>
-            <p className="text-4xl font-bold">{rates?.activeEur ? `${rates.activeEur} Kz` : '---'}</p>
           </CardContent>
         </Card>
       </div>

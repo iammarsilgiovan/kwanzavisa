@@ -14,7 +14,6 @@ export interface Order {
   service: string;
   platform?: string | null;
   amountUsd?: number | null;
-  amountEur?: number | null;
   amountKwanza?: number | null;
   currency?: string | null;
   description?: string | null;

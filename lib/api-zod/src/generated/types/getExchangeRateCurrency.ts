@@ -11,5 +11,4 @@ export type GetExchangeRateCurrency =
 
 export const GetExchangeRateCurrency = {
   USD: "USD",
-  EUR: "EUR",
 } as const;

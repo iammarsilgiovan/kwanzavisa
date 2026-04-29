@@ -8,7 +8,6 @@ const router: IRouter = Router();
 const ACCOUNTS = [
   { account: "angola_bank", currency: "AOA", label: "Conta Bancária Angola" },
   { account: "airtm_usd", currency: "USD", label: "Conta Airtm" },
-  { account: "wise_eur", currency: "EUR", label: "Conta Wise (EUR)" },
   { account: "wise_usd", currency: "USD", label: "Conta Wise (USD)" },
 ];
 
@@ -34,22 +33,19 @@ async function ensureDefaultBalances(): Promise<void> {
 router.get("/admin/balances", async (_req, res): Promise<void> => {
   await ensureDefaultBalances();
 
-  const [balances, history, usdRate, eurRate] = await Promise.all([
+  const [balances, history, usdRate] = await Promise.all([
     db.select().from(balancesTable).orderBy(balancesTable.id),
     db.select().from(balanceHistoryTable).orderBy(sql`${balanceHistoryTable.createdAt} DESC`).limit(50),
     db.select().from(exchangeRatesTable).where(eq(exchangeRatesTable.currency, "USD")).orderBy(sql`${exchangeRatesTable.createdAt} DESC`).limit(1),
-    db.select().from(exchangeRatesTable).where(eq(exchangeRatesTable.currency, "EUR")).orderBy(sql`${exchangeRatesTable.createdAt} DESC`).limit(1),
   ]);
 
   const activeUsdRate = usdRate[0] ? parseFloat(usdRate[0].rate) : 952;
-  const activeEurRate = eurRate[0] ? parseFloat(eurRate[0].rate) : 1045;
 
   let totalKwanza = 0;
   for (const b of balances) {
     const bal = parseFloat(b.balance);
     if (b.currency === "AOA") totalKwanza += bal;
     else if (b.currency === "USD") totalKwanza += bal * activeUsdRate;
-    else if (b.currency === "EUR") totalKwanza += bal * activeEurRate;
   }
 
   res.json({

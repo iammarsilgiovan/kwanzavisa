@@ -9,7 +9,6 @@ import type { ExchangeRateRecord } from "./exchangeRateRecord";
 
 export interface AdminExchangeRatesResponse {
   activeUsd?: number | null;
-  activeEur?: number | null;
   lastUpdated?: string | null;
   lastUpdatedBy?: string | null;
   history: ExchangeRateRecord[];

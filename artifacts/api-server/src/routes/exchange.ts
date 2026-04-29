@@ -6,7 +6,6 @@ import { GetExchangeRateQueryParams } from "@workspace/api-zod";
 const router: IRouter = Router();
 
 const FALLBACK_USD = 952;
-const FALLBACK_EUR = 1045;
 
 async function getActiveRate(currency: string): Promise<number> {
   const [latest] = await db
@@ -16,7 +15,7 @@ async function getActiveRate(currency: string): Promise<number> {
     .orderBy(sql`${exchangeRatesTable.createdAt} DESC`)
     .limit(1);
   if (latest) return parseFloat(latest.rate);
-  return currency === "USD" ? FALLBACK_USD : FALLBACK_EUR;
+  return FALLBACK_USD;
 }
 
 router.get("/exchange/rate", async (req, res): Promise<void> => {

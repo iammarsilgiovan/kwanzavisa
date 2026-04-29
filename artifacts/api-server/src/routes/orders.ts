@@ -88,18 +88,12 @@ router.post("/orders", async (req, res): Promise<void> => {
   const { id, sequenceNumber } = await generateOrderId();
 
   let amountUsd: string | undefined;
-  let amountEur: string | undefined;
   let amountKwanza: string | undefined;
 
   if (data.amount && data.currency) {
     const rate = await getActiveRate(data.currency);
-    if (data.currency === "USD") {
-      amountUsd = data.amount.toString();
-      amountKwanza = (data.amount * rate).toFixed(2);
-    } else if (data.currency === "EUR") {
-      amountEur = data.amount.toString();
-      amountKwanza = (data.amount * rate).toFixed(2);
-    }
+    amountUsd = data.amount.toString();
+    amountKwanza = (data.amount * rate).toFixed(2);
   }
 
   const [order] = await db.insert(ordersTable).values({
@@ -111,7 +105,7 @@ router.post("/orders", async (req, res): Promise<void> => {
     service: data.service,
     platform: data.platform ?? null,
     amountUsd: amountUsd ?? null,
-    amountEur: amountEur ?? null,
+    amountEur: null,
     amountKwanza: amountKwanza ?? null,
     currency: data.currency ?? null,
     description: data.description ?? null,
@@ -343,7 +337,7 @@ router.get("/admin/stats", async (_req, res): Promise<void> => {
       kz: sql<string>`COALESCE(SUM(amount_kwanza::numeric), 0)`,
     }).from(ordersTable).where(gte(ordersTable.createdAt, startOfMonth)),
     db.select({ total: sql<string>`COALESCE(SUM(amount_kwanza::numeric), 0)` }).from(ordersTable).where(eq(ordersTable.status, "concluido")),
-    db.select({ total: sql<string>`COALESCE(SUM(oc.cost_kwanza::numeric), 0)` }).from(orderCostsTable).as("oc"),
+    db.select({ total: sql<string>`COALESCE(SUM(cost_kwanza::numeric), 0)` }).from(orderCostsTable),
   ]);
 
   const byStatus: Record<string, number> = {};

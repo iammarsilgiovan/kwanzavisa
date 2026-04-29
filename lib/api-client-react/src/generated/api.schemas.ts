@@ -22,7 +22,6 @@ export interface Order {
   service: string;
   platform?: string | null;
   amountUsd?: number | null;
-  amountEur?: number | null;
   amountKwanza?: number | null;
   currency?: string | null;
   description?: string | null;
@@ -64,7 +63,6 @@ export type CreateOrderBodyCurrency =
 
 export const CreateOrderBodyCurrency = {
   USD: "USD",
-  EUR: "EUR",
 } as const;
 
 export type CreateOrderBodyIntlPlatform =
@@ -176,7 +174,6 @@ export interface ExchangeRateRecord {
 
 export interface AdminExchangeRatesResponse {
   activeUsd?: number | null;
-  activeEur?: number | null;
   lastUpdated?: string | null;
   lastUpdatedBy?: string | null;
   history: ExchangeRateRecord[];
@@ -187,7 +184,6 @@ export type SetExchangeRateBodyCurrency =
 
 export const SetExchangeRateBodyCurrency = {
   USD: "USD",
-  EUR: "EUR",
 } as const;
 
 export interface SetExchangeRateBody {
@@ -305,7 +301,6 @@ export type GetExchangeRateCurrency =
 
 export const GetExchangeRateCurrency = {
   USD: "USD",
-  EUR: "EUR",
 } as const;
 
 export type AdminListOrdersParams = {

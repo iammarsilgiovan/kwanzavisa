@@ -49,7 +49,6 @@ export default function Saldos() {
     const map: Record<string, { label: string, currency: string, link?: string }> = {
       angola_bank: { label: "Conta Bancária Angola", currency: "AOA" },
       airtm_usd: { label: "Conta Airtm", currency: "USD", link: "https://app.airtm.com/" },
-      wise_eur: { label: "Conta Wise (EUR)", currency: "EUR", link: "https://wise.com/login/" },
       wise_usd: { label: "Conta Wise (USD)", currency: "USD", link: "https://wise.com/login/" }
     };
     return map[account] || { label: account, currency: "AOA" };

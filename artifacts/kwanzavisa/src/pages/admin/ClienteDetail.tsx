@@ -171,7 +171,6 @@ export default function ClienteDetail() {
                     <TableCell className="font-medium text-sm">{getServiceLabel(order.service)}</TableCell>
                     <TableCell className="text-sm">
                       {order.amountUsd && <span>${order.amountUsd} </span>}
-                      {order.amountEur && <span>€{order.amountEur} </span>}
                       {order.amountKwanza && <span className="text-gray-500 text-xs">({order.amountKwanza.toLocaleString()} Kz)</span>}
                     </TableCell>
                     <TableCell>{getStatusBadge(order.status)}</TableCell>

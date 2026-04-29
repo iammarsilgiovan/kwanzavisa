@@ -28,9 +28,8 @@ function mapRate(r: typeof exchangeRatesTable.$inferSelect) {
 }
 
 router.get("/admin/exchange-rates", async (_req, res): Promise<void> => {
-  const [latestUsd, latestEur, history] = await Promise.all([
+  const [latestUsd, history] = await Promise.all([
     db.select().from(exchangeRatesTable).where(eq(exchangeRatesTable.currency, "USD")).orderBy(sql`${exchangeRatesTable.createdAt} DESC`).limit(1),
-    db.select().from(exchangeRatesTable).where(eq(exchangeRatesTable.currency, "EUR")).orderBy(sql`${exchangeRatesTable.createdAt} DESC`).limit(1),
     db.select().from(exchangeRatesTable).orderBy(sql`${exchangeRatesTable.createdAt} DESC`).limit(50),
   ]);
 
@@ -38,7 +37,6 @@ router.get("/admin/exchange-rates", async (_req, res): Promise<void> => {
 
   res.json({
     activeUsd: latestUsd[0] ? parseFloat(latestUsd[0].rate) : null,
-    activeEur: latestEur[0] ? parseFloat(latestEur[0].rate) : null,
     lastUpdated: lastEntry ? lastEntry.createdAt.toISOString() : null,
     lastUpdatedBy: lastEntry ? lastEntry.changedBy : null,
     history: history.map(mapRate),

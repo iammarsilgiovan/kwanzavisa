@@ -161,14 +161,13 @@ export default function Pedidos() {
 
   const downloadCSV = () => {
     if (!ordersData?.orders) return;
-    const headers = ["ID", "Nome", "Serviço", "Plataforma", "Valor USD", "Valor EUR", "Valor Kz", "Status", "Data"];
+    const headers = ["ID", "Nome", "Serviço", "Plataforma", "Valor USD", "Valor Kz", "Status", "Data"];
     const rows = ordersData.orders.map(o => [
       o.id, 
       o.name, 
       getServiceLabel(o.service), 
       o.platform || o.intlPlatform || "", 
       o.amountUsd || "", 
-      o.amountEur || "", 
       o.amountKwanza || "", 
       o.status, 
       o.formattedDate
@@ -253,7 +252,6 @@ export default function Pedidos() {
                     <TableCell className="text-sm">{order.platform || order.intlPlatform || '-'}</TableCell>
                     <TableCell className="text-sm whitespace-nowrap">
                       {order.amountUsd && <div className="font-medium">${order.amountUsd}</div>}
-                      {order.amountEur && <div className="font-medium">€{order.amountEur}</div>}
                       {order.amountKwanza && <div className="text-gray-500 text-xs">{order.amountKwanza.toLocaleString()} Kz</div>}
                     </TableCell>
                     <TableCell>
@@ -333,7 +331,6 @@ export default function Pedidos() {
                   <h3 className="text-sm font-semibold text-gray-900 border-b pb-2 mb-3">Valores</h3>
                   <div className="space-y-2 text-sm">
                     {orderDetail.amountUsd && <p><span className="text-gray-500 w-24 inline-block">Valor USD:</span> ${orderDetail.amountUsd}</p>}
-                    {orderDetail.amountEur && <p><span className="text-gray-500 w-24 inline-block">Valor EUR:</span> €{orderDetail.amountEur}</p>}
                     {orderDetail.amountKwanza && <p><span className="text-gray-500 w-24 inline-block">Valor Cobrado:</span> {orderDetail.amountKwanza.toLocaleString()} Kz</p>}
                   </div>
                 </div>
