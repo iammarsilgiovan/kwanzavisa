@@ -17,6 +17,7 @@ export default function AdminLayout() {
       <Stack.Screen name="dashboard" options={{ title: "Dashboard" }} />
       <Stack.Screen name="pedidos" options={{ title: "Pedidos" }} />
       <Stack.Screen name="cambio" options={{ title: "Taxa de Câmbio" }} />
+      <Stack.Screen name="kyc" options={{ title: "Verificações KYC" }} />
     </Stack>
   );
 }

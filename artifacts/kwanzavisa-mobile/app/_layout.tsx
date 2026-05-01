@@ -16,6 +16,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AdminProvider } from "@/contexts/AdminContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 if (process.env.EXPO_PUBLIC_DOMAIN) {
   setBaseUrl(`https://${process.env.EXPO_PUBLIC_DOMAIN}`);
@@ -30,6 +31,26 @@ function RootLayoutNav() {
     <Stack screenOptions={{ headerBackTitle: "Voltar" }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="admin" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="auth"
+        options={{ headerShown: false, presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="kyc"
+        options={{
+          headerShown: true,
+          title: "Verificação de Identidade",
+          headerBackTitle: "Voltar",
+        }}
+      />
+      <Stack.Screen
+        name="cartao/[id]"
+        options={{
+          headerShown: true,
+          title: "Detalhe do Cartão",
+          headerBackTitle: "Voltar",
+        }}
+      />
     </Stack>
   );
 }
@@ -54,13 +75,15 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
-          <AdminProvider>
-            <GestureHandlerRootView>
-              <KeyboardProvider>
-                <RootLayoutNav />
-              </KeyboardProvider>
-            </GestureHandlerRootView>
-          </AdminProvider>
+          <AuthProvider>
+            <AdminProvider>
+              <GestureHandlerRootView>
+                <KeyboardProvider>
+                  <RootLayoutNav />
+                </KeyboardProvider>
+              </GestureHandlerRootView>
+            </AdminProvider>
+          </AuthProvider>
         </QueryClientProvider>
       </ErrorBoundary>
     </SafeAreaProvider>

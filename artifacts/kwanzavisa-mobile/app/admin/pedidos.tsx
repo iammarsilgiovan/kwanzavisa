@@ -1,5 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useAdminListOrders, useAdminUpdateOrderStatus } from "@workspace/api-client-react";
+import {
+  useAdminListOrders,
+  useAdminUpdateOrderStatus,
+  useAdminIssueCard,
+} from "@workspace/api-client-react";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
 import {
@@ -49,6 +53,7 @@ const SERVICE_LABELS: Record<string, string> = {
   conta_internacional: "Conta Internacional",
 };
 const ALL_STATUSES = Object.keys(STATUS_LABELS);
+const CARD_ELIGIBLE_STATUSES = ["pago", "em_processamento", "concluido"];
 
 type Order = {
   id: string;
@@ -64,13 +69,20 @@ type Order = {
 function OrderCard({
   order,
   onChangeStatus,
+  onIssueCard,
+  isIssuingCard,
   colors,
 }: {
   order: Order;
   onChangeStatus: (id: string, status: string) => void;
+  onIssueCard: (id: string) => void;
+  isIssuingCard: boolean;
   colors: ReturnType<typeof useColors>;
 }) {
   const statusColor = STATUS_COLORS[order.status] ?? "#6E6E73";
+  const canIssueCard =
+    order.service === "cartao_virtual" &&
+    CARD_ELIGIBLE_STATUSES.includes(order.status);
 
   const handleStatus = () => {
     if (Platform.OS === "ios") {
@@ -106,12 +118,21 @@ function OrderCard({
   };
 
   return (
-    <View style={[cardStyles.card, { borderColor: colors.border, backgroundColor: colors.background }]}>
+    <View
+      style={[
+        cardStyles.card,
+        { borderColor: colors.border, backgroundColor: colors.background },
+      ]}
+    >
       <View style={[cardStyles.bar, { backgroundColor: statusColor }]} />
       <View style={cardStyles.body}>
         <View style={cardStyles.top}>
           <View style={[cardStyles.serviceIcon, { backgroundColor: colors.secondary }]}>
-            <Ionicons name={SERVICE_ICONS[order.service] ?? "help-outline"} size={16} color={colors.foreground} />
+            <Ionicons
+              name={SERVICE_ICONS[order.service] ?? "help-outline"}
+              size={16}
+              color={colors.foreground}
+            />
           </View>
           <Text style={[cardStyles.serviceName, { color: colors.foreground }]}>
             {SERVICE_LABELS[order.service] ?? order.service}
@@ -127,8 +148,12 @@ function OrderCard({
           </Pressable>
         </View>
 
-        <Text style={[cardStyles.clientName, { color: colors.foreground }]}>{order.name}</Text>
-        <Text style={[cardStyles.meta, { color: colors.mutedForeground }]}>{order.email}</Text>
+        <Text style={[cardStyles.clientName, { color: colors.foreground }]}>
+          {order.name}
+        </Text>
+        <Text style={[cardStyles.meta, { color: colors.mutedForeground }]}>
+          {order.email}
+        </Text>
 
         <View style={cardStyles.footer}>
           <Text style={[cardStyles.date, { color: colors.mutedForeground }]}>
@@ -149,10 +174,34 @@ function OrderCard({
             <Ionicons name="logo-whatsapp" size={14} color="#fff" />
           </Pressable>
         </View>
+
+        {canIssueCard && (
+          <Pressable
+            onPress={() => onIssueCard(order.id)}
+            disabled={isIssuingCard}
+            style={({ pressed }) => [
+              cardStyles.issueBtn,
+              {
+                backgroundColor: "#007AFF",
+                opacity: pressed || isIssuingCard ? 0.7 : 1,
+              },
+            ]}
+          >
+            {isIssuingCard ? (
+              <ActivityIndicator color="#fff" size="small" />
+            ) : (
+              <>
+                <Ionicons name="card-outline" size={15} color="#fff" />
+                <Text style={cardStyles.issueBtnText}>Emitir Cartão</Text>
+              </>
+            )}
+          </Pressable>
+        )}
       </View>
     </View>
   );
 }
+
 const cardStyles = StyleSheet.create({
   card: {
     flexDirection: "row",
@@ -163,22 +212,62 @@ const cardStyles = StyleSheet.create({
   },
   bar: { width: 4 },
   body: { flex: 1, padding: 14 },
-  top: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 },
-  serviceIcon: { width: 28, height: 28, borderRadius: 7, alignItems: "center", justifyContent: "center" },
+  top: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 8,
+  },
+  serviceIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 7,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   serviceName: { flex: 1, fontFamily: "Inter_600SemiBold", fontSize: 14 },
-  badge: { flexDirection: "row", alignItems: "center", gap: 3, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4 },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
   badgeText: { fontFamily: "Inter_600SemiBold", fontSize: 11 },
-  clientName: { fontFamily: "Inter_500Medium", fontSize: 15, marginBottom: 2 },
+  clientName: {
+    fontFamily: "Inter_500Medium",
+    fontSize: 15,
+    marginBottom: 2,
+  },
   meta: { fontFamily: "Inter_400Regular", fontSize: 13, marginBottom: 10 },
   footer: { flexDirection: "row", alignItems: "center", gap: 8 },
   date: { flex: 1, fontFamily: "Inter_400Regular", fontSize: 12 },
   amount: { fontFamily: "Inter_500Medium", fontSize: 13 },
-  waBtn: { width: 32, height: 32, borderRadius: 8, alignItems: "center", justifyContent: "center" },
+  waBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  issueBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 7,
+    borderRadius: 10,
+    paddingVertical: 10,
+    marginTop: 12,
+  },
+  issueBtnText: {
+    color: "#fff",
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 14,
+  },
 });
 
-type ListItem =
-  | { type: "filters" }
-  | { type: "order"; order: Order };
+type ListItem = { type: "filters" } | { type: "order"; order: Order };
 
 export default function AdminPedidosScreen() {
   const colors = useColors();
@@ -186,6 +275,7 @@ export default function AdminPedidosScreen() {
   const isWeb = Platform.OS === "web";
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [issuingId, setIssuingId] = useState<string | null>(null);
   const [page] = useState(1);
 
   const { data, isLoading, refetch, isRefetching } = useAdminListOrders(
@@ -193,6 +283,7 @@ export default function AdminPedidosScreen() {
     { refetchInterval: 30_000 }
   );
   const { mutateAsync: updateStatus } = useAdminUpdateOrderStatus();
+  const { mutateAsync: issueCard } = useAdminIssueCard();
 
   const handleChangeStatus = async (id: string, status: string) => {
     try {
@@ -204,10 +295,43 @@ export default function AdminPedidosScreen() {
     }
   };
 
+  const handleIssueCard = (id: string) => {
+    const order = (data?.orders ?? []).find((o) => o.id === id) as Order | undefined;
+    Alert.alert(
+      "Emitir Cartão Virtual",
+      `Emitir cartão Visa para ${order?.name ?? id}?\n\nO utilizador deve ter KYC aprovado e conta registada com o mesmo e-mail.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Emitir",
+          onPress: async () => {
+            setIssuingId(id);
+            try {
+              await issueCard({ id, data: { issuedBy: "admin-mobile" } });
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              Alert.alert("Sucesso", "Cartão emitido com sucesso! O utilizador já pode vê-lo na app.");
+              refetch();
+            } catch (err: unknown) {
+              const msg =
+                (err as { response?: { data?: { error?: string } } })?.response?.data?.error ??
+                "Não foi possível emitir o cartão. Verifique se o utilizador tem KYC aprovado e conta registada.";
+              Alert.alert("Erro ao emitir cartão", msg);
+            } finally {
+              setIssuingId(null);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const filterChips = ["", ...ALL_STATUSES];
   const listData: ListItem[] = [
     { type: "filters" },
-    ...(data?.orders ?? []).map<ListItem>((o) => ({ type: "order", order: o as Order })),
+    ...(data?.orders ?? []).map<ListItem>((o) => ({
+      type: "order",
+      order: o as Order,
+    })),
   ];
 
   return (
@@ -218,8 +342,17 @@ export default function AdminPedidosScreen() {
           { borderBottomColor: colors.border, paddingTop: isWeb ? 67 : 0 },
         ]}
       >
-        <View style={[styles.searchInput, { borderColor: colors.border, backgroundColor: colors.secondary }]}>
-          <Ionicons name="search-outline" size={16} color={colors.mutedForeground} />
+        <View
+          style={[
+            styles.searchInput,
+            { borderColor: colors.border, backgroundColor: colors.secondary },
+          ]}
+        >
+          <Ionicons
+            name="search-outline"
+            size={16}
+            color={colors.mutedForeground}
+          />
           <TextInput
             value={search}
             onChangeText={setSearch}
@@ -230,7 +363,11 @@ export default function AdminPedidosScreen() {
           />
           {search ? (
             <Pressable onPress={() => setSearch("")}>
-              <Ionicons name="close-circle" size={17} color={colors.mutedForeground} />
+              <Ionicons
+                name="close-circle"
+                size={17}
+                color={colors.mutedForeground}
+              />
             </Pressable>
           ) : null}
         </View>
@@ -238,8 +375,10 @@ export default function AdminPedidosScreen() {
 
       <FlatList
         data={listData}
-        keyExtractor={(item, i) =>
-          item.type === "filters" ? "filters" : (item as { type: "order"; order: Order }).order.id
+        keyExtractor={(item) =>
+          item.type === "filters"
+            ? "filters"
+            : (item as { type: "order"; order: Order }).order.id
         }
         renderItem={({ item }) => {
           if (item.type === "filters") {
@@ -253,7 +392,9 @@ export default function AdminPedidosScreen() {
                       styles.chip,
                       {
                         backgroundColor:
-                          statusFilter === s ? colors.foreground : colors.secondary,
+                          statusFilter === s
+                            ? colors.foreground
+                            : colors.secondary,
                         borderColor: colors.border,
                       },
                     ]}
@@ -279,7 +420,13 @@ export default function AdminPedidosScreen() {
           const { order } = item as { type: "order"; order: Order };
           return (
             <View style={{ paddingHorizontal: 14 }}>
-              <OrderCard order={order} onChangeStatus={handleChangeStatus} colors={colors} />
+              <OrderCard
+                order={order}
+                onChangeStatus={handleChangeStatus}
+                onIssueCard={handleIssueCard}
+                isIssuingCard={issuingId === order.id}
+                colors={colors}
+              />
             </View>
           );
         }}
@@ -290,8 +437,14 @@ export default function AdminPedidosScreen() {
             </View>
           ) : (
             <View style={styles.center}>
-              <Ionicons name="inbox-outline" size={40} color={colors.mutedForeground} />
-              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+              <Ionicons
+                name="inbox-outline"
+                size={40}
+                color={colors.mutedForeground}
+              />
+              <Text
+                style={[styles.emptyText, { color: colors.mutedForeground }]}
+              >
                 Nenhum pedido encontrado
               </Text>
             </View>
