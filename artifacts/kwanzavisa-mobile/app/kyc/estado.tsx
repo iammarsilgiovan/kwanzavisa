@@ -41,7 +41,7 @@ const STATUS_CONFIG = {
 export default function KycEstadoScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { data, isLoading } = useKycGetStatus({ refetchInterval: 30_000 });
+  const { data, isLoading } = useKycGetStatus({ query: { refetchInterval: 30_000 } as never });
 
   if (isLoading) {
     return (

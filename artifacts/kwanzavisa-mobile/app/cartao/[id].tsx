@@ -38,7 +38,7 @@ export default function CartaoDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [showNumber, setShowNumber] = useState(false);
 
-  const { data, isLoading, refetch } = useGetCard({ id: id! });
+  const { data, isLoading, refetch } = useGetCard(id!);
   const { mutateAsync: toggleBlock, isPending: toggling } = useCardToggleBlock();
 
   const card = data?.card;
@@ -88,9 +88,7 @@ export default function CartaoDetailScreen() {
   const isActive = card.status === "active";
   const isBlocked = card.status === "blocked";
 
-  const fullNumber = card.cardNumberEncrypted
-    ? `${card.cardNumberEncrypted.slice(0, 4)} ${card.cardNumberEncrypted.slice(4, 8)} ${card.cardNumberEncrypted.slice(8, 12)} ${card.cardNumberEncrypted.slice(12)}`
-    : `•••• •••• •••• ${card.last4}`;
+  const fullNumber = `•••• •••• •••• ${card.last4}`;
 
   return (
     <ScrollView

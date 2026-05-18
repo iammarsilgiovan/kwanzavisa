@@ -280,7 +280,7 @@ export default function AdminPedidosScreen() {
 
   const { data, isLoading, refetch, isRefetching } = useAdminListOrders(
     { search: search || undefined, status: statusFilter || undefined, page, limit: 30 },
-    { refetchInterval: 30_000 }
+    { query: { refetchInterval: 30_000 } as never }
   );
   const { mutateAsync: updateStatus } = useAdminUpdateOrderStatus();
   const { mutateAsync: issueCard } = useAdminIssueCard();
@@ -438,7 +438,7 @@ export default function AdminPedidosScreen() {
           ) : (
             <View style={styles.center}>
               <Ionicons
-                name="inbox-outline"
+                name="mail-open-outline"
                 size={40}
                 color={colors.mutedForeground}
               />

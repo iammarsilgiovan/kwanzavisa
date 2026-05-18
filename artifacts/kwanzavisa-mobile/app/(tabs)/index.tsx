@@ -123,7 +123,7 @@ export default function HomeScreen() {
 
   const { data: rate, isLoading: rateLoading } = useGetExchangeRate(
     { currency: "USD", amount: 1 },
-    { refetchInterval: 60_000 }
+    { query: { refetchInterval: 60_000 } as never }
   );
 
   const openWhatsApp = () => {

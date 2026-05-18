@@ -2,12 +2,16 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { cardsTable, cardTransactionsTable } from "@workspace/db/schema";
 import { eq, desc } from "drizzle-orm";
-import { requireAuth, type AuthRequest } from "../middlewares/requireAuth";
-import { blockCard, unblockCard } from "../services/cardProvider";
+import { requireAuth, type AuthRequest } from "../middlewares/requireAuth.js";
+import { blockCard, unblockCard } from "../services/cardProvider.js";
 
 const router = Router();
 
-router.get("/cards", requireAuth, async (req: AuthRequest, res) => {
+function rawId(param: string | string[]): string {
+  return Array.isArray(param) ? param[0] : param;
+}
+
+router.get("/cards", requireAuth, async (req: AuthRequest, res): Promise<void> => {
   const cards = await db.select({
     id: cardsTable.id,
     last4: cardsTable.last4,
@@ -22,8 +26,9 @@ router.get("/cards", requireAuth, async (req: AuthRequest, res) => {
   res.json({ cards });
 });
 
-router.get("/cards/:id", requireAuth, async (req: AuthRequest, res) => {
-  const { id } = req.params;
+router.get("/cards/:id", requireAuth, async (req: AuthRequest, res): Promise<void> => {
+  const id = rawId(req.params.id);
+
   const [card] = await db.select().from(cardsTable)
     .where(eq(cardsTable.id, id))
     .limit(1);
@@ -38,16 +43,12 @@ router.get("/cards/:id", requireAuth, async (req: AuthRequest, res) => {
     .orderBy(desc(cardTransactionsTable.createdAt))
     .limit(20);
 
-  res.json({
-    card: {
-      ...card,
-      transactions: txns,
-    },
-  });
+  res.json({ card: { ...card, transactions: txns } });
 });
 
-router.post("/cards/:id/toggle-block", requireAuth, async (req: AuthRequest, res) => {
-  const { id } = req.params;
+router.post("/cards/:id/toggle-block", requireAuth, async (req: AuthRequest, res): Promise<void> => {
+  const id = rawId(req.params.id);
+
   const [card] = await db.select().from(cardsTable).where(eq(cardsTable.id, id)).limit(1);
 
   if (!card || card.userId !== req.userId!) {

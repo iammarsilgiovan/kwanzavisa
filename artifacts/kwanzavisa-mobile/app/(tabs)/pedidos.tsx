@@ -456,7 +456,7 @@ function RastrearPedido() {
 
   const { data, isLoading } = useLookupOrders(
     { contact: searched },
-    { enabled: !!searched }
+    { query: { enabled: !!searched } as never }
   );
 
   const handleSearch = () => {
@@ -512,7 +512,7 @@ function RastrearPedido() {
           )}
           {data.orders.length === 0 ? (
             <View style={rastrStyles.center}>
-              <Ionicons name="inbox-outline" size={40} color={colors.mutedForeground} />
+              <Ionicons name="mail-open-outline" size={40} color={colors.mutedForeground} />
               <Text style={[rastrStyles.emptyText, { color: colors.mutedForeground }]}>
                 Nenhum pedido encontrado
               </Text>

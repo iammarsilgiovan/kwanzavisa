@@ -22,7 +22,7 @@ export default function AdminCambioScreen() {
   const insets = useSafeAreaInsets();
   const isWeb = Platform.OS === "web";
 
-  const { data, isLoading, refetch } = useAdminGetExchangeRates({ refetchInterval: 30_000 });
+  const { data, isLoading, refetch } = useAdminGetExchangeRates({ query: { refetchInterval: 30_000 } as never });
   const { mutateAsync: setRate, isPending } = useAdminSetExchangeRate();
 
   const [newRate, setNewRate] = useState("");

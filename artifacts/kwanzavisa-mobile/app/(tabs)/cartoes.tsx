@@ -23,7 +23,7 @@ type Card = {
   expiryYear: number;
   cardholderName: string;
   status: string;
-  balanceUsd: string | null;
+  balanceUsd?: string | null;
 };
 
 function CardItem({ card, colors }: { card: Card; colors: ReturnType<typeof useColors> }) {
@@ -170,8 +170,7 @@ export default function CartoesScreen() {
   const { isAuthenticated } = useAuth();
 
   const { data, isLoading, refetch, isRefetching } = useListCards(
-    {},
-    { enabled: isAuthenticated, refetchInterval: 30_000 }
+    { query: { enabled: isAuthenticated, refetchInterval: 30_000 } as never }
   );
 
   const cards = data?.cards ?? [];

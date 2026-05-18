@@ -115,10 +115,10 @@ export default function AdminDashboardScreen() {
   const { width } = useWindowDimensions();
 
   const { data: stats, isLoading: statsLoading } = useAdminGetStats({
-    refetchInterval: 30_000,
+    query: { refetchInterval: 30_000 } as never,
   });
   const { data: rates, isLoading: ratesLoading } = useAdminGetExchangeRates({
-    refetchInterval: 30_000,
+    query: { refetchInterval: 30_000 } as never,
   });
 
   const numColumns = width >= 600 ? 4 : 2;

@@ -123,7 +123,7 @@ export default function AdminKycScreen() {
 
   const { data, isLoading, refetch, isRefetching } = useAdminListKyc(
     { status: statusFilter || undefined },
-    { refetchInterval: 30_000 }
+    { query: { refetchInterval: 30_000 } as never }
   );
   const { mutateAsync: reviewKyc } = useAdminReviewKyc();
 

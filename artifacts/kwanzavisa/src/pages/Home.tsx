@@ -557,7 +557,10 @@ function OrderForm() {
           <Button onClick={() => { setSuccessData(null); form.reset(); }} variant="outline" className="rounded-full">
             Fazer outro pedido
           </Button>
-          <Button onClick={() => scrollTo("rastrear")} className="rounded-full">
+          <Button
+            onClick={() => document.getElementById("rastrear")?.scrollIntoView({ behavior: "smooth" })}
+            className="rounded-full"
+          >
             Rastrear Pedido
           </Button>
         </div>
@@ -939,7 +942,7 @@ function OrderTracker() {
               {data.orders.map(o => (
                 <OrderCard
                   key={o.id}
-                  order={{ ...o, name: data.name, email: queryContact }}
+                  order={{ ...o, name: data.name ?? "", email: queryContact }}
                   onUploaded={handleUploaded}
                 />
               ))}

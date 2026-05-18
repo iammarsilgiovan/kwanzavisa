@@ -133,7 +133,7 @@ export default function KycDocumentosScreen() {
       return;
     }
     try {
-      await submitKyc({});
+      await submitKyc();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.replace("/kyc/estado");
     } catch (err: unknown) {
