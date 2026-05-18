@@ -20,6 +20,8 @@ import {
   emailStatusPagoCliente,
   emailStatusPagoAdmin,
   emailStatusConcluidoCliente,
+  emailStatusEmExecucaoCliente,
+  emailStatusCanceladoCliente,
   emailDocumentacaoNecessaria,
   emailComprovatívoAdmin,
 } from "../services/email.js";
@@ -345,8 +347,12 @@ router.patch("/admin/orders/:id/status", async (req, res): Promise<void> => {
           ? [emailDocumentacaoNecessaria({ to: order.email, id: order.id, name: order.name })]
           : []),
       ]);
+    } else if (newStatus === "em_processamento") {
+      await emailStatusEmExecucaoCliente({ to: order.email, id: order.id, name: order.name, service: order.service });
     } else if (newStatus === "concluido") {
       await emailStatusConcluidoCliente({ to: order.email, id: order.id, name: order.name, service: order.service });
+    } else if (newStatus === "cancelado") {
+      await emailStatusCanceladoCliente({ to: order.email, id: order.id, name: order.name, service: order.service });
     }
   } catch (err) {
     req.log?.warn({ err }, "email send failed on status update");

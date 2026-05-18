@@ -149,6 +149,36 @@ export async function emailStatusPagoAdmin(opts: { id: string; service: string; 
   await sendEmail(ADMIN_EMAIL, `Pagamento efectuado · ${opts.id}`, html);
 }
 
+export async function emailStatusEmExecucaoCliente(opts: { to: string; id: string; name: string; service: string }) {
+  const serviceName = SERVICE_LABELS[opts.service] ?? opts.service;
+  const html = layout(`
+    <h2 style="font-size:22px;font-weight:700;color:#1D1D1F;margin:0 0 8px;">Pedido em execução ⚙️</h2>
+    <p style="color:#6E6E73;font-size:15px;margin:0 0 24px;">Olá ${opts.name.split(" ")[0]}, o teu pedido está a ser processado pela nossa equipa.</p>
+    <div style="background:#F5F5F7;border-radius:12px;padding:20px;">
+      <p style="color:#6E6E73;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 4px;">ID do Pedido</p>
+      <p style="font-size:22px;font-family:monospace;font-weight:800;color:#1D1D1F;margin:0 0 8px;">${opts.id}</p>
+      <p style="color:#1D1D1F;font-size:14px;margin:0;">Serviço: <strong>${serviceName}</strong></p>
+    </div>
+    <p style="color:#6E6E73;font-size:14px;margin:20px 0 0;">Entraremos em contacto via WhatsApp assim que o processo estiver concluído. Não é necessária qualquer acção da tua parte neste momento.</p>
+  `);
+  await sendEmail(opts.to, `Pedido em execução · ${opts.id}`, html);
+}
+
+export async function emailStatusCanceladoCliente(opts: { to: string; id: string; name: string; service: string }) {
+  const serviceName = SERVICE_LABELS[opts.service] ?? opts.service;
+  const html = layout(`
+    <h2 style="font-size:22px;font-weight:700;color:#1D1D1F;margin:0 0 8px;">Pedido cancelado</h2>
+    <p style="color:#6E6E73;font-size:15px;margin:0 0 24px;">Olá ${opts.name.split(" ")[0]}, o teu pedido foi cancelado.</p>
+    <div style="background:#F5F5F7;border-radius:12px;padding:20px;">
+      <p style="color:#6E6E73;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 4px;">ID do Pedido</p>
+      <p style="font-size:22px;font-family:monospace;font-weight:800;color:#1D1D1F;margin:0 0 8px;">${opts.id}</p>
+      <p style="color:#1D1D1F;font-size:14px;margin:0;">Serviço: <strong>${serviceName}</strong></p>
+    </div>
+    <p style="color:#6E6E73;font-size:14px;margin:20px 0 0;">Se tiveres dúvidas ou achas que isto foi um erro, fala connosco via <a href="https://wa.me/244957636981" style="color:#000;font-weight:600;">WhatsApp</a>.</p>
+  `);
+  await sendEmail(opts.to, `Pedido cancelado · ${opts.id}`, html);
+}
+
 export async function emailComprovatívoAdmin(opts: { id: string; name: string; email: string; service: string }) {
   const serviceName = SERVICE_LABELS[opts.service] ?? opts.service;
   const html = layout(`
