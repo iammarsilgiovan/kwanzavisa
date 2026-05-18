@@ -464,7 +464,7 @@ function SimulatorSection() {
 }
 
 function OrderForm() {
-  const [successId, setSuccessId] = useState<string | null>(null);
+  const [successData, setSuccessData] = useState<{ id: string; amountKwanza: number | null } | null>(null);
   const { toast } = useToast();
   const createOrder = useCreateOrder();
 
@@ -495,7 +495,7 @@ function OrderForm() {
       } 
     }, {
       onSuccess: (res) => {
-        setSuccessId(res.id);
+        setSuccessData({ id: res.id, amountKwanza: res.amountKwanza ?? null });
         window.scrollTo({ top: document.getElementById("pedido")?.offsetTop || 0, behavior: "smooth" });
       },
       onError: (err) => {
@@ -504,7 +504,13 @@ function OrderForm() {
     });
   };
 
-  if (successId) {
+  if (successData) {
+    const paymentRows = [
+      { label: "IBAN", value: "0006 0000 02167174301 34" },
+      { label: "Nome", value: "K Digital Prestação de Serviços" },
+      { label: "Entidade", value: "10116 — Paypay África" },
+      { label: "Referência", value: "935975173" },
+    ];
     return (
       <div className="bg-secondary border border-border p-8 md:p-12 rounded-3xl">
         <div className="text-center mb-10">
@@ -520,7 +526,7 @@ function OrderForm() {
         {/* Order ID */}
         <div className="bg-white border border-border p-6 rounded-2xl mb-6 text-center">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">ID do Pedido</p>
-          <p className="text-2xl font-mono font-bold tracking-widest">{successId}</p>
+          <p className="text-2xl font-mono font-bold tracking-widest">{successData.id}</p>
         </div>
 
         {/* Payment details */}
@@ -528,17 +534,19 @@ function OrderForm() {
           <div className="bg-primary text-primary-foreground px-6 py-3">
             <p className="text-sm font-semibold">Dados de Pagamento</p>
           </div>
-          {[
-            { label: "IBAN", value: "0006 0000 02167174301 34" },
-            { label: "Nome", value: "K Digital Prestação de Serviços" },
-            { label: "Entidade", value: "10116 — Paypay África" },
-            { label: "Referência", value: "935975173" },
-          ].map((row, i, arr) => (
-            <div key={row.label} className={`px-6 py-4 ${i < arr.length - 1 ? "border-b border-border" : ""}`}>
+          {paymentRows.map((row, i) => (
+            <div key={row.label} className="px-6 py-4 border-b border-border">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">{row.label}</p>
               <p className="text-base font-bold font-mono">{row.value}</p>
             </div>
           ))}
+          {/* Total a pagar em Kz */}
+          {successData.amountKwanza && (
+            <div className="px-6 py-4 bg-secondary">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Total a Pagar</p>
+              <p className="text-xl font-bold">{successData.amountKwanza.toLocaleString("pt-PT")} <span className="text-sm font-semibold">Kz</span></p>
+            </div>
+          )}
         </div>
 
         <p className="text-sm text-muted-foreground text-center mb-8">
@@ -546,7 +554,7 @@ function OrderForm() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button onClick={() => { setSuccessId(null); form.reset(); }} variant="outline" className="rounded-full">
+          <Button onClick={() => { setSuccessData(null); form.reset(); }} variant="outline" className="rounded-full">
             Fazer outro pedido
           </Button>
           <Button onClick={() => scrollTo("rastrear")} className="rounded-full">
@@ -751,6 +759,7 @@ type LookupOrder = {
   platform?: string | null;
   intlPlatform?: string | null;
   amountUsd?: number | null;
+  amountKwanza?: number | null;
   formattedDate: string;
   name: string;
   email: string;
@@ -821,6 +830,9 @@ function OrderCard({ order, onUploaded }: { order: LookupOrder; onUploaded: (id:
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Valor</p>
           <p className="font-semibold text-sm">{order.amountUsd ? `$${order.amountUsd} USD` : "—"}</p>
+          {order.amountUsd && order.amountKwanza && (
+            <p className="text-xs text-muted-foreground mt-0.5">{order.amountKwanza.toLocaleString("pt-PT")} Kz</p>
+          )}
         </div>
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Data</p>
