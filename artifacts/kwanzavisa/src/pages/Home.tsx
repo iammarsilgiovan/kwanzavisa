@@ -24,8 +24,6 @@ import {
   Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage 
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 
 // --- Schema for Order Form ---
 const orderFormSchema = z.object({
@@ -508,18 +506,52 @@ function OrderForm() {
 
   if (successId) {
     return (
-      <div className="bg-secondary border border-border p-12 rounded-3xl text-center">
-        <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle2 className="w-8 h-8" />
+      <div className="bg-secondary border border-border p-8 md:p-12 rounded-3xl">
+        <div className="text-center mb-10">
+          <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-8 h-8" />
+          </div>
+          <h3 className="text-3xl font-bold mb-3">Pedido Submetido</h3>
+          <p className="text-muted-foreground text-lg max-w-md mx-auto">
+            O teu pedido foi recebido com sucesso. Efectua o pagamento com os dados abaixo para prosseguirmos.
+          </p>
         </div>
-        <h3 className="text-3xl font-bold mb-4">Pedido Submetido</h3>
-        <p className="text-muted-foreground text-lg mb-8">O teu pedido foi recebido com sucesso. O nosso suporte entrará em contacto via WhatsApp em breve.</p>
-        <div className="bg-white border border-border p-6 rounded-2xl mb-8 inline-block mx-auto">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-1">ID do Pedido</p>
+
+        {/* Order ID */}
+        <div className="bg-white border border-border p-6 rounded-2xl mb-6 text-center">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">ID do Pedido</p>
           <p className="text-2xl font-mono font-bold tracking-widest">{successId}</p>
         </div>
-        <div>
-          <Button onClick={() => { setSuccessId(null); form.reset(); }} variant="outline" className="rounded-full">Fazer outro pedido</Button>
+
+        {/* Payment details */}
+        <div className="bg-white border border-border rounded-2xl overflow-hidden mb-8">
+          <div className="bg-primary text-primary-foreground px-6 py-3">
+            <p className="text-sm font-semibold">Dados de Pagamento</p>
+          </div>
+          {[
+            { label: "IBAN", value: "0006 0000 02167174301 34" },
+            { label: "Nome", value: "K Digital Prestação de Serviços" },
+            { label: "Entidade", value: "10116 — Paypay África" },
+            { label: "Referência", value: "935975173" },
+          ].map((row, i, arr) => (
+            <div key={row.label} className={`px-6 py-4 ${i < arr.length - 1 ? "border-b border-border" : ""}`}>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">{row.label}</p>
+              <p className="text-base font-bold font-mono">{row.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-sm text-muted-foreground text-center mb-8">
+          Após efectuares o pagamento, usa <strong>Rastrear Pedido</strong> para enviar o comprovativo.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button onClick={() => { setSuccessId(null); form.reset(); }} variant="outline" className="rounded-full">
+            Fazer outro pedido
+          </Button>
+          <Button onClick={() => scrollTo("rastrear")} className="rounded-full">
+            Rastrear Pedido
+          </Button>
         </div>
       </div>
     );
@@ -694,11 +726,154 @@ function OrderForm() {
   );
 }
 
+const STATUS_INFO: Record<string, { label: string; color: string; bg: string; next: string | null }> = {
+  pendente:             { label: "Pendente",             color: "text-gray-700",  bg: "bg-gray-100",   next: null },
+  em_contacto:          { label: "Em Contacto",          color: "text-blue-700",  bg: "bg-blue-50",    next: null },
+  aguarda_pagamento:    { label: "Aguarda Pagamento",    color: "text-amber-700", bg: "bg-amber-50",   next: "Efectua o pagamento e envia o comprovativo abaixo." },
+  comprovativo_enviado: { label: "Comprovativo Enviado", color: "text-violet-700",bg: "bg-violet-50",  next: "Comprovativo recebido. A confirmar o pagamento." },
+  pago:                 { label: "Pago",                 color: "text-green-700", bg: "bg-green-50",   next: "Pagamento confirmado. O teu pedido está em execução." },
+  em_processamento:     { label: "Em Processamento",     color: "text-blue-700",  bg: "bg-blue-50",    next: "O teu pedido está a ser processado pela nossa equipa." },
+  concluido:            { label: "Concluído",            color: "text-emerald-700",bg: "bg-emerald-50",next: "Concluído. Obrigado por escolheres a KwanzaVisa." },
+  cancelado:            { label: "Cancelado",            color: "text-red-700",   bg: "bg-red-50",     next: null },
+};
+
+const SERVICE_LABELS: Record<string, string> = {
+  cartao_virtual: "Cartão Virtual",
+  acesso_assistido: "Acesso Assistido",
+  transferencia: "Transferência Internacional",
+  conta_internacional: "Conta Internacional",
+};
+
+type LookupOrder = {
+  id: string;
+  service: string;
+  status: string;
+  platform?: string | null;
+  intlPlatform?: string | null;
+  amountUsd?: number | null;
+  formattedDate: string;
+  name: string;
+  email: string;
+};
+
+function OrderCard({ order, onUploaded }: { order: LookupOrder; onUploaded: (id: string) => void }) {
+  const info = STATUS_INFO[order.status] ?? { label: order.status, color: "text-gray-700", bg: "bg-gray-100", next: null };
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
+  const { toast } = useToast();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    setFile(f);
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      const base64: string = await new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const res = await fetch(`/api/orders/${order.id}/comprovativo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ base64Data: base64, fileName: file.name, mimeType: file.type }),
+      });
+      if (!res.ok) throw new Error("Erro ao enviar");
+      setUploaded(true);
+      onUploaded(order.id);
+      toast({ title: "Comprovativo enviado!", description: "A nossa equipa irá confirmar o pagamento brevemente." });
+    } catch {
+      toast({ title: "Erro ao enviar comprovativo", description: "Tente novamente ou contacte via WhatsApp.", variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-5 border-b border-border">
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-0.5">ID</p>
+            <p className="font-mono font-bold text-sm">{order.id}</p>
+          </div>
+        </div>
+        <span className={`inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full ${info.bg} ${info.color}`}>
+          {info.label}
+        </span>
+      </div>
+
+      {/* Body */}
+      <div className="px-6 py-5 grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Serviço</p>
+          <p className="font-semibold text-sm">{SERVICE_LABELS[order.service] ?? order.service}</p>
+          {(order.platform || order.intlPlatform) && (
+            <p className="text-xs text-muted-foreground">{order.platform || order.intlPlatform}</p>
+          )}
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Valor</p>
+          <p className="font-semibold text-sm">{order.amountUsd ? `$${order.amountUsd} USD` : "—"}</p>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Data</p>
+          <p className="font-semibold text-sm">{order.formattedDate}</p>
+        </div>
+      </div>
+
+      {/* Next step instruction */}
+      {info.next && (
+        <div className={`mx-6 mb-4 px-4 py-3 rounded-xl text-sm font-medium ${info.bg} ${info.color} flex items-start gap-2`}>
+          <ArrowRight className="w-4 h-4 mt-0.5 shrink-0" />
+          <span>{info.next}</span>
+        </div>
+      )}
+
+      {/* Inline upload for aguarda_pagamento */}
+      {order.status === "aguarda_pagamento" && !uploaded && (
+        <div className="mx-6 mb-5 p-4 border-2 border-dashed border-border rounded-xl bg-secondary space-y-3">
+          <p className="text-sm font-semibold">Enviar Comprovativo de Pagamento</p>
+          <input
+            type="file"
+            accept="image/*,application/pdf"
+            onChange={handleFileChange}
+            className="block w-full text-sm text-muted-foreground file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-primary-foreground hover:file:opacity-80 cursor-pointer"
+          />
+          {file && (
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-muted-foreground flex-1 truncate">{file.name}</p>
+              <Button size="sm" onClick={handleUpload} disabled={uploading} className="shrink-0 rounded-full">
+                {uploading ? "A enviar..." : "Confirmar envio"}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Uploaded confirmation */}
+      {(uploaded || order.status === "comprovativo_enviado") && (
+        <div className="mx-6 mb-5 flex items-center gap-2 text-violet-700 text-sm font-medium bg-violet-50 px-4 py-3 rounded-xl">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
+          Comprovativo enviado. Aguarda confirmação.
+        </div>
+      )}
+    </div>
+  );
+}
+
 function OrderTracker() {
   const [contact, setContact] = useState("");
   const [queryContact, setQueryContact] = useState("");
+  const [uploadedIds, setUploadedIds] = useState<Set<string>>(new Set());
 
-  const { data, isLoading } = useLookupOrders(
+  const { data, isLoading, refetch } = useLookupOrders(
     { contact: queryContact },
     { query: { enabled: !!queryContact, queryKey: getLookupOrdersQueryKey({ contact: queryContact }), retry: false } }
   );
@@ -710,22 +885,17 @@ function OrderTracker() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch(status) {
-      case "pendente": return <Badge variant="outline" className="bg-gray-100 text-gray-800">Pendente</Badge>;
-      case "em_processamento": return <Badge className="bg-gray-800 text-white">Processar</Badge>;
-      case "concluido": return <Badge className="bg-black text-white">Concluído</Badge>;
-      case "cancelado": return <Badge variant="destructive">Cancelado</Badge>;
-      default: return <Badge>{status}</Badge>;
-    }
+  const handleUploaded = (id: string) => {
+    setUploadedIds(prev => new Set([...prev, id]));
+    setTimeout(() => refetch(), 1500);
   };
 
   return (
     <div className="space-y-8">
       <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-        <Input 
-          type="text" 
-          placeholder="Email ou WhatsApp" 
+        <Input
+          type="text"
+          placeholder="Email ou WhatsApp"
           value={contact}
           onChange={(e) => setContact(e.target.value)}
           className="h-14 text-lg bg-white shadow-sm border-border"
@@ -736,54 +906,34 @@ function OrderTracker() {
       </form>
 
       {queryContact && data && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white border border-border p-8 rounded-3xl shadow-sm"
+          className="space-y-6"
         >
-          <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+          <div className="bg-white border border-border p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
             <div>
-              <h3 className="text-2xl font-bold mb-2">Olá{data.name ? `, ${data.name.split(' ')[0]}` : ''}.</h3>
-              <p className="text-muted-foreground">Encontrámos {data.orders.length} pedido{data.orders.length !== 1 && 's'}.</p>
+              <h3 className="text-2xl font-bold mb-1">Olá{data.name ? `, ${data.name.split(' ')[0]}` : ''}.</h3>
+              <p className="text-muted-foreground">{data.orders.length} pedido{data.orders.length !== 1 ? 's' : ''} encontrado{data.orders.length !== 1 ? 's' : ''}.</p>
             </div>
-            <div className="bg-secondary px-6 py-4 rounded-2xl text-right">
+            <div className="bg-secondary px-6 py-4 rounded-2xl text-right shrink-0">
               <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Total Concluído</p>
               <p className="text-2xl font-bold">{data.totalSpentKwanza.toLocaleString('pt-PT')} Kz</p>
             </div>
           </div>
 
           {data.orders.length > 0 ? (
-            <div className="border rounded-2xl overflow-hidden">
-              <Table>
-                <TableHeader className="bg-secondary">
-                  <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Serviço</TableHead>
-                    <TableHead>Valor</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead>Data</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data.orders.map(o => (
-                    <TableRow key={o.id}>
-                      <TableCell className="font-mono text-xs font-medium">{o.id}</TableCell>
-                      <TableCell>
-                        <div className="font-bold capitalize">{o.service.replace('_', ' ')}</div>
-                        <div className="text-xs text-muted-foreground">{o.platform || o.intlPlatform}</div>
-                      </TableCell>
-                      <TableCell className="font-medium whitespace-nowrap">
-                        {o.amountUsd ? `$${o.amountUsd}` : '-'}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(o.status)}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{o.formattedDate}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="space-y-4">
+              {data.orders.map(o => (
+                <OrderCard
+                  key={o.id}
+                  order={{ ...o, name: data.name, email: queryContact }}
+                  onUploaded={handleUploaded}
+                />
+              ))}
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="bg-white border border-border text-center py-12 rounded-2xl">
               <p className="text-muted-foreground">Nenhum pedido encontrado para este contacto.</p>
             </div>
           )}

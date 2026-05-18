@@ -255,7 +255,6 @@ export default function ContaScreen() {
         </>
       )}
 
-      <Text style={[styles.version, { color: colors.mutedForeground }]}>KwanzaVisa v1.0.0</Text>
     </ScrollView>
   );
 }

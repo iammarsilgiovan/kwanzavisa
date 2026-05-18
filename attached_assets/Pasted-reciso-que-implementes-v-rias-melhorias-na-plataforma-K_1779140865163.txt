@@ -1,0 +1,38 @@
+reciso que implementes várias melhorias na plataforma KwanzaVisa. Vou descrever tudo de forma sequencial — implementa cada ponto sem quebrar o que já existe.
+1. Página de confirmação do pedido
+No ficheiro EJS que renderiza o ecrã "Pedido Submetido", substitui o texto "O teu pedido foi recebido com sucesso. O nosso suporte entrará em contacto via WhatsApp em breve." por "O teu pedido foi recebido com sucesso. Efectua o pagamento com os dados abaixo para prosseguirmos." — e adiciona imediatamente abaixo do bloco do ID do pedido um novo bloco com as coordenadas de pagamento, seguindo o mesmo estilo visual da página:
+
+IBAN · 0006 0000 02167174301 34
+Nome · K Digital Prestação de Serviços
+Entidade · 10116 — Paypay África
+Referência · 935975173
+
+Cada campo com label discreto em cima e valor em destaque em baixo, mesmo estilo do card do ID do pedido.
+2. Upload de comprovativo
+Na página onde o cliente consulta os seus pedidos, em cada linha com estado aguarda_pagamento, adiciona directamente nessa linha um botão "Enviar Comprovativo" e um input de upload que aceita imagem e PDF. O fluxo: cliente selecciona o ficheiro → clica confirmar → ficheiro enviado via POST para /pedidos/:id/comprovativo → após envio com sucesso o botão é substituído pela mensagem "Comprovativo enviado. Aguarda confirmação." Não abrir nova página — tudo inline. No servidor, cria a rota POST /pedidos/:id/comprovativo usando multer, guarda o ficheiro em /uploads/comprovativos/ com o nome [ID_DO_PEDIDO]-comprovativo.[extensão], actualiza o estado do pedido na base de dados para comprovativo_enviado e guarda o caminho do ficheiro no registo do pedido. No dashboard admin, no detalhe de cada pedido, mostra o comprovativo como link ou imagem visualizável.
+3. Notificações por email com Resend
+Instala o pacote resend via npm. Cria o ficheiro utils/email.js com uma função enviarEmail(para, assunto, html) usando a API do Resend — a API key vem da variável de ambiente RESEND_API_KEY já configurada nos Secrets. O remetente é KwanzaVisa <onboarding@resend.dev>. Os emails devem ter design simples em HTML com o nome KwanzaVisa no topo e rodapé KwanzaVisa · K Digital.
+Dispara os seguintes emails automaticamente:
+Para o cliente (email fornecido no pedido):
+
+Quando o pedido é criado — assunto Pedido recebido · [ID] — confirmar o ID, serviço, valor, mostrar as coordenadas de pagamento completas e instruir o cliente a enviar o comprovativo na plataforma em Rastrear Pedido.
+Quando o estado é actualizado para pago — assunto Pagamento confirmado · [ID] — informar que o pagamento foi recebido e o pedido está em processamento.
+Quando o serviço é Abertura de Conta Internacional e o estado passa para pago — assunto Documentação necessária · [ID] — solicitar um dos seguintes documentos: Bilhete de Identidade, Cartão de Condução ou Passaporte, em formato imagem ou PDF via plataforma em Rastrear Pedido.
+Quando o estado é actualizado para concluido — assunto Pedido concluído · [ID] — confirmar conclusão e agradecer.
+
+Para o admin (email fixo: mvrsilgiovani@gmail.com):
+
+Quando o pedido é criado — assunto Novo pedido · [ID] — ID, serviço, valor, nome e email do cliente, data e hora.
+Quando o cliente faz upload do comprovativo — assunto Comprovativo enviado · [ID] — ID, nome e email do cliente, serviço, link directo para o dashboard admin.
+Quando o estado é actualizado para pago — assunto Pagamento efectuado · [ID] — ID, serviço e valor. Mensagem: "Pagamento confirmado. Pedido pronto para execução."
+
+4. Página de rastreio mais informativa
+Na página onde o cliente consulta os pedidos, adiciona para cada pedido uma linha de instrução abaixo do estado actual indicando o próximo passo esperado:
+
+Estado aguarda_pagamento → mostrar: "Efectua o pagamento e envia o comprovativo abaixo."
+Estado comprovativo_enviado → mostrar: "Comprovativo recebido. A confirmar o pagamento."
+Estado pago → mostrar: "Pagamento confirmado. O teu pedido está em execução."
+Estado concluido → mostrar: "Concluído. Obrigado por escolheres a KwanzaVisa."
+
+Regras gerais:
+Não quebres nenhuma funcionalidade existente. Usa o mesmo estilo visual já presente na plataforma. Testa cada rota criada. Confirma que o multer está instalado — se não estiver, instala via npm. Todos os envios de email devem estar dentro de blocos try/catch para não quebrar o fluxo principal se o Resend falhar.

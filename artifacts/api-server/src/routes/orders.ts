@@ -14,6 +14,15 @@ import {
   AdminUpdateOrderCostParams,
   AdminGetOrderDetailParams,
 } from "@workspace/api-zod";
+import {
+  emailOrderCreatedCliente,
+  emailOrderCreatedAdmin,
+  emailStatusPagoCliente,
+  emailStatusPagoAdmin,
+  emailStatusConcluidoCliente,
+  emailDocumentacaoNecessaria,
+  emailComprovatívoAdmin,
+} from "../services/email.js";
 
 const router: IRouter = Router();
 
@@ -122,7 +131,85 @@ router.post("/orders", async (req, res): Promise<void> => {
     changedBy: "sistema",
   });
 
-  res.status(201).json(mapOrder(order));
+  const mapped = mapOrder(order);
+
+  // Emails — fire & forget, never block response
+  try {
+    await Promise.all([
+      emailOrderCreatedCliente({
+        to: order.email,
+        id,
+        service: order.service,
+        amountUsd: mapped.amountUsd,
+        name: order.name,
+      }),
+      emailOrderCreatedAdmin({
+        id,
+        service: order.service,
+        amountUsd: mapped.amountUsd,
+        name: order.name,
+        email: order.email,
+        formattedDate: mapped.formattedDate,
+      }),
+    ]);
+  } catch (err) {
+    req.log?.warn({ err }, "email send failed on order create");
+  }
+
+  res.status(201).json(mapped);
+});
+
+// POST /orders/:id/comprovativo — upload proof of payment (base64 JSON)
+router.post("/orders/:id/comprovativo", async (req, res): Promise<void> => {
+  const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const { base64Data, fileName, mimeType } = req.body as {
+    base64Data?: string;
+    fileName?: string;
+    mimeType?: string;
+  };
+
+  if (!base64Data) {
+    res.status(400).json({ error: "base64Data é obrigatório" });
+    return;
+  }
+
+  const [order] = await db.select().from(ordersTable).where(eq(ordersTable.id, rawId));
+  if (!order) {
+    res.status(404).json({ error: "Pedido não encontrado" });
+    return;
+  }
+
+  // Store comprovativo note + change status to comprovativo_enviado
+  const noteText = `__comprovativo__:${fileName ?? "comprovativo"}:${mimeType ?? "application/octet-stream"}:${base64Data}`;
+  await db.insert(orderNotesTable).values({
+    orderId: rawId,
+    note: noteText,
+    changedBy: "cliente",
+  });
+
+  await db.update(ordersTable)
+    .set({ status: "comprovativo_enviado" })
+    .where(eq(ordersTable.id, rawId));
+
+  await db.insert(orderStatusHistoryTable).values({
+    orderId: rawId,
+    fromStatus: order.status,
+    toStatus: "comprovativo_enviado",
+    changedBy: "cliente",
+  });
+
+  try {
+    await emailComprovatívoAdmin({
+      id: rawId,
+      name: order.name,
+      email: order.email,
+      service: order.service,
+    });
+  } catch (err) {
+    req.log?.warn({ err }, "email send failed on comprovativo upload");
+  }
+
+  res.json({ ok: true, status: "comprovativo_enviado" });
 });
 
 router.get("/orders/lookup", async (req, res): Promise<void> => {
@@ -209,9 +296,12 @@ router.get("/admin/orders/:id/detail", async (req, res): Promise<void> => {
 
   if (!order) { res.status(404).json({ error: "Pedido não encontrado" }); return; }
 
+  // Filter out comprovativo notes from the note shown to client
+  const visibleNote = notes[0]?.note?.startsWith("__comprovativo__") ? null : (notes[0]?.note ?? null);
+
   res.json({
     ...mapOrder(order),
-    note: notes[0]?.note ?? null,
+    note: visibleNote,
     costKwanza: costRow?.costKwanza ? parseFloat(costRow.costKwanza) : null,
     statusHistory: history.map(h => ({
       fromStatus: h.fromStatus,
@@ -242,7 +332,27 @@ router.patch("/admin/orders/:id/status", async (req, res): Promise<void> => {
     changedBy: "admin",
   });
 
-  res.json(mapOrder(order));
+  const mapped = mapOrder(order);
+
+  // Trigger emails on status change — fire & forget
+  try {
+    const newStatus = bodyResult.data.status;
+    if (newStatus === "pago") {
+      await Promise.all([
+        emailStatusPagoCliente({ to: order.email, id: order.id, name: order.name, service: order.service }),
+        emailStatusPagoAdmin({ id: order.id, service: order.service, amountUsd: mapped.amountUsd }),
+        ...(order.service === "conta_internacional"
+          ? [emailDocumentacaoNecessaria({ to: order.email, id: order.id, name: order.name })]
+          : []),
+      ]);
+    } else if (newStatus === "concluido") {
+      await emailStatusConcluidoCliente({ to: order.email, id: order.id, name: order.name, service: order.service });
+    }
+  } catch (err) {
+    req.log?.warn({ err }, "email send failed on status update");
+  }
+
+  res.json(mapped);
 });
 
 router.patch("/admin/orders/:id/note", async (req, res): Promise<void> => {
