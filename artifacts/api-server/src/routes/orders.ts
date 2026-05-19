@@ -341,7 +341,7 @@ router.patch("/admin/orders/:id/status", async (req, res): Promise<void> => {
     const newStatus = bodyResult.data.status;
     if (newStatus === "pago") {
       await Promise.all([
-        emailStatusPagoCliente({ to: order.email, id: order.id, name: order.name, service: order.service }),
+        emailStatusPagoCliente({ to: order.email, id: order.id, name: order.name, service: order.service, amountUsd: mapped.amountUsd }),
         emailStatusPagoAdmin({ id: order.id, service: order.service, amountUsd: mapped.amountUsd }),
         ...(order.service === "conta_internacional"
           ? [emailDocumentacaoNecessaria({ to: order.email, id: order.id, name: order.name })]
