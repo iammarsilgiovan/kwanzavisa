@@ -3,11 +3,9 @@ import { eq, sql } from "drizzle-orm";
 import { db, exchangeRatesTable } from "@workspace/db";
 
 let _resend: Resend | null = null;
-function getResend(): Resend {
-  if (!_resend) {
-    if (!process.env.RESEND_API_KEY) throw new Error("RESEND_API_KEY not set");
-    _resend = new Resend(process.env.RESEND_API_KEY);
-  }
+function getResend(): Resend | null {
+  if (!process.env.RESEND_API_KEY) return null;
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
   return _resend;
 }
 const FROM = "KwanzaVisa <onboarding@resend.dev>";
@@ -63,7 +61,9 @@ function layout(content: string) {
 }
 
 export async function sendEmail(to: string, subject: string, html: string) {
-  await getResend().emails.send({ from: FROM, to, subject, html });
+  const resend = getResend();
+  if (!resend) return;
+  await resend.emails.send({ from: FROM, to, subject, html });
 }
 
 const SERVICE_LABELS: Record<string, string> = {
