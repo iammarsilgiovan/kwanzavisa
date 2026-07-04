@@ -30,7 +30,7 @@ const orderFormSchema = z.object({
   name: z.string().min(2, "Nome completo é obrigatório"),
   email: z.string().email("Email inválido"),
   whatsapp: z.string().min(9, "Número de WhatsApp inválido (ex: +244 9...)"),
-  service: z.enum(["cartao_virtual", "acesso_assistido", "transferencia", "conta_internacional"], {
+  service: z.enum(["cartao_virtual", "acesso_assistido", "transferencia"], {
     required_error: "Selecciona um serviço",
   }),
   // Conditional fields will be validated conditionally or just marked optional
@@ -40,7 +40,6 @@ const orderFormSchema = z.object({
   description: z.string().optional(),
   destinationCountry: z.string().optional(),
   recipientName: z.string().optional(),
-  intlPlatform: z.enum(["Wise", "Bybit", "Kast"]).optional(),
   message: z.string().optional(),
 }).superRefine((data, ctx) => {
   if (["cartao_virtual", "acesso_assistido"].includes(data.service)) {
@@ -53,9 +52,6 @@ const orderFormSchema = z.object({
     if (!data.amount) ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Valor é obrigatório", path: ["amount"] });
     if (!data.currency) ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Moeda é obrigatória", path: ["currency"] });
     if (!data.recipientName) ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Nome do destinatário é obrigatório", path: ["recipientName"] });
-  }
-  if (data.service === "conta_internacional") {
-    if (!data.intlPlatform) ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Plataforma é obrigatória", path: ["intlPlatform"] });
   }
 });
 
@@ -273,19 +269,12 @@ export default function Home() {
                   icon: <ArrowLeftRight className="w-8 h-8 mb-6" />,
                   title: "Transferência",
                   desc: "Envia valores entre países. Pagas em Kz, o destinatário recebe na moeda local."
-                },
-                {
-                  icon: <Globe className="w-8 h-8 mb-6" />,
-                  title: "Conta Internacional",
-                  desc: "Abrimos a tua conta no Wise, Bybit ou Kast.",
-                  badge: "Sob consulta"
                 }
               ].map((s, i) => (
                 <div key={i} className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-colors">
                   {s.icon}
                   <div className="flex items-center gap-3 mb-4">
                     <h3 className="text-xl font-bold">{s.title}</h3>
-                    {s.badge && <span className="text-[10px] font-bold uppercase tracking-wider bg-white/20 px-2 py-1 rounded-full">{s.badge}</span>}
                   </div>
                   <p className="text-white/60 leading-relaxed text-sm">{s.desc}</p>
                 </div>
@@ -297,31 +286,7 @@ export default function Home() {
         {/* 6. Exchange rate simulator */}
         <SimulatorSection />
 
-        {/* 7. International account */}
-        <section className="py-24 lg:py-32">
-          <div className="container mx-auto px-6 max-w-5xl text-center">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-16">A tua conta financeira internacional.</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-              {[
-                { name: "Wise", desc: "Contas multimoeda e cartões físicos/virtuais para viagens." },
-                { name: "Bybit", desc: "Acesso ao mercado crypto com facilidade e segurança." },
-                { name: "Kast", desc: "Cartões virtuais recarregáveis para compras internacionais." }
-              ].map((acc, i) => (
-                <div key={i} className="border border-border rounded-3xl p-8 hover:shadow-lg transition-shadow bg-card">
-                  <h3 className="text-2xl font-bold mb-3">{acc.name}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{acc.desc}</p>
-                </div>
-              ))}
-            </div>
-            
-            <Button size="lg" className="rounded-full text-lg h-14 px-8" onClick={() => window.open("https://wa.me/244957636981?text=Olá%2C+tenho+interesse+em+abrir+uma+conta+internacional.", "_blank")}>
-              Pedir orçamento via WhatsApp <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </div>
-        </section>
-
-        {/* 8. Social proof */}
+        {/* 7. Social proof */}
         <section className="bg-secondary py-24">
           <div className="container mx-auto px-6 max-w-7xl">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-24 border-b border-border/50 pb-16">
@@ -606,7 +571,6 @@ function OrderForm() {
                   <SelectItem value="cartao_virtual">Cartão Virtual</SelectItem>
                   <SelectItem value="acesso_assistido">Acesso Assistido</SelectItem>
                   <SelectItem value="transferencia">Transferência Internacional</SelectItem>
-                  <SelectItem value="conta_internacional">Conta Internacional</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -695,38 +659,6 @@ function OrderForm() {
             </div>
           )}
 
-          {selectedService === "conta_internacional" && (
-            <div className="grid grid-cols-1 gap-6">
-              <FormField control={form.control} name="intlPlatform" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Plataforma Desejada</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="h-12 bg-white">
-                        <SelectValue placeholder="Selecciona a plataforma" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Wise">Wise</SelectItem>
-                      <SelectItem value="Bybit">Bybit</SelectItem>
-                      <SelectItem value="Kast">Kast</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="message" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Mensagem Opcional</FormLabel>
-                  <FormControl><Textarea placeholder="Tem alguma dúvida específica?" {...field} className="bg-white min-h-[100px]" /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <p className="text-sm text-muted-foreground font-medium flex items-center">
-                <Search className="w-4 h-4 mr-2 inline" /> Entraremos em contacto para apresentar o orçamento.
-              </p>
-            </div>
-          )}
         </div>
 
         <Button type="submit" className="w-full h-14 text-lg rounded-full" disabled={createOrder.isPending}>
@@ -752,7 +684,6 @@ const SERVICE_LABELS: Record<string, string> = {
   cartao_virtual: "Cartão Virtual",
   acesso_assistido: "Acesso Assistido",
   transferencia: "Transferência Internacional",
-  conta_internacional: "Conta Internacional",
 };
 
 type LookupOrder = {
@@ -760,7 +691,6 @@ type LookupOrder = {
   service: string;
   status: string;
   platform?: string | null;
-  intlPlatform?: string | null;
   amountUsd?: number | null;
   amountKwanza?: number | null;
   formattedDate: string;
@@ -826,8 +756,8 @@ function OrderCard({ order, onUploaded }: { order: LookupOrder; onUploaded: (id:
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Serviço</p>
           <p className="font-semibold text-sm">{SERVICE_LABELS[order.service] ?? order.service}</p>
-          {(order.platform || order.intlPlatform) && (
-            <p className="text-xs text-muted-foreground">{order.platform || order.intlPlatform}</p>
+          {order.platform && (
+            <p className="text-xs text-muted-foreground">{order.platform}</p>
           )}
         </div>
         <div>

@@ -44,13 +44,11 @@ const SERVICE_ICONS: Record<string, React.ComponentProps<typeof Ionicons>["name"
   cartao_virtual: "card-outline",
   acesso_assistido: "globe-outline",
   transferencia: "swap-horizontal-outline",
-  conta_internacional: "business-outline",
 };
 const SERVICE_LABELS: Record<string, string> = {
   cartao_virtual: "Cartão Virtual",
   acesso_assistido: "Acesso Assistido",
   transferencia: "Transferência",
-  conta_internacional: "Conta Internacional",
 };
 const ALL_STATUSES = Object.keys(STATUS_LABELS);
 const CARD_ELIGIBLE_STATUSES = ["pago", "em_processamento", "concluido"];

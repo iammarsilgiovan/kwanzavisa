@@ -35,7 +35,6 @@ const SERVICE_OPTIONS = [
   { value: "cartao_virtual", label: "Cartão Virtual" },
   { value: "acesso_assistido", label: "Acesso Assistido" },
   { value: "transferencia", label: "Transferência" },
-  { value: "conta_internacional", label: "Conta Internacional" },
 ];
 
 export default function Pedidos() {
@@ -149,7 +148,6 @@ export default function Pedidos() {
       cartao_virtual: "Cartão Virtual",
       acesso_assistido: "Acesso Assistido",
       transferencia: "Transferência",
-      conta_internacional: "Conta Internacional"
     };
     return map[service] || service;
   };
@@ -166,7 +164,7 @@ export default function Pedidos() {
       o.id, 
       o.name, 
       getServiceLabel(o.service), 
-      o.platform || o.intlPlatform || "", 
+      o.platform || "", 
       o.amountUsd || "", 
       o.amountKwanza || "", 
       o.status, 
@@ -249,7 +247,7 @@ export default function Pedidos() {
                     <TableCell className="pl-4 font-mono text-xs">{order.id.slice(0, 8)}</TableCell>
                     <TableCell className="font-medium">{order.name}</TableCell>
                     <TableCell className="text-sm">{getServiceLabel(order.service)}</TableCell>
-                    <TableCell className="text-sm">{order.platform || order.intlPlatform || '-'}</TableCell>
+                    <TableCell className="text-sm">{order.platform || '-'}</TableCell>
                     <TableCell className="text-sm whitespace-nowrap">
                       {order.amountUsd && <div className="font-medium">${order.amountUsd}</div>}
                       {order.amountKwanza && <div className="text-gray-500 text-xs">{order.amountKwanza.toLocaleString()} Kz</div>}
@@ -320,7 +318,6 @@ export default function Pedidos() {
                   <div className="space-y-2 text-sm">
                     <p><span className="text-gray-500 w-24 inline-block">Serviço:</span> {getServiceLabel(orderDetail.service)}</p>
                     {orderDetail.platform && <p><span className="text-gray-500 w-24 inline-block">Plataforma:</span> {orderDetail.platform}</p>}
-                    {orderDetail.intlPlatform && <p><span className="text-gray-500 w-24 inline-block">Plataforma Int.:</span> {orderDetail.intlPlatform}</p>}
                     {orderDetail.description && <p><span className="text-gray-500 w-24 inline-block">Descrição:</span> {orderDetail.description}</p>}
                     {orderDetail.destinationCountry && <p><span className="text-gray-500 w-24 inline-block">País:</span> {orderDetail.destinationCountry}</p>}
                     {orderDetail.recipientName && <p><span className="text-gray-500 w-24 inline-block">Beneficiário:</span> {orderDetail.recipientName}</p>}

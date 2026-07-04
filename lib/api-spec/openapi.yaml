@@ -38,7 +38,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateOrderBody"
+              $ref: "#/components/schemas/OrderInput"
       responses:
         "201":
           description: Order created
@@ -510,7 +510,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/KycUploadBody"
+              $ref: "#/components/schemas/KycDocumentInput"
       responses:
         "200":
           description: Documento guardado
@@ -564,7 +564,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListCardsResponse"
+                $ref: "#/components/schemas/CardsList"
 
   /cards/{id}:
     get:
@@ -688,7 +688,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AdminIssueCardBody"
+              $ref: "#/components/schemas/CardIssueInput"
       responses:
         "200":
           description: Cartão emitido
@@ -708,7 +708,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AdminListCardsResponse"
+                $ref: "#/components/schemas/AdminCardsList"
 
   /admin/cards/{id}/fund:
     post:
@@ -726,7 +726,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AdminFundCardBody"
+              $ref: "#/components/schemas/CardFundInput"
       responses:
         "200":
           description: Carregado
@@ -837,7 +837,7 @@ components:
           type: string
       required: [toStatus, changedBy, createdAt, formattedDate]
 
-    CreateOrderBody:
+    OrderInput:
       type: object
       properties:
         name:
@@ -848,7 +848,7 @@ components:
           type: string
         service:
           type: string
-          enum: [cartao_virtual, acesso_assistido, transferencia, conta_internacional]
+          enum: [cartao_virtual, acesso_assistido, transferencia]
         platform:
           type: string
           nullable: true
@@ -867,10 +867,6 @@ components:
           nullable: true
         recipientName:
           type: string
-          nullable: true
-        intlPlatform:
-          type: string
-          enum: [Wise, Bybit, Kast]
           nullable: true
         message:
           type: string
@@ -1336,7 +1332,7 @@ components:
           $ref: "#/components/schemas/UserProfile"
       required: [user]
 
-    KycUploadBody:
+    KycDocumentInput:
       type: object
       properties:
         tipo:
@@ -1433,7 +1429,7 @@ components:
                 $ref: "#/components/schemas/CardTransaction"
           required: [transactions]
 
-    ListCardsResponse:
+    CardsList:
       type: object
       properties:
         cards:
@@ -1527,14 +1523,14 @@ components:
           nullable: true
       required: [action]
 
-    AdminIssueCardBody:
+    CardIssueInput:
       type: object
       properties:
         issuedBy:
           type: string
           nullable: true
 
-    AdminFundCardBody:
+    CardFundInput:
       type: object
       properties:
         amountUsd:
@@ -1575,7 +1571,7 @@ components:
           format: date-time
       required: [id, userId, last4, cardholderName, status, expiryMonth, expiryYear, createdAt]
 
-    AdminListCardsResponse:
+    AdminCardsList:
       type: object
       properties:
         cards:

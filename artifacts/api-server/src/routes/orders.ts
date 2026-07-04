@@ -22,7 +22,6 @@ import {
   emailStatusConcluidoCliente,
   emailStatusEmExecucaoCliente,
   emailStatusCanceladoCliente,
-  emailDocumentacaoNecessaria,
   emailComprovatívoAdmin,
 } from "../services/email.js";
 
@@ -53,7 +52,6 @@ function mapOrder(order: typeof ordersTable.$inferSelect) {
     description: order.description ?? null,
     destinationCountry: order.destinationCountry ?? null,
     recipientName: order.recipientName ?? null,
-    intlPlatform: order.intlPlatform ?? null,
     status: order.status,
     createdAt: order.createdAt.toISOString(),
     formattedDate: formatDate(order.createdAt),
@@ -122,7 +120,6 @@ router.post("/orders", async (req, res): Promise<void> => {
     description: data.description ?? null,
     destinationCountry: data.destinationCountry ?? null,
     recipientName: data.recipientName ?? null,
-    intlPlatform: data.intlPlatform ?? null,
     message: data.message ?? null,
   }).returning();
 
@@ -343,9 +340,6 @@ router.patch("/admin/orders/:id/status", async (req, res): Promise<void> => {
       await Promise.all([
         emailStatusPagoCliente({ to: order.email, id: order.id, name: order.name, service: order.service, amountUsd: mapped.amountUsd }),
         emailStatusPagoAdmin({ id: order.id, service: order.service, amountUsd: mapped.amountUsd }),
-        ...(order.service === "conta_internacional"
-          ? [emailDocumentacaoNecessaria({ to: order.email, id: order.id, name: order.name })]
-          : []),
       ]);
     } else if (newStatus === "em_processamento") {
       await emailStatusEmExecucaoCliente({ to: order.email, id: order.id, name: order.name, service: order.service });

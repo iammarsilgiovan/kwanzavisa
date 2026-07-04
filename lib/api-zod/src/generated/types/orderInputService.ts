@@ -6,12 +6,11 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type CreateOrderBodyService =
-  (typeof CreateOrderBodyService)[keyof typeof CreateOrderBodyService];
+export type OrderInputService =
+  (typeof OrderInputService)[keyof typeof OrderInputService];
 
-export const CreateOrderBodyService = {
+export const OrderInputService = {
   cartao_virtual: "cartao_virtual",
   acesso_assistido: "acesso_assistido",
   transferencia: "transferencia",
-  conta_internacional: "conta_internacional",
 } as const;

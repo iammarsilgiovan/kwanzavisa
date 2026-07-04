@@ -5,8 +5,8 @@
  * KwanzaVisa API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { CardSummary } from "./cardSummary";
 
-export interface AdminFundCardBody {
-  amountUsd: number;
-  description?: string | null;
+export interface CardsList {
+  cards: CardSummary[];
 }

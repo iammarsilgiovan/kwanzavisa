@@ -30,7 +30,6 @@ function mapOrder(order: typeof ordersTable.$inferSelect) {
     description: order.description ?? null,
     destinationCountry: order.destinationCountry ?? null,
     recipientName: order.recipientName ?? null,
-    intlPlatform: order.intlPlatform ?? null,
     status: order.status,
     createdAt: order.createdAt.toISOString(),
     formattedDate: formatDate(order.createdAt),

@@ -5,8 +5,10 @@
  * KwanzaVisa API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { CardSummary } from "./cardSummary";
 
-export interface ListCardsResponse {
-  cards: CardSummary[];
+export interface KycDocumentInput {
+  tipo: string;
+  base64Data: string;
+  fileName?: string | null;
+  mimeType?: string | null;
 }

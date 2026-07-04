@@ -7,6 +7,6 @@
  */
 import type { AdminCardEntry } from "./adminCardEntry";
 
-export interface AdminListCardsResponse {
+export interface AdminCardsList {
   cards: AdminCardEntry[];
 }

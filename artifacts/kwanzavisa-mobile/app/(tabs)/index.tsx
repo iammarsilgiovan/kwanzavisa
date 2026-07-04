@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
 
-type ServiceId = "cartao_virtual" | "acesso_assistido" | "transferencia" | "conta_internacional";
+type ServiceId = "cartao_virtual" | "acesso_assistido" | "transferencia";
 
 const SERVICES: {
   id: ServiceId;
@@ -39,12 +39,6 @@ const SERVICES: {
     label: "Transferência",
     desc: "Envio de fundos para o exterior",
     icon: "swap-horizontal-outline",
-  },
-  {
-    id: "conta_internacional",
-    label: "Conta Internacional",
-    desc: "Abertura de contas no exterior",
-    icon: "business-outline",
   },
 ];
 

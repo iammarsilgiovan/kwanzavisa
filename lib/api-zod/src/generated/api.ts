@@ -18,19 +18,13 @@ export const CreateOrderBody = zod.object({
   name: zod.string(),
   email: zod.string(),
   whatsapp: zod.string(),
-  service: zod.enum([
-    "cartao_virtual",
-    "acesso_assistido",
-    "transferencia",
-    "conta_internacional",
-  ]),
+  service: zod.enum(["cartao_virtual", "acesso_assistido", "transferencia"]),
   platform: zod.string().nullish(),
   amount: zod.number().nullish(),
   currency: zod.enum(["USD"]).nullish(),
   description: zod.string().nullish(),
   destinationCountry: zod.string().nullish(),
   recipientName: zod.string().nullish(),
-  intlPlatform: zod.enum(["Wise", "Bybit", "Kast"]).nullish(),
   message: zod.string().nullish(),
 });
 

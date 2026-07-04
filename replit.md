@@ -26,11 +26,10 @@ KwanzaVisa is an Angolan fintech platform that allows Angolans to access interna
 - **Cartão Virtual** — Virtual card generation for international online payments
 - **Acesso Assistido** — Customer shops with their own accounts, KwanzaVisa provides payment method
 - **Transferência com Liquidação Local** — Cross-border value transfers
-- **Abertura de Conta Internacional** — Account opening support (Wise, Bybit, Kast)
 
 ## Key Pages
 
-- `/` — Full landing page (Hero, Brands, How It Works, Services, Exchange Simulator, International Accounts, Social Proof, Order Form, Order Tracking, Footer)
+- `/` — Full landing page (Hero, Brands, How It Works, Services, Exchange Simulator, Social Proof, Order Form, Order Tracking, Footer)
 - `/admin` — Login do painel admin (password: `kwanza2025admin`)
 - `/admin/dashboard` — Dashboard com estatísticas, pedidos recentes, taxa de câmbio rápida
 - `/admin/pedidos` — Gestão completa de pedidos (status, custo, notas, histórico)

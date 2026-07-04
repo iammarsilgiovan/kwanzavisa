@@ -42,7 +42,6 @@ export default function Relatorios() {
       cartao_virtual: "Cartão Virtual",
       acesso_assistido: "Acesso Assistido",
       transferencia: "Transferência",
-      conta_internacional: "Conta Internacional"
     };
     return map[service] || service;
   };

@@ -17,7 +17,6 @@ export const ordersTable = pgTable("orders", {
   description: text("description"),
   destinationCountry: text("destination_country"),
   recipientName: text("recipient_name"),
-  intlPlatform: text("intl_platform"),
   message: text("message"),
   status: text("status").notNull().default("pendente"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

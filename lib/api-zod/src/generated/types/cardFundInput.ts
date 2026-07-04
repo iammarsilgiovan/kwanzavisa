@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface AdminIssueCardBody {
-  issuedBy?: string | null;
+export interface CardFundInput {
+  amountUsd: number;
+  description?: string | null;
 }

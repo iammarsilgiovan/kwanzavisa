@@ -6,10 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type CreateOrderBodyCurrency =
-  | (typeof CreateOrderBodyCurrency)[keyof typeof CreateOrderBodyCurrency]
+export type OrderInputCurrency =
+  | (typeof OrderInputCurrency)[keyof typeof OrderInputCurrency]
   | null;
 
-export const CreateOrderBodyCurrency = {
+export const OrderInputCurrency = {
   USD: "USD",
 } as const;

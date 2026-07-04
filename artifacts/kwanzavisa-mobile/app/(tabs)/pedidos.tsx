@@ -23,8 +23,7 @@ import { useColors } from "@/hooks/useColors";
 type ServiceType =
   | "cartao_virtual"
   | "acesso_assistido"
-  | "transferencia"
-  | "conta_internacional";
+  | "transferencia";
 
 const SERVICES: {
   id: ServiceType;
@@ -34,11 +33,9 @@ const SERVICES: {
   { id: "cartao_virtual", label: "Cartão Virtual", icon: "card-outline" },
   { id: "acesso_assistido", label: "Acesso Assistido", icon: "globe-outline" },
   { id: "transferencia", label: "Transferência", icon: "swap-horizontal-outline" },
-  { id: "conta_internacional", label: "Conta Internacional", icon: "business-outline" },
 ];
 
 const PLATFORMS = ["Amazon", "Netflix", "Spotify", "Steam", "PayPal", "Apple", "Google", "Outro"];
-const INTL_PLATFORMS = ["Wise", "Bybit", "Kast"] as const;
 
 const STATUS_LABELS: Record<string, string> = {
   pendente: "Pendente",
@@ -293,7 +290,6 @@ function NovoPedido({ preselectedService }: { preselectedService?: string }) {
   const [platform, setPlatform] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const [intlPlatform, setIntlPlatform] = useState("");
   const [recipientName, setRecipientName] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -314,7 +310,6 @@ function NovoPedido({ preselectedService }: { preselectedService?: string }) {
           amount: amount ? Number(amount) : null,
           currency: amount ? "USD" : null,
           description: description || null,
-          intlPlatform: (intlPlatform as "Wise" | "Bybit" | "Kast") || null,
           recipientName: recipientName || null,
           destinationCountry: destinationCountry || null,
         },
@@ -334,7 +329,6 @@ function NovoPedido({ preselectedService }: { preselectedService?: string }) {
     setDescription("");
     setAmount("");
     setPlatform("");
-    setIntlPlatform("");
     setRecipientName("");
     setDestinationCountry("");
   };
@@ -402,7 +396,6 @@ function NovoPedido({ preselectedService }: { preselectedService?: string }) {
       )}
       {service === "transferencia" && (
         <>
-          <SelectInput label="Plataforma Internacional" value={intlPlatform} options={INTL_PLATFORMS} onSelect={setIntlPlatform} icon="wallet-outline" colors={colors} />
           <FormInput label="Nome do destinatário" value={recipientName} onChangeText={setRecipientName} placeholder="Nome completo" icon="person-outline" colors={colors} />
           <FormInput label="País de destino" value={destinationCountry} onChangeText={setDestinationCountry} placeholder="Ex: Portugal" icon="location-outline" colors={colors} />
         </>

@@ -6,9 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface KycUploadBody {
-  tipo: string;
-  base64Data: string;
-  fileName?: string | null;
-  mimeType?: string | null;
+export interface CardIssueInput {
+  issuedBy?: string | null;
 }

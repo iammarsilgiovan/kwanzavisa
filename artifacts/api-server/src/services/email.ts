@@ -70,7 +70,6 @@ const SERVICE_LABELS: Record<string, string> = {
   cartao_virtual: "Cartão Virtual",
   acesso_assistido: "Acesso Assistido",
   transferencia: "Transferência Internacional",
-  conta_internacional: "Conta Internacional",
 };
 
 export async function emailOrderCreatedCliente(opts: {
@@ -159,24 +158,6 @@ export async function emailStatusPagoCliente(opts: { to: string; id: string; nam
     <p style="color:#6E6E73;font-size:14px;margin:20px 0 0;">Iremos contactar-te via WhatsApp brevemente para concluir o processo.</p>
   `);
   await sendEmail(opts.to, `Pagamento confirmado · ${opts.id}`, html);
-}
-
-export async function emailDocumentacaoNecessaria(opts: { to: string; id: string; name: string }) {
-  const html = layout(`
-    <h2 style="font-size:22px;font-weight:700;color:#1D1D1F;margin:0 0 8px;">Documentação necessária 📄</h2>
-    <p style="color:#6E6E73;font-size:15px;margin:0 0 24px;">Olá ${opts.name.split(" ")[0]}, para prosseguir com a abertura da tua conta internacional precisamos de um documento de identidade.</p>
-    <div style="background:#F5F5F7;border-radius:12px;padding:20px;margin-bottom:20px;">
-      <p style="font-weight:700;color:#1D1D1F;margin:0 0 10px;">Envia um dos seguintes:</p>
-      <ul style="color:#1D1D1F;font-size:15px;margin:0;padding-left:20px;line-height:1.8;">
-        <li>Bilhete de Identidade</li>
-        <li>Cartão de Condução</li>
-        <li>Passaporte</li>
-      </ul>
-      <p style="color:#6E6E73;font-size:13px;margin:12px 0 0;">Formato: imagem (JPG, PNG) ou PDF</p>
-    </div>
-    <p style="color:#6E6E73;font-size:14px;">Envia o documento via <a href="https://kwanzavisa.com/#rastrear" style="color:#000;font-weight:600;">Rastrear Pedido</a> na plataforma ou directamente pelo WhatsApp.</p>
-  `);
-  await sendEmail(opts.to, `Documentação necessária · ${opts.id}`, html);
 }
 
 export async function emailStatusConcluidoCliente(opts: { to: string; id: string; name: string; service: string }) {

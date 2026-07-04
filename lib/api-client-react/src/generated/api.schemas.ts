@@ -47,46 +47,34 @@ export type OrderDetail = Order & {
   statusHistory?: StatusHistoryEntry[];
 };
 
-export type CreateOrderBodyService =
-  (typeof CreateOrderBodyService)[keyof typeof CreateOrderBodyService];
+export type OrderInputService =
+  (typeof OrderInputService)[keyof typeof OrderInputService];
 
-export const CreateOrderBodyService = {
+export const OrderInputService = {
   cartao_virtual: "cartao_virtual",
   acesso_assistido: "acesso_assistido",
   transferencia: "transferencia",
-  conta_internacional: "conta_internacional",
 } as const;
 
-export type CreateOrderBodyCurrency =
-  | (typeof CreateOrderBodyCurrency)[keyof typeof CreateOrderBodyCurrency]
+export type OrderInputCurrency =
+  | (typeof OrderInputCurrency)[keyof typeof OrderInputCurrency]
   | null;
 
-export const CreateOrderBodyCurrency = {
+export const OrderInputCurrency = {
   USD: "USD",
 } as const;
 
-export type CreateOrderBodyIntlPlatform =
-  | (typeof CreateOrderBodyIntlPlatform)[keyof typeof CreateOrderBodyIntlPlatform]
-  | null;
-
-export const CreateOrderBodyIntlPlatform = {
-  Wise: "Wise",
-  Bybit: "Bybit",
-  Kast: "Kast",
-} as const;
-
-export interface CreateOrderBody {
+export interface OrderInput {
   name: string;
   email: string;
   whatsapp: string;
-  service: CreateOrderBodyService;
+  service: OrderInputService;
   platform?: string | null;
   amount?: number | null;
-  currency?: CreateOrderBodyCurrency;
+  currency?: OrderInputCurrency;
   description?: string | null;
   destinationCountry?: string | null;
   recipientName?: string | null;
-  intlPlatform?: CreateOrderBodyIntlPlatform;
   message?: string | null;
 }
 
@@ -325,7 +313,7 @@ export interface MeResponse {
   user: UserProfile;
 }
 
-export interface KycUploadBody {
+export interface KycDocumentInput {
   tipo: string;
   base64Data: string;
   fileName?: string | null;
@@ -368,7 +356,7 @@ export type CardDetail = CardSummary & {
   transactions: CardTransaction[];
 };
 
-export interface ListCardsResponse {
+export interface CardsList {
   cards: CardSummary[];
 }
 
@@ -410,11 +398,11 @@ export interface AdminKycReviewBody {
   reviewedBy?: string | null;
 }
 
-export interface AdminIssueCardBody {
+export interface CardIssueInput {
   issuedBy?: string | null;
 }
 
-export interface AdminFundCardBody {
+export interface CardFundInput {
   amountUsd: number;
   description?: string | null;
 }
@@ -433,7 +421,7 @@ export interface AdminCardEntry {
   createdAt: string;
 }
 
-export interface AdminListCardsResponse {
+export interface AdminCardsList {
   cards: AdminCardEntry[];
 }
 

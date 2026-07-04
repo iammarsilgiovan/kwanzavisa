@@ -18,16 +18,14 @@ import type {
 
 import type {
   AdminBalancesResponse,
+  AdminCardsList,
   AdminClientsResponse,
   AdminExchangeRatesResponse,
-  AdminFundCardBody,
   AdminGetDailyStatsParams,
   AdminGetReportsParams,
-  AdminIssueCardBody,
   AdminKycDocumentsResponse,
   AdminKycListResponse,
   AdminKycReviewBody,
-  AdminListCardsResponse,
   AdminListClientsParams,
   AdminListKycParams,
   AdminListOrdersParams,
@@ -37,23 +35,25 @@ import type {
   AuthResponse,
   BalanceRecord,
   CardDetailResponse,
+  CardFundInput,
+  CardIssueInput,
+  CardsList,
   ClientDetail,
-  CreateOrderBody,
   DailyStatsResponse,
   ErrorResponse,
   ExchangeRateRecord,
   ExchangeRateResponse,
   GetExchangeRateParams,
   HealthStatus,
+  KycDocumentInput,
   KycStatusResponse,
-  KycUploadBody,
-  ListCardsResponse,
   LoginBody,
   LookupOrdersParams,
   MeResponse,
   OkResponse,
   Order,
   OrderDetail,
+  OrderInput,
   OrderLookupResult,
   RegisterBody,
   SetExchangeRateBody,
@@ -153,14 +153,14 @@ export const getCreateOrderUrl = () => {
 };
 
 export const createOrder = async (
-  createOrderBody: CreateOrderBody,
+  orderInput: OrderInput,
   options?: RequestInit,
 ): Promise<Order> => {
   return customFetch<Order>(getCreateOrderUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createOrderBody),
+    body: JSON.stringify(orderInput),
   });
 };
 
@@ -171,14 +171,14 @@ export const getCreateOrderMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createOrder>>,
     TError,
-    { data: BodyType<CreateOrderBody> },
+    { data: BodyType<OrderInput> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createOrder>>,
   TError,
-  { data: BodyType<CreateOrderBody> },
+  { data: BodyType<OrderInput> },
   TContext
 > => {
   const mutationKey = ["createOrder"];
@@ -192,7 +192,7 @@ export const getCreateOrderMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createOrder>>,
-    { data: BodyType<CreateOrderBody> }
+    { data: BodyType<OrderInput> }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -205,7 +205,7 @@ export const getCreateOrderMutationOptions = <
 export type CreateOrderMutationResult = NonNullable<
   Awaited<ReturnType<typeof createOrder>>
 >;
-export type CreateOrderMutationBody = BodyType<CreateOrderBody>;
+export type CreateOrderMutationBody = BodyType<OrderInput>;
 export type CreateOrderMutationError = ErrorType<ErrorResponse>;
 
 export const useCreateOrder = <
@@ -215,14 +215,14 @@ export const useCreateOrder = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createOrder>>,
     TError,
-    { data: BodyType<CreateOrderBody> },
+    { data: BodyType<OrderInput> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof createOrder>>,
   TError,
-  { data: BodyType<CreateOrderBody> },
+  { data: BodyType<OrderInput> },
   TContext
 > => {
   return useMutation(getCreateOrderMutationOptions(options));
@@ -1930,14 +1930,14 @@ export const getKycUploadUrl = () => {
 };
 
 export const kycUpload = async (
-  kycUploadBody: KycUploadBody,
+  kycDocumentInput: KycDocumentInput,
   options?: RequestInit,
 ): Promise<OkResponse> => {
   return customFetch<OkResponse>(getKycUploadUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(kycUploadBody),
+    body: JSON.stringify(kycDocumentInput),
   });
 };
 
@@ -1948,14 +1948,14 @@ export const getKycUploadMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof kycUpload>>,
     TError,
-    { data: BodyType<KycUploadBody> },
+    { data: BodyType<KycDocumentInput> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof kycUpload>>,
   TError,
-  { data: BodyType<KycUploadBody> },
+  { data: BodyType<KycDocumentInput> },
   TContext
 > => {
   const mutationKey = ["kycUpload"];
@@ -1969,7 +1969,7 @@ export const getKycUploadMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof kycUpload>>,
-    { data: BodyType<KycUploadBody> }
+    { data: BodyType<KycDocumentInput> }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -1982,7 +1982,7 @@ export const getKycUploadMutationOptions = <
 export type KycUploadMutationResult = NonNullable<
   Awaited<ReturnType<typeof kycUpload>>
 >;
-export type KycUploadMutationBody = BodyType<KycUploadBody>;
+export type KycUploadMutationBody = BodyType<KycDocumentInput>;
 export type KycUploadMutationError = ErrorType<unknown>;
 
 /**
@@ -1995,14 +1995,14 @@ export const useKycUpload = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof kycUpload>>,
     TError,
-    { data: BodyType<KycUploadBody> },
+    { data: BodyType<KycDocumentInput> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof kycUpload>>,
   TError,
-  { data: BodyType<KycUploadBody> },
+  { data: BodyType<KycDocumentInput> },
   TContext
 > => {
   return useMutation(getKycUploadMutationOptions(options));
@@ -2169,10 +2169,8 @@ export const getListCardsUrl = () => {
   return `/api/cards`;
 };
 
-export const listCards = async (
-  options?: RequestInit,
-): Promise<ListCardsResponse> => {
-  return customFetch<ListCardsResponse>(getListCardsUrl(), {
+export const listCards = async (options?: RequestInit): Promise<CardsList> => {
+  return customFetch<CardsList>(getListCardsUrl(), {
     ...options,
     method: "GET",
   });
@@ -2672,14 +2670,14 @@ export const getAdminIssueCardUrl = (id: string) => {
 
 export const adminIssueCard = async (
   id: string,
-  adminIssueCardBody?: AdminIssueCardBody,
+  cardIssueInput?: CardIssueInput,
   options?: RequestInit,
 ): Promise<OkResponse> => {
   return customFetch<OkResponse>(getAdminIssueCardUrl(id), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(adminIssueCardBody),
+    body: JSON.stringify(cardIssueInput),
   });
 };
 
@@ -2690,14 +2688,14 @@ export const getAdminIssueCardMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof adminIssueCard>>,
     TError,
-    { id: string; data: BodyType<AdminIssueCardBody> },
+    { id: string; data: BodyType<CardIssueInput> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof adminIssueCard>>,
   TError,
-  { id: string; data: BodyType<AdminIssueCardBody> },
+  { id: string; data: BodyType<CardIssueInput> },
   TContext
 > => {
   const mutationKey = ["adminIssueCard"];
@@ -2711,7 +2709,7 @@ export const getAdminIssueCardMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof adminIssueCard>>,
-    { id: string; data: BodyType<AdminIssueCardBody> }
+    { id: string; data: BodyType<CardIssueInput> }
   > = (props) => {
     const { id, data } = props ?? {};
 
@@ -2724,7 +2722,7 @@ export const getAdminIssueCardMutationOptions = <
 export type AdminIssueCardMutationResult = NonNullable<
   Awaited<ReturnType<typeof adminIssueCard>>
 >;
-export type AdminIssueCardMutationBody = BodyType<AdminIssueCardBody>;
+export type AdminIssueCardMutationBody = BodyType<CardIssueInput>;
 export type AdminIssueCardMutationError = ErrorType<unknown>;
 
 /**
@@ -2737,14 +2735,14 @@ export const useAdminIssueCard = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof adminIssueCard>>,
     TError,
-    { id: string; data: BodyType<AdminIssueCardBody> },
+    { id: string; data: BodyType<CardIssueInput> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof adminIssueCard>>,
   TError,
-  { id: string; data: BodyType<AdminIssueCardBody> },
+  { id: string; data: BodyType<CardIssueInput> },
   TContext
 > => {
   return useMutation(getAdminIssueCardMutationOptions(options));
@@ -2759,8 +2757,8 @@ export const getAdminListCardsUrl = () => {
 
 export const adminListCards = async (
   options?: RequestInit,
-): Promise<AdminListCardsResponse> => {
-  return customFetch<AdminListCardsResponse>(getAdminListCardsUrl(), {
+): Promise<AdminCardsList> => {
+  return customFetch<AdminCardsList>(getAdminListCardsUrl(), {
     ...options,
     method: "GET",
   });
@@ -2834,14 +2832,14 @@ export const getAdminFundCardUrl = (id: string) => {
 
 export const adminFundCard = async (
   id: string,
-  adminFundCardBody: AdminFundCardBody,
+  cardFundInput: CardFundInput,
   options?: RequestInit,
 ): Promise<OkResponse> => {
   return customFetch<OkResponse>(getAdminFundCardUrl(id), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(adminFundCardBody),
+    body: JSON.stringify(cardFundInput),
   });
 };
 
@@ -2852,14 +2850,14 @@ export const getAdminFundCardMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof adminFundCard>>,
     TError,
-    { id: string; data: BodyType<AdminFundCardBody> },
+    { id: string; data: BodyType<CardFundInput> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof adminFundCard>>,
   TError,
-  { id: string; data: BodyType<AdminFundCardBody> },
+  { id: string; data: BodyType<CardFundInput> },
   TContext
 > => {
   const mutationKey = ["adminFundCard"];
@@ -2873,7 +2871,7 @@ export const getAdminFundCardMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof adminFundCard>>,
-    { id: string; data: BodyType<AdminFundCardBody> }
+    { id: string; data: BodyType<CardFundInput> }
   > = (props) => {
     const { id, data } = props ?? {};
 
@@ -2886,7 +2884,7 @@ export const getAdminFundCardMutationOptions = <
 export type AdminFundCardMutationResult = NonNullable<
   Awaited<ReturnType<typeof adminFundCard>>
 >;
-export type AdminFundCardMutationBody = BodyType<AdminFundCardBody>;
+export type AdminFundCardMutationBody = BodyType<CardFundInput>;
 export type AdminFundCardMutationError = ErrorType<unknown>;
 
 /**
@@ -2899,14 +2897,14 @@ export const useAdminFundCard = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof adminFundCard>>,
     TError,
-    { id: string; data: BodyType<AdminFundCardBody> },
+    { id: string; data: BodyType<CardFundInput> },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationResult<
   Awaited<ReturnType<typeof adminFundCard>>,
   TError,
-  { id: string; data: BodyType<AdminFundCardBody> },
+  { id: string; data: BodyType<CardFundInput> },
   TContext
 > => {
   return useMutation(getAdminFundCardMutationOptions(options));
