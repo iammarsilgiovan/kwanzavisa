@@ -253,30 +253,30 @@ export default function Home() {
               Tudo o que precisas para operar globalmente.
             </h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {[
                 {
-                  icon: <CreditCard className="w-8 h-8 mb-6" />,
+                  icon: <CreditCard className="w-9 h-9 mb-6" />,
                   title: "Cartão Virtual",
                   desc: "Gera um cartão virtual e paga qualquer serviço online no mundo. Entregue via WhatsApp em minutos."
                 },
                 {
-                  icon: <MousePointer className="w-8 h-8 mb-6" />,
+                  icon: <MousePointer className="w-9 h-9 mb-6" />,
                   title: "Acesso Assistido",
                   desc: "Tu fazes a compra, nós tratamos do pagamento. A tua conta, o nosso cartão, a tua independência."
                 },
                 {
-                  icon: <ArrowLeftRight className="w-8 h-8 mb-6" />,
+                  icon: <ArrowLeftRight className="w-9 h-9 mb-6" />,
                   title: "Transferência",
                   desc: "Envia valores entre países. Pagas em Kz, o destinatário recebe na moeda local."
                 }
               ].map((s, i) => (
-                <div key={i} className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-colors">
+                <div key={i} className="bg-white/5 border border-white/10 rounded-3xl p-10 hover:bg-white/10 transition-colors">
                   {s.icon}
                   <div className="flex items-center gap-3 mb-4">
-                    <h3 className="text-xl font-bold">{s.title}</h3>
+                    <h3 className="text-2xl font-bold">{s.title}</h3>
                   </div>
-                  <p className="text-white/60 leading-relaxed text-sm">{s.desc}</p>
+                  <p className="text-white/60 leading-relaxed">{s.desc}</p>
                 </div>
               ))}
             </div>
