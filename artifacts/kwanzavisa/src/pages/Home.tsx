@@ -294,7 +294,7 @@ export default function Home() {
                 { val: "1.200+", label: "Pedidos concluídos" },
                 { val: "850+", label: "Clientes satisfeitos" },
                 { val: "7", label: "Dias por semana" },
-                { val: "4", label: "Serviços globais" }
+                { val: "3", label: "Serviços globais" }
               ].map((stat, i) => (
                 <div key={i} className="text-center">
                   <div className="text-4xl md:text-5xl font-bold mb-2 tracking-tighter">{stat.val}</div>
