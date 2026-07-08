@@ -84,27 +84,33 @@ iOS: publicação via Replit Expo Launch.
 ## Key Commands
 
 - `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm run build:vercel` — build frontend only for Vercel deployment
+- `pnpm run build` — typecheck + build all packages (used for Railway deploy too)
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
 
-## Vercel Deployment (Frontend Only)
+## Railway Deployment (Single Service)
 
-O frontend (landing page + admin) é hospedado na Vercel como site estático.
-O API server é hospedado separadamente no Render (ver `render.yaml` na raiz).
+O frontend e a API são publicados juntos como **um único serviço** no Railway — o Express serve tanto as rotas `/api/*` como os ficheiros estáticos do frontend construído (SPA fallback para todas as outras rotas).
 
-Configuração automática via `vercel.json` na raiz do projecto (Root Directory na Vercel deve ficar na raiz do repositório, não em `artifacts/kwanzavisa`).
+Configuração via `railway.json` na raiz do projecto:
+- Build: `pnpm install --frozen-lockfile && pnpm run build` (constrói frontend + API)
+- Start: `NODE_ENV=production node --enable-source-maps artifacts/api-server/dist/index.mjs`
 
-Variável de ambiente obrigatória no painel da Vercel:
-- `VITE_API_BASE_URL` = URL completa do servidor API (ex: `https://kwanzavisa-api.onrender.com`)
+Quando `NODE_ENV=production`, `artifacts/api-server/src/app.ts` serve os ficheiros estáticos de `artifacts/kwanzavisa/dist/public` e faz fallback de SPA para rotas não-`/api`. Não é necessário `VITE_API_BASE_URL` — o frontend chama `/api/*` como caminho relativo, pois é servido pelo mesmo serviço.
+
+Variáveis de ambiente obrigatórias no painel do Railway:
+- `DATABASE_URL`
+- `RESEND_API_KEY`
+- `SESSION_SECRET`
+
+O Railway define `PORT` automaticamente; o servidor já lê essa variável.
 
 Passos para deploy:
-1. Conectar repositório à Vercel, com Root Directory vazio (raiz do repo)
-2. Build command: `pnpm -w run build:vercel` (já configurado no vercel.json)
-3. Output directory: `artifacts/kwanzavisa/dist/public` (já configurado)
-4. Definir `VITE_API_BASE_URL` nas variáveis de ambiente do projecto na Vercel
+1. Criar novo projecto no Railway a partir do repositório
+2. O Railway detecta o `railway.json` automaticamente (builder Nixpacks)
+3. Definir as variáveis de ambiente acima no painel do projecto
+4. Deploy — um único link serve tudo (frontend + `/api`)
 
 ## Design System
 
