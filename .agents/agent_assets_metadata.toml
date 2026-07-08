@@ -1,8 +1,13 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "-PQc5W2zX3nmjOIdza0SV"
 uri = "file://artifacts/kwanzavisa-mobile/assets/images/icon.png"
 type = "image"
 title = "generated_image"
+
+[[outputs]]
+id = "xZfze8PptmsNla-_zl7Q7"
+uri = "file://docs/KWANZAVISA_ANALISE_COMPLETA.md"
+type = "text"
+title = "KwanzaVisa — Documento Completo da Plataforma"
