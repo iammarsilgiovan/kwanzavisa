@@ -1,0 +1,9 @@
+{
+  "framework": null,
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm run build:netlify",
+  "outputDirectory": "artifacts/kwanzavisa/dist/public",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
