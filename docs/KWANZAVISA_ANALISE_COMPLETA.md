@@ -414,7 +414,7 @@ Estritamente preto e branco (inspirado na Apple):
 ```bash
 pnpm run typecheck                                   # typecheck completo do monorepo
 pnpm run build                                        # typecheck + build de tudo
-pnpm run build:netlify                                # build apenas do frontend (deploy estático)
+pnpm run build:vercel                                  # build apenas do frontend (deploy estático)
 pnpm --filter @workspace/api-spec run codegen         # regenerar hooks/schemas a partir do OpenAPI
 pnpm --filter @workspace/db run push                  # aplicar alterações de esquema (dev)
 pnpm --filter @workspace/api-server run dev           # correr a API localmente

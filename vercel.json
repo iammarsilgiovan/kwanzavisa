@@ -1,7 +1,7 @@
 {
   "framework": null,
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm -w run build:netlify",
+  "buildCommand": "pnpm -w run build:vercel",
   "outputDirectory": "artifacts/kwanzavisa/dist/public",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }

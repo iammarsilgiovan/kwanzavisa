@@ -85,26 +85,26 @@ iOS: publicação via Replit Expo Launch.
 
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm run build:netlify` — build frontend only for Netlify deployment
+- `pnpm run build:vercel` — build frontend only for Vercel deployment
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
 
-## Netlify Deployment (Frontend Only)
+## Vercel Deployment (Frontend Only)
 
-O frontend (landing page + admin) pode ser hospedado no Netlify como site estático.
-O API server precisa de ser hospedado separadamente (ex: Render, Railway, Fly.io).
+O frontend (landing page + admin) é hospedado na Vercel como site estático.
+O API server é hospedado separadamente no Render (ver `render.yaml` na raiz).
 
-Configuração automática via `netlify.toml` na raiz do projecto.
+Configuração automática via `vercel.json` na raiz do projecto (Root Directory na Vercel deve ficar na raiz do repositório, não em `artifacts/kwanzavisa`).
 
-Variável de ambiente obrigatória no painel do Netlify:
-- `VITE_API_BASE_URL` = URL completa do servidor API (ex: `https://api.kwanzavisa.com`)
+Variável de ambiente obrigatória no painel da Vercel:
+- `VITE_API_BASE_URL` = URL completa do servidor API (ex: `https://kwanzavisa-api.onrender.com`)
 
 Passos para deploy:
-1. Conectar repositório ao Netlify
-2. Build command: `pnpm run build:netlify` (já configurado no netlify.toml)
-3. Publish directory: `artifacts/kwanzavisa/dist/public` (já configurado)
-4. Definir `VITE_API_BASE_URL` nas variáveis de ambiente do site no Netlify
+1. Conectar repositório à Vercel, com Root Directory vazio (raiz do repo)
+2. Build command: `pnpm -w run build:vercel` (já configurado no vercel.json)
+3. Output directory: `artifacts/kwanzavisa/dist/public` (já configurado)
+4. Definir `VITE_API_BASE_URL` nas variáveis de ambiente do projecto na Vercel
 
 ## Design System
 
