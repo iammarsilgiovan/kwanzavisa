@@ -1,0 +1,1 @@
+- [KwanzaVisa unused-feature removal](kwanzavisa-unused-features.md) — auth/kyc/cards were scaffolded but never wired to the frontend; check actual frontend hook usage before assuming a route is live.

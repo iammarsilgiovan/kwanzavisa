@@ -101,8 +101,6 @@ Quando `NODE_ENV=production`, `artifacts/api-server/src/app.ts` serve os ficheir
 
 Variáveis de ambiente obrigatórias no painel do Railway:
 - `DATABASE_URL`
-- `RESEND_API_KEY`
-- `SESSION_SECRET`
 
 O Railway define `PORT` automaticamente; o servidor já lê essa variável.
 
