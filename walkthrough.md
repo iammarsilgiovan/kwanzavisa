@@ -22,13 +22,14 @@ Hoje implementámos e corrigimos com sucesso todas as tarefas planeadas para a p
 - **O que mudou:** O serviço anteriormente designado por **"Transferência Internacional"** agora chama-se **"Auxilio para Envio de Remessas"** em toda a interface do utilizador, notificações e logs do sistema.
 
 ### 4. Página Pública de Ajuda & FAQ
-- **Arquivo Criado:** [FAQ.tsx](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/kwanzavisa/src/pages/FAQ.tsx)
-- **O que contém:** Uma secção dividida por categorias ("Como Funciona", "Serviços", "Pagamentos", "Segurança") com perguntas sanadas através de elementos acordeão (`Accordion`) e botões de contacto direto para suporte via WhatsApp ou Email.
+- **Arquivo Criado/Atualizado:** [FAQ.tsx](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/kwanzavisa/src/pages/FAQ.tsx)
+- **O que contém:** Substituição completa das perguntas frequentes pelos textos definidos pelo cliente.
+- **Categorias Organizadas:** "Geral / Serviços", "Taxas de Câmbio", "Pagamentos" e "Conta e Segurança".
 - **Rota:** Disponível sob o caminho `/ajuda`.
 
 ### 5. Página Pública de Termos de Uso
-- **Arquivo Criado:** [Termos.tsx](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/kwanzavisa/src/pages/Termos.tsx)
-- **O que contém:** Declarações legais de acordo com a legislação angolana e as especificidades dos serviços oferecidos pela KwanzaVisa, detalhando as regras de pagamento, cancelamento, política de reembolso e privacidade.
+- **Arquivo Criado/Atualizado:** [Termos.tsx](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/kwanzavisa/src/pages/Termos.tsx)
+- **O que contém:** Atualizado com a redação oficial em 10 cláusulas fornecidas pelo cliente (Última atualização: 8 de Julho de 2026).
 - **Rota:** Disponível sob o caminho `/termos`.
 
 ### 6. Integração das Rotas e Menus
@@ -46,7 +47,7 @@ Hoje implementámos e corrigimos com sucesso todas as tarefas planeadas para a p
 
 ### 🛠️ Monitorização do Build no Railway
 1. Aceda ao dashboard do Railway.
-2. Acompanhe a compilação do último commit (`feat: adicionar ajuda/faq, termos de uso, corrigir startup do railway e atualizar nome do servico`).
+2. Acompanhe a compilação do último commit (`feat: atualizar termos de uso e FAQ de acordo com o texto fornecido pelo cliente`).
 3. Uma vez concluído, verifique se a API responde corretamente ao aceder a `https://kwanzavisa.com/api/healthz`.
 
 ### 📧 Validação de Emails
