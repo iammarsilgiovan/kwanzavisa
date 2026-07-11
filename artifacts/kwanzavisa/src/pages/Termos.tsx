@@ -14,7 +14,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function Termos() {
-  const lastUpdated = "11 de Julho de 2026";
+  const lastUpdated = "8 de Julho de 2026";
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
@@ -56,163 +56,119 @@ export default function Termos() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="bg-white border border-border rounded-3xl p-8 md:p-12"
         >
-          <Section title="1. Identificação do Prestador">
+          <Section title="1. Aceitação dos Termos">
             <p>
-              A plataforma KwanzaVisa é operada pela <strong>K Digital Prestação de Serviços</strong>,
-              empresa registada em Angola, dedicada à intermediação de pagamentos
-              internacionais para clientes angolanos.
+              Ao utilizar os serviços da KwanzaVisa, o utilizador concorda integralmente com estes Termos e Condições. Caso não concorde com qualquer disposição herein contida, o utilizador deve abster-se de utilizar a plataforma.
             </p>
             <p>
-              Para qualquer questão, pode contactar-nos através do WhatsApp{" "}
-              <strong>+244 957 636 981</strong> ou pelo email{" "}
-              <strong>suporte@kwanzavisa.com</strong>.
+              A KwanzaVisa reserva-se no direito de modificar estes termos a qualquer momento. As alterações entram em vigor imediatamente após a sua publicação nesta página. É responsabilidade do utilizador consultar periodicamente este documento.
             </p>
           </Section>
 
           <Section title="2. Descrição dos Serviços">
-            <p>A KwanzaVisa oferece os seguintes serviços de intermediação:</p>
-            <ul className="list-disc list-inside space-y-2 pl-2">
-              <li>
-                <strong>Cartão Virtual:</strong> Criação de cartões de pagamento virtual
-                temporários para compras em lojas internacionais online.
-              </li>
-              <li>
-                <strong>Acesso Assistido:</strong> Realização de pagamentos e subscrições
-                em plataformas digitais internacionais (streaming, software, jogos, etc.)
-                em nome do cliente.
-              </li>
-              <li>
-                <strong>Auxilio para Envio de Remessas:</strong> Intermediação para envio
-                de valores monetários para destinatários no exterior.
-              </li>
-            </ul>
-          </Section>
-
-          <Section title="3. Processo de Pedido e Pagamento">
             <p>
-              Ao submeter um pedido na plataforma, o cliente compromete-se a fornecer
-              informações verdadeiras, completas e actualizadas.
+              A KwanzaVisa é uma plataforma financeira que facilita o acesso de cidadãos angolanos a serviços financeiros internacionais, nomeadamente:
             </p>
-            <p>
-              Após a submissão do pedido, o cliente receberá os dados de pagamento por
-              email. O pagamento deve ser efectuado em Kwanzas Angolanos (AOA) para a
-              conta bancária indicada ou via Paypay África.
-            </p>
-            <p>
-              O pedido só é processado após a confirmação do recebimento do pagamento
-              pela nossa equipa. O cliente deve enviar o comprovativo de pagamento
-              através da secção "Rastrear Pedido" do site ou via WhatsApp.
-            </p>
-            <p>
-              As taxas de câmbio aplicadas são as vigentes no momento do processamento
-              do pedido e podem divergir das estimativas apresentadas no simulador.
+            <div className="space-y-3 pl-2">
+              <p>
+                <strong>a) Cartão Virtual:</strong> Emissão de cartões de pagamento virtuais para utilização em compras online internacionais, entregues via WhatsApp após confirmação do pagamento.
+              </p>
+              <p>
+                <strong>b) Acesso Assistido:</strong> Serviço de compra assistida em que a KwanzaVisa realiza pagamentos em nome do utilizador, utilizando os seus próprios métodos de pagamento internacionais.
+              </p>
+              <p>
+                <strong>c) Transferências Internacionais:</strong> Serviço de transferência de fundos em que o utilizador paga em Kwanzas (AOA) e o destinatário recebe na moeda local do país de destino.
+              </p>
+            </div>
+            <p className="mt-4">
+              A KwanzaVisa actua como intermediária financeira e não como instituição bancária. Os serviços estão sujeitos a disponibilidade e a regulamentações locais e internacionais aplicáveis.
             </p>
           </Section>
 
-          <Section title="4. Obrigações do Cliente">
-            <p>O cliente compromete-se a:</p>
-            <ul className="list-disc list-inside space-y-2 pl-2">
-              <li>
-                Fornecer informações verdadeiras e correctas no formulário de pedido.
-              </li>
-              <li>
-                Não utilizar os serviços para fins ilegais, fraudulentos ou contrários
-                à legislação angolana ou internacional.
-              </li>
-              <li>
-                Efectuar o pagamento dentro de 48 horas após a recepção dos dados
-                de pagamento, findo o qual o pedido poderá ser cancelado.
-              </li>
-              <li>
-                Para serviços de Acesso Assistido, garantir que possui os direitos
-                legítimos sobre a conta onde o acesso será efectuado.
-              </li>
-            </ul>
+          <Section title="3. Taxas de Câmbio e Preçário">
+            <p>
+              As taxas de câmbio aplicadas pela KwanzaVisa são baseadas nas taxas de mercado do Kwanza (AOA) face às moedas estrangeiras, com uma margem operacional de 3% incorporada no valor final.
+            </p>
+            <p>
+              A taxa de câmbio aplicada a cada pedido é fixada no momento da confirmação do pagamento, garantindo que o valor em Kwanzas não sofre alterações posteriores, independentemente de flutuações de mercado.
+            </p>
+            <p>
+              O utilizador pode consultar a taxa de câmbio actual através do simulador disponível no site. A KwanzaVisa reserva-se no direito de actualizar as taxas a qualquer momento, sem aviso prévio, excepto para pedidos já confirmados.
+            </p>
+          </Section>
+
+          <Section title="4. Responsabilidades do Utilizador">
+            <p>
+              O utilizador compromete-se a fornecer informações verdadeiras, completas e actualizadas no momento da submissão de pedidos, incluindo nome, contactos e dados do destinatário quando aplicável.
+            </p>
+            <p>
+              O utilizador é responsável por garantir que os fundos utilizados para pagamento são de origem lícita. A KwanzaVisa não se responsabiliza pela legitimidade dos fundos fornecidos pelo utilizador.
+            </p>
+            <p>
+              O utilizador compromete-se a utilizar os serviços exclusivamente para fins lícitos e em conformidade com a legislação angolana e internacional aplicável. É proibido utilizar os serviços para actividades fraudulentas, lavagem de dinheiro ou financiamento de actividades ilícitas.
+            </p>
+            <p>
+              O utilizador deve manter a confidencialidade das informações dos cartões virtuais recebidos e é responsável por qualquer utilização não autorizada decorrente da partilha ou má guarda desses dados.
+            </p>
           </Section>
 
           <Section title="5. Responsabilidades da KwanzaVisa">
-            <p>A KwanzaVisa compromete-se a:</p>
-            <ul className="list-disc list-inside space-y-2 pl-2">
-              <li>
-                Processar os pedidos de forma diligente e no prazo acordado após
-                confirmação do pagamento.
-              </li>
-              <li>
-                Manter a confidencialidade dos dados do cliente e não os partilhar
-                com terceiros sem consentimento.
-              </li>
-              <li>
-                Comunicar proactivamente qualquer impossibilidade de processar o
-                pedido e proceder ao reembolso integral nesse caso.
-              </li>
-            </ul>
-          </Section>
-
-          <Section title="6. Política de Reembolsos">
             <p>
-              <strong>Reembolso total:</strong> Caso a KwanzaVisa não consiga processar
-              o pedido por razões internas (indisponibilidade do serviço, problemas
-              técnicos, etc.), o cliente tem direito ao reembolso integral do valor pago.
+              A KwanzaVisa compromete-se a processar os pedidos de forma atempada e profissional, utilizando os meios ao seu dispor para garantir a entrega dos serviços nos prazos estimados.
             </p>
             <p>
-              <strong>Desistência pelo cliente:</strong> Pedidos cancelados pelo cliente
-              após o início do processamento podem não ser reembolsáveis, dependendo
-              do estado do processamento. Cada caso será analisado individualmente.
+              A KwanzaVisa não se responsabiliza por atrasos ou falhas causados por factores externos ao seu controlo, incluindo mas não se limitando a: problemas técnicos de processadoras de pagamento internacionais, restrições governamentais, falhas bancárias, ou eventos de força maior.
             </p>
             <p>
-              <strong>Informações incorrectas:</strong> A KwanzaVisa não se responsabiliza
-              por pedidos que não possam ser processados devido a informações incorrectas
-              fornecidas pelo cliente (ex.: dados de cartão errados, endereço inválido).
+              A KwanzaVisa envida os seus melhores esforços para garantir a segurança das transacções, mas não pode garantir a ausência absoluta de riscos. A responsabilidade da KwanzaVisa está limitada ao valor do serviço prestado.
             </p>
           </Section>
 
-          <Section title="7. Limitações de Responsabilidade">
+          <Section title="6. Cancelamentos e Reembolsos">
             <p>
-              A KwanzaVisa actua como intermediária e não é responsável por:
-            </p>
-            <ul className="list-disc list-inside space-y-2 pl-2">
-              <li>
-                Decisões tomadas por plataformas terceiras (recusa de pagamento,
-                encerramento de conta, etc.).
-              </li>
-              <li>
-                Variações nas taxas de câmbio após a submissão do pedido.
-              </li>
-              <li>
-                Atrasos causados por terceiros (bancos, operadores de transferência, etc.).
-              </li>
-              <li>
-                Danos indirectos resultantes do uso ou da impossibilidade de uso dos serviços.
-              </li>
-            </ul>
-          </Section>
-
-          <Section title="8. Privacidade e Protecção de Dados">
-            <p>
-              Os dados pessoais recolhidos (nome, email, WhatsApp) são utilizados
-              exclusivamente para a prestação dos serviços solicitados e para comunicação
-              com o cliente.
+              Pedidos podem ser cancelados e reembolsados integralmente caso ainda não tenham sido processados. Uma vez processado o pagamento ao destinatário ou emitido o cartão virtual, o cancelamento não é possível.
             </p>
             <p>
-              Não partilhamos dados pessoais com terceiros para fins comerciais. Os dados
-              de login fornecidos para Acesso Assistido são usados apenas para o pedido
-              específico e não são armazenados de forma permanente.
+              Para solicitar um cancelamento, o utilizador deve contactar a KwanzaVisa via WhatsApp o mais rapidamente possível, identificando o número do pedido (formato KV-YYYY-NNNN).
+            </p>
+            <p>
+              Reembolsos são processados em Kwanzas (AOA) e devolvidos através do mesmo método de pagamento utilizado originalmente. O prazo para processamento de reembolsos é de 3 a 5 dias úteis.
             </p>
           </Section>
 
-          <Section title="9. Alterações aos Termos">
+          <Section title="7. Privacidade e Protecção de Dados">
             <p>
-              A KwanzaVisa reserva-se o direito de alterar estes Termos de Uso a qualquer
-              momento. As alterações serão publicadas nesta página com a data de actualização.
-              O uso continuado dos serviços após a publicação das alterações implica a
-              aceitação dos novos termos.
+              A KwanzaVisa recolhe e processa dados pessoais do utilizador exclusivamente para a prestação dos serviços solicitados, em conformidade com a Lei n.º 22/11 de 17 de Junho (Lei da Protecção de Dados Pessoais de Angola).
+            </p>
+            <p>
+              Os dados pessoais não são partilhados com terceiros sem o consentimento expresso do utilizador, excepto quando exigido por lei ou necessário para a execução do serviço (ex: instituições financeiras parceiras).
+            </p>
+            <p>
+              O utilizador tem o direito de aceder, rectificar ou solicitar a eliminação dos seus dados pessoais, mediante solicitação via WhatsApp ou e-mail.
             </p>
           </Section>
 
-          <Section title="10. Lei Aplicável">
+          <Section title="8. Limitação de Responsabilidade">
             <p>
-              Estes Termos de Uso são regidos pela legislação da República de Angola.
-              Qualquer litígio será submetido aos tribunais competentes angolanos.
+              A KwanzaVisa não será responsável por danos indirectos, incidentais ou consequenciais decorrentes da utilização dos serviços, incluindo perda de lucros, perda de dados ou interrupção de actividades.
+            </p>
+            <p>
+              A responsabilidade total da KwanzaVisa em relação a qualquer pedido está limitada ao valor pago pelo utilizador pelo serviço específico em causa.
+            </p>
+          </Section>
+
+          <Section title="9. Lei Aplicável e Resolução de Litígios">
+            <p>
+              Estes Termos e Condições são regidos pela legislação da República de Angola.
+            </p>
+            <p>
+              Qualquer litígio decorrente da utilização dos serviços será, em primeira instância, resolvido através de negociação amigável entre as partes. Na impossibilidade de resolução amigável, o litígio será submetido aos tribunais competentes de Angola.
+            </p>
+          </Section>
+
+          <Section title="10. Contactos">
+            <p>
+              Para questões relacionadas com estes Termos e Condições, o utilizador pode contactar a KwanzaVisa através dos canais disponíveis no site, incluindo WhatsApp e e-mail.
             </p>
           </Section>
 

@@ -6,44 +6,40 @@ import { Button } from "@/components/ui/button";
 
 const faqs = [
   {
-    category: "Como Funciona",
+    category: "Geral / Serviços",
     items: [
       {
-        q: "O que é a KwanzaVisa?",
-        a: "A KwanzaVisa é uma plataforma angolana que permite pagar internacionalmente em Kwanzas. Actuamos como intermediários de confiança, processando os teus pagamentos para o exterior directamente da tua conta angolana.",
+        q: "O que é um cartão virtual e como funciona?",
+        a: "Um cartão virtual é um cartão de pagamento digital que funciona como um cartão de débito ou crédito tradicional, mas sem suporte físico. É emitido instantaneamente e entregue via WhatsApp, podendo ser utilizado para compras online em qualquer site que aceite pagamentos internacionais.",
       },
       {
-        q: "Como funciona o processo de encomenda?",
-        a: "É simples: (1) Submetes o teu pedido no site com os detalhes do que precisas; (2) Recebes os dados de pagamento por email; (3) Efectuas o pagamento em Kwanzas e envias o comprovativo; (4) A nossa equipa processa o teu pedido e confirma via WhatsApp.",
+        q: "O que é o serviço de Acesso Assistido?",
+        a: "No Acesso Assistido, a nossa equipa realiza a compra por si utilizando os métodos de pagamento da KwanzaVisa. Você indica o que pretende comprar, nós processamos o pagamento em Kwanzas e acompanha todo o processo. Ideal para compras que exigem cartões internacionais.",
       },
       {
-        q: "Quanto tempo demora a processar um pedido?",
-        a: "Após a confirmação do pagamento, a maioria dos pedidos é processada em menos de 24 horas durante dias úteis. Para situações urgentes, contacta-nos directamente pelo WhatsApp.",
+        q: "Como funcionam as transferências internacionais?",
+        a: "Você paga em Kwanzas e o destinatário recebe na moeda local do país de destino. Basta fornecer os dados do destinatário e o país de destino. Calculamos o valor com base na taxa de câmbio actual e processamos a transferência após confirmação do pagamento.",
       },
       {
-        q: "Trabalham ao fim de semana?",
-        a: "Processamos pedidos de Segunda a Sexta-feira em horário laboral. Pedidos submetidos ao fim de semana serão processados na segunda-feira seguinte.",
+        q: "Quanto tempo demora cada serviço?",
+        a: "Cartão Virtual: entregue em minutos via WhatsApp. Acesso Assistido: depende da compra, geralmente 1-2 dias úteis. Transferências: 1-3 dias úteis conforme o país de destino.",
       },
     ],
   },
   {
-    category: "Serviços",
+    category: "Taxas de Câmbio",
     items: [
       {
-        q: "O que é o Cartão Virtual?",
-        a: "Criamos um cartão virtual temporário com o valor que precisas para pagares em qualquer loja online internacional — Amazon, eBay, Shopify, subscrições de software, etc. Recebes os dados do cartão via WhatsApp.",
+        q: "Como é definida a taxa de câmbio?",
+        a: "A taxa de câmbio é baseada no mercado actual do Kwanza (AOA) face às principais moedas (USD, EUR). Aplicamos uma margem de 3% sobre a taxa de mercado para cobrir custos operacionais e garantir a sustentabilidade do serviço.",
       },
       {
-        q: "O que é o Acesso Assistido?",
-        a: "Realizamos o pagamento directamente em plataformas como Netflix, Spotify, ChatGPT, Adobe, Xbox e muito mais, usando os teus dados de login. O acesso fica activo na tua conta sem precisares de cartão internacional.",
+        q: "A taxa de câmbio pode mudar depois de eu fazer o pedido?",
+        a: "Não. A taxa aplicada é a que está em vigor no momento da confirmação do pedido. Uma vez confirmado, o valor em Kwanzas fica fixo, independentemente de flutuações posteriores.",
       },
       {
-        q: "O que é o Auxilio para Envio de Remessas?",
-        a: "Facilitamos o envio de dinheiro para familiares ou amigos no exterior. Recebes o valor internacionalmente de forma segura, rápida e a taxas competitivas.",
-      },
-      {
-        q: "Para que países enviam remessas?",
-        a: "Trabalhamos com a maioria dos países, incluindo Portugal, Brasil, Reino Unido, Estados Unidos, e outros países europeus e africanos. Para destinos específicos, contacta-nos para confirmar disponibilidade.",
+        q: "Como posso verificar a taxa actual?",
+        a: "Pode usar o simulador de câmbio disponível na página inicial do site. A taxa é actualizada em tempo real pela nossa equipa administrativa para reflectir as condições de mercado.",
       },
     ],
   },
@@ -51,37 +47,33 @@ const faqs = [
     category: "Pagamentos",
     items: [
       {
-        q: "Como pago pelos serviços?",
-        a: "Aceitamos pagamentos via transferência bancária (IBAN angolano) e Paypay África. Os dados de pagamento são fornecidos no email de confirmação do pedido.",
+        q: "Como faço o pagamento em Kwanzas?",
+        a: "Após submeter o pedido, a nossa equipa contacta-o via WhatsApp com os detalhes do pagamento, incluindo o IBAN ou conta para transferência. O pagamento deve ser feito em Kwanzas (AOA) e confirmado antes do processamento.",
       },
       {
-        q: "Como sei quanto vou pagar em Kwanzas?",
-        a: "Podes usar o nosso Simulador de Câmbio no site para ter uma estimativa. O valor final é calculado com base na taxa do dia no momento do processamento do pedido.",
+        q: "Quais são as formas de pagamento aceites?",
+        a: "Aceitamos transferências bancárias, pagamentos via Multicaixa Express e referências de pagamento. Todos os pagamentos são feitos em Kwanzas. Após a confirmação, processamos o seu pedido imediatamente.",
       },
       {
-        q: "O que acontece após efectuar o pagamento?",
-        a: "Após o pagamento, envia o comprovativo através da secção 'Rastrear Pedido' no site ou directamente pelo WhatsApp. A nossa equipa confirma o recebimento e avança com o processamento.",
+        q: "É seguro fazer pagamentos através da KwanzaVisa?",
+        a: "Sim. Todas as transacções são processadas com os mais altos padrões de segurança. Não armazenamos dados bancários sensíveis e todos os pagamentos são confirmados manualmente pela nossa equipa para evitar fraudes.",
       },
       {
-        q: "Fazem reembolsos?",
-        a: "Caso não seja possível processar o teu pedido por qualquer motivo da nossa parte, efectuamos o reembolso integral. Em casos de desistência após o início do processamento, analisamos caso a caso. Consulta os nossos Termos de Uso para mais detalhes.",
+        q: "Posso cancelar um pedido depois de pagar?",
+        a: "Se o pedido ainda não foi processado, é possível cancelar e reembolsar. No entanto, uma vez que o pagamento foi enviado ao destinatário ou o cartão emitido, o cancelamento não é possível. Contacte-nos via WhatsApp o mais rápido possível.",
       },
     ],
   },
   {
-    category: "Segurança",
+    category: "Conta e Segurança",
     items: [
       {
-        q: "Os meus dados estão seguros?",
-        a: "Sim. Utilizamos encriptação em todas as comunicações e nunca partilhamos os teus dados pessoais com terceiros. Os dados de login fornecidos para Acesso Assistido são usados apenas para o pedido específico e não são guardados.",
+        q: "Preciso de criar uma conta para fazer um pedido?",
+        a: "Não. Pode fazer pedidos diretamente pelo formulário no site, fornecendo apenas nome, e-mail e WhatsApp. A conta é opcional e serve para acompanhar pedidos e gerir preferências.",
       },
       {
-        q: "Como posso confiar na KwanzaVisa?",
-        a: "Somos uma empresa angolana registada (K Digital Prestação de Serviços), com centenas de clientes satisfeitos. Podes verificar avaliações reais e falar connosco directamente antes de fazer qualquer pagamento.",
-      },
-      {
-        q: "O que faço se tiver um problema?",
-        a: "Contacta-nos imediatamente via WhatsApp (+244 957 636 981) ou por email. Respondemos a todas as questões o mais rapidamente possível.",
+        q: "Os meus dados pessoais estão protegidos?",
+        a: "Sim. Seguimos rigorosas políticas de privacidade e protecção de dados. Os seus dados são utilizados apenas para processar pedidos e comunicar consigo. Não partilhamos informações com terceiros sem o seu consentimento.",
       },
     ],
   },
