@@ -1,77 +1,53 @@
-# Walkthrough - Resend Restaurado e Pronto para Deploy no Railway
+# Walkthrough - Resend, Railway Fix, Renomeação de Serviço e Novas Páginas (FAQ & Termos)
 
-Restauramos com sucesso o serviço de e-mail do Resend que havia sido removido anteriormente e integramos os gatilhos de volta nas rotas de pedidos. O projeto está totalmente preparado para compilar e rodar no Railway.
+Hoje implementámos e corrigimos com sucesso todas as tarefas planeadas para a plataforma KwanzaVisa. O código já foi compilado, verificado localmente via TypeScript compiler (`tsc`) sem erros, e enviado para o GitHub para deploy automático no Railway.
+
+---
 
 ## Alterações Realizadas
 
-### 1. Dependência do Servidor de API (Backend)
-- Modificado o arquivo [package.json](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/api-server/package.json) para incluir a dependência `"resend": "^6.12.3"` em `dependencies`.
+### 1. Correção de Inicialização no Railway
+- **Arquivo Modificado:** [railway.json](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/railway.json)
+- **O que mudou:** Alterámos a instrução de deploy `startCommand`. O separador `&&` foi substituído por `;`. Isso garante que o servidor principal Node.js inicie mesmo se o comando de migração/sincronização do banco de dados (`drizzle-kit push`) falhar ou avisar que não há alterações estruturais a aplicar. Desta forma, a plataforma evita cair em estado de erro (retornando 404).
 
-### 2. Restauração do Serviço de E-mail
-- Criado o arquivo [email.ts](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/api-server/src/services/email.ts) para definir os layouts HTML e tipos de e-mails transacionais para:
-  - `emailOrderCreatedCliente` (Notificação quando o cliente cria um pedido)
-  - `emailOrderCreatedAdmin` (Notificação enviada ao Admin sobre o novo pedido)
-  - `emailStatusPagoCliente` & `emailStatusPagoAdmin` (Confirmação de pagamento)
-  - `emailStatusEmExecucaoCliente` (Status em processamento)
-  - `emailStatusConcluidoCliente` (Status concluído com sucesso)
-  - `emailStatusCanceladoCliente` (Status cancelado)
-  - `emailComprovativoAdmin` (Notificação ao Admin quando o cliente envia um comprovativo)
+### 2. Configuração de Email de Produção (Resend)
+- **Arquivo Modificado:** [email.ts](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/api-server/src/services/email.ts)
+- **O que mudou:** Atualizámos a constante de envio `FROM` de `"KwanzaVisa <onboarding@resend.dev>"` para `"KwanzaVisa <noreply@kwanzavisa.com>"`.
+- **Importante:** Para que os emails comecem a chegar ao destinatário a partir deste endereço, é essencial garantir que o domínio `kwanzavisa.com` está marcado como **"Verified"** no painel da sua conta do [Resend](https://resend.com/domains). Os registos DNS correspondentes (`resend._domainkey`) já estão ativos no Cloudflare.
 
-### 3. Integração das Chamadas de E-mail
-- Modificado o arquivo [orders.ts](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/api-server/src/routes/orders.ts) para disparar as funções de e-mail em segundo plano (fire-and-forget, sem bloquear a resposta HTTP do cliente e tratando erros de forma segura) nos endpoints:
-  - Criação de pedido (`POST /orders`).
-  - Upload de comprovativo de pagamento (`POST /orders/:id/comprovativo`).
-  - Atualização do status do pedido pelo administrador (`PATCH /admin/orders/:id/status`).
+### 3. Alteração do Nome de Serviço
+- **Arquivos Modificados:**
+  - [Home.tsx](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/kwanzavisa/src/pages/Home.tsx) (no formulário de submissão, no mapeamento de rótulos dos serviços e nos depoimentos)
+  - [email.ts](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/api-server/src/services/email.ts) (nos rótulos que acompanham as notificações enviadas por e-mail)
+- **O que mudou:** O serviço anteriormente designado por **"Transferência Internacional"** agora chama-se **"Auxilio para Envio de Remessas"** em toda a interface do utilizador, notificações e logs do sistema.
 
----
+### 4. Página Pública de Ajuda & FAQ
+- **Arquivo Criado:** [FAQ.tsx](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/kwanzavisa/src/pages/FAQ.tsx)
+- **O que contém:** Uma secção dividida por categorias ("Como Funciona", "Serviços", "Pagamentos", "Segurança") com perguntas sanadas através de elementos acordeão (`Accordion`) e botões de contacto direto para suporte via WhatsApp ou Email.
+- **Rota:** Disponível sob o caminho `/ajuda`.
 
-## Como Fazer Commit e Push das Alterações no Git
+### 5. Página Pública de Termos de Uso
+- **Arquivo Criado:** [Termos.tsx](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/kwanzavisa/src/pages/Termos.tsx)
+- **O que contém:** Declarações legais de acordo com a legislação angolana e as especificidades dos serviços oferecidos pela KwanzaVisa, detalhando as regras de pagamento, cancelamento, política de reembolso e privacidade.
+- **Rota:** Disponível sob o caminho `/termos`.
 
-Siga as instruções abaixo no seu terminal (PowerShell ou CMD) para salvar as alterações e enviá-las ao seu repositório remoto no GitHub:
-
-1. **Abra o terminal** na pasta raiz do seu projeto (`c:\Users\NovoUsuario\Documents\Projetos\kwanzavisa`).
-2. **Verifique o status** dos arquivos modificados para ter certeza das alterações:
-   ```bash
-   git status
-   ```
-3. **Adicione todos os arquivos** modificados e criados à área de preparação (staging):
-   ```bash
-   git add .
-   ```
-4. **Faça o commit** registrando a mensagem de alteração:
-   ```bash
-   git commit -m "feat: restaurar servico de email do resend e preparar deploy"
-   ```
-5. **Envie as alterações (push)** para o repositório remoto no GitHub:
-   ```bash
-   git push origin main
-   ```
-   *(Substitua `main` pelo nome da sua branch atual se for diferente).*
+### 6. Integração das Rotas e Menus
+- **Arquivo Modificado:** [App.tsx](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/kwanzavisa/src/App.tsx)
+  - Adicionadas as rotas do `/ajuda` e `/termos`.
+- **Links adicionados em:** [Home.tsx](file:///c:/Users/NovoUsuario/Documents/Projetos/kwanzavisa/artifacts/kwanzavisa/src/pages/Home.tsx)
+  - Menu superior de navegação para a secção de Ajuda.
+  - Menu mobile com ligação à Ajuda.
+  - Links detalhados no rodapé (Footer) para as páginas de **Ajuda & FAQ** e **Termos de Uso**.
+  - O ano no aviso de direitos autorais foi atualizado para **2026**.
 
 ---
 
-## Lista de Verificação (Checklist) para Deploy no Railway
+## Verificação e Próximos Passos
 
-Para colocar o site em produção com o domínio `kwanzavisa.com` no Railway:
+### 🛠️ Monitorização do Build no Railway
+1. Aceda ao dashboard do Railway.
+2. Acompanhe a compilação do último commit (`feat: adicionar ajuda/faq, termos de uso, corrigir startup do railway e atualizar nome do servico`).
+3. Uma vez concluído, verifique se a API responde corretamente ao aceder a `https://kwanzavisa.com/api/healthz`.
 
-### Passo 1: Criar um banco de dados PostgreSQL no Railway
-1. No dashboard do seu projeto no Railway, clique em **+ New** > **Database** > **Add PostgreSQL**.
-2. Vá até as configurações do serviço PostgreSQL criado, acesse a aba **Variables** e copie o valor da variável `DATABASE_URL`.
-
-### Passo 2: Configurar as Variáveis de Ambiente da Aplicação
-No serviço da sua aplicação web no Railway (conectado ao repositório do GitHub), acesse a aba **Variables** e adicione as seguintes variáveis:
-1. `DATABASE_URL`: A URL do PostgreSQL copiada no Passo 1.
-2. `RESEND_API_KEY`: A sua chave de API de produção do Resend.
-3. `DASHBOARD_URL`: Configure como `https://kwanzavisa.com/admin/dashboard`.
-4. `NODE_ENV`: Configure como `production`.
-
-### Passo 3: Configurar o Domínio Personalizado
-1. No serviço do seu aplicativo no Railway, acesse a aba **Settings**.
-2. Sob a seção **Domains**, clique em **Custom Domain**.
-3. Insira `kwanzavisa.com` (ou `www.kwanzavisa.com`) e clique em **Add**.
-4. O Railway exibirá os registros DNS necessários (geralmente do tipo CNAME ou A). Vá até o painel da entidade onde você comprou o seu domínio (GoDaddy, Namecheap, Cloudflare, etc.) e configure esses apontamentos DNS.
-
-### Passo 4: Verificação
-Uma vez concluído o build no Railway:
-- As dependências serão instaladas e o build do frontend e backend será executado de forma totalmente automatizada.
-- Os e-mails do Resend estarão 100% operacionais e as atualizações de status ou de pedidos no banco de dados funcionarão perfeitamente no domínio `kwanzavisa.com`!
+### 📧 Validação de Emails
+Submeta um novo pedido simulado na plataforma usando um email seu de teste e confirme se a mensagem de confirmação de encomenda é entregue com sucesso vinda de `noreply@kwanzavisa.com`.
