@@ -95,6 +95,7 @@ export default function Home() {
             <button onClick={() => scrollTo("simulador")} className="hover:text-foreground transition-colors">Simulador</button>
             <button onClick={() => scrollTo("pedido")} className="hover:text-foreground transition-colors">Pedidos</button>
             <button onClick={() => scrollTo("rastrear")} className="hover:text-foreground transition-colors">Rastrear</button>
+            <Link href="/ajuda"><a className="hover:text-foreground transition-colors">Ajuda</a></Link>
             <Button onClick={() => scrollTo("pedido")} className="rounded-full px-6">Começar agora</Button>
           </nav>
 
@@ -116,6 +117,7 @@ export default function Home() {
               <button onClick={() => scrollTo("simulador")} className="text-left text-lg font-medium py-2 border-b">Simulador</button>
               <button onClick={() => scrollTo("pedido")} className="text-left text-lg font-medium py-2 border-b">Pedidos</button>
               <button onClick={() => scrollTo("rastrear")} className="text-left text-lg font-medium py-2 border-b">Rastrear</button>
+              <Link href="/ajuda"><a className="text-left text-lg font-medium py-2 border-b">Ajuda & FAQ</a></Link>
               <Button onClick={() => scrollTo("pedido")} className="w-full rounded-full mt-4">Começar agora</Button>
             </motion.div>
           )}
@@ -267,7 +269,7 @@ export default function Home() {
                 },
                 {
                   icon: <ArrowLeftRight className="w-9 h-9 mb-6" />,
-                  title: "Transferência",
+                  title: "Auxilio para Envio de Remessas",
                   desc: "Envia valores entre países. Pagas em Kz, o destinatário recebe na moeda local."
                 }
               ].map((s, i) => (
@@ -307,7 +309,7 @@ export default function Home() {
               {[
                 { name: "Carlos M.", service: "Cartão Virtual", text: "Finalmente consegui pagar a minha subscrição da Netflix sem depender de favores. O cartão funcionou de primeira." },
                 { name: "Ana P.", service: "Acesso Assistido", text: "Comprei o meu portátil na Amazon. Eles fizeram o pagamento, eu só coloquei a morada da transitária. Serviço 5 estrelas!" },
-                { name: "João K.", service: "Transferência", text: "Enviei dinheiro para o meu irmão em Portugal no mesmo dia. Taxa clara e sem burocracia desnecessária." }
+                { name: "João K.", service: "Auxilio para Envio de Remessas", text: "Enviei dinheiro para o meu irmão em Portugal no mesmo dia. Taxa clara e sem burocracia desnecessária." }
               ].map((t, i) => (
                 <div key={i} className="bg-card border border-border p-8 rounded-3xl">
                   <div className="flex mb-4">
@@ -361,12 +363,14 @@ export default function Home() {
               <button onClick={() => scrollTo("simulador")} className="text-white/80 hover:text-white">Simulador</button>
               <button onClick={() => scrollTo("pedido")} className="text-white/80 hover:text-white">Faz um Pedido</button>
               <button onClick={() => scrollTo("rastrear")} className="text-white/80 hover:text-white">Rastrear Pedido</button>
+              <Link href="/ajuda"><a className="text-white/80 hover:text-white">Ajuda & FAQ</a></Link>
+              <Link href="/termos"><a className="text-white/80 hover:text-white">Termos de Uso</a></Link>
               <a href="https://wa.me/244957636981" target="_blank" rel="noreferrer" className="text-white/80 hover:text-white">WhatsApp</a>
             </div>
           </div>
           
           <div className="flex justify-between items-center text-xs text-white/40 font-medium">
-            <div>© 2025 KwanzaVisa. Todos os direitos reservados.</div>
+            <div>© 2026 KwanzaVisa. Todos os direitos reservados.</div>
             <Link href="/admin" className="hover:text-white/80 p-2"><Lock className="w-4 h-4" /></Link>
           </div>
         </div>
@@ -570,7 +574,7 @@ function OrderForm() {
                 <SelectContent>
                   <SelectItem value="cartao_virtual">Cartão Virtual</SelectItem>
                   <SelectItem value="acesso_assistido">Acesso Assistido</SelectItem>
-                  <SelectItem value="transferencia">Transferência Internacional</SelectItem>
+                  <SelectItem value="transferencia">Auxilio para Envio de Remessas</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -683,7 +687,7 @@ const STATUS_INFO: Record<string, { label: string; color: string; bg: string; ne
 const SERVICE_LABELS: Record<string, string> = {
   cartao_virtual: "Cartão Virtual",
   acesso_assistido: "Acesso Assistido",
-  transferencia: "Transferência Internacional",
+  transferencia: "Auxilio para Envio de Remessas",
 };
 
 type LookupOrder = {

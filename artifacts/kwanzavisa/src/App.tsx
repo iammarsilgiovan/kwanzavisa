@@ -12,6 +12,8 @@ import AdminClienteDetail from "./pages/admin/ClienteDetail";
 import AdminCambio from "./pages/admin/Cambio";
 import AdminRelatorios from "./pages/admin/Relatorios";
 import AdminSaldos from "./pages/admin/Saldos";
+import FAQ from "./pages/FAQ";
+import Termos from "./pages/Termos";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/ajuda" component={FAQ} />
+      <Route path="/termos" component={Termos} />
       <Route path="/admin" component={Admin} />
       <ProtectedRoute path="/admin/dashboard" component={AdminDashboard} />
       <ProtectedRoute path="/admin/pedidos" component={AdminPedidos} />

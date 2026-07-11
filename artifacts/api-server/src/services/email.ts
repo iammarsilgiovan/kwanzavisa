@@ -8,7 +8,7 @@ function getResend(): Resend | null {
   if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
   return _resend;
 }
-const FROM = "KwanzaVisa <onboarding@resend.dev>";
+const FROM = "KwanzaVisa <noreply@kwanzavisa.com>";
 const ADMIN_EMAIL = "mvrsilgiovani@gmail.com";
 const DASHBOARD_URL = process.env.DASHBOARD_URL ?? "https://kwanzavisa.com/admin/dashboard";
 const FALLBACK_USD_RATE = 952;
@@ -69,7 +69,7 @@ export async function sendEmail(to: string, subject: string, html: string) {
 const SERVICE_LABELS: Record<string, string> = {
   cartao_virtual: "Cartão Virtual",
   acesso_assistido: "Acesso Assistido",
-  transferencia: "Transferência Internacional",
+  transferencia: "Auxilio para Envio de Remessas",
 };
 
 export async function emailOrderCreatedCliente(opts: {
