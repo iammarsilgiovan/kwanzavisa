@@ -8,9 +8,9 @@ function getResend(): Resend | null {
   if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
   return _resend;
 }
-const FROM = "KwanzaVisa <noreply@kwanzavisa.com>";
+const FROM = "ZYVA <onboarding@resend.dev>";
 const ADMIN_EMAIL = "mvrsilgiovani@gmail.com";
-const DASHBOARD_URL = process.env.DASHBOARD_URL ?? "https://kwanzavisa.com/admin/dashboard";
+const DASHBOARD_URL = process.env.DASHBOARD_URL ?? "https://zyva.base44.app/admin/dashboard";
 const FALLBACK_USD_RATE = 952;
 
 async function getUsdRate(): Promise<number> {
@@ -47,14 +47,14 @@ const PAYMENT_DETAILS_HTML = `
 `;
 
 function layout(content: string) {
-  return `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F5F5F7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+  return `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F5F3FF;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
     <div style="max-width:600px;margin:32px auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #E5E5EA;">
-      <div style="background:#000;padding:24px 32px;">
-        <span style="color:#fff;font-size:20px;font-weight:700;letter-spacing:-0.02em;">KwanzaVisa</span>
+      <div style="background:linear-gradient(135deg,#7C3AED,#9f67f5);padding:24px 32px;">
+        <span style="color:#fff;font-size:20px;font-weight:700;letter-spacing:-0.02em;">ZYVA</span>
       </div>
       <div style="padding:32px;">${content}</div>
-      <div style="background:#F5F5F7;padding:16px 32px;border-top:1px solid #E5E5EA;text-align:center;">
-        <span style="color:#6E6E73;font-size:12px;">KwanzaVisa · K Digital</span>
+      <div style="background:#F5F3FF;padding:16px 32px;border-top:1px solid #E5E5EA;text-align:center;">
+        <span style="color:#7C3AED;font-size:12px;">ZYVA · K Digital</span>
       </div>
     </div>
   </body></html>`;
@@ -99,7 +99,7 @@ export async function emailOrderCreatedCliente(opts: {
     ${valorHtml}
     <h3 style="font-size:16px;font-weight:700;color:#1D1D1F;margin:24px 0 8px;">Dados de Pagamento</h3>
     ${PAYMENT_DETAILS_HTML}
-    <p style="color:#6E6E73;font-size:14px;margin:20px 0 0;">Após efectuar o pagamento, envia o comprovativo em <a href="https://kwanzavisa.com/#rastrear" style="color:#000;font-weight:600;">Rastrear Pedido</a> na plataforma.</p>
+    <p style="color:#6E6E73;font-size:14px;margin:20px 0 0;">Após efectuar o pagamento, envia o comprovativo em <a href="https://zyva.base44.app/#rastrear" style="color:#7C3AED;font-weight:600;">Rastrear Pedido</a> na plataforma.</p>
   `);
   await sendEmail(opts.to, `Pedido recebido · ${opts.id}`, html);
 }
@@ -164,7 +164,7 @@ export async function emailStatusConcluidoCliente(opts: { to: string; id: string
   const serviceName = SERVICE_LABELS[opts.service] ?? opts.service;
   const html = layout(`
     <h2 style="font-size:22px;font-weight:700;color:#1D1D1F;margin:0 0 8px;">Pedido concluído 🎉</h2>
-    <p style="color:#6E6E73;font-size:15px;margin:0 0 24px;">Olá ${opts.name.split(" ")[0]}, o teu pedido foi concluído com sucesso. Obrigado por escolheres a KwanzaVisa!</p>
+    <p style="color:#6E6E73;font-size:15px;margin:0 0 24px;">Olá ${opts.name.split(" ")[0]}, o teu pedido foi concluído com sucesso. Obrigado por escolheres a ZYVA!</p>
     <div style="background:#F5F5F7;border-radius:12px;padding:20px;">
       <p style="color:#6E6E73;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 4px;">ID do Pedido</p>
       <p style="font-size:22px;font-family:monospace;font-weight:800;color:#1D1D1F;margin:0 0 8px;">${opts.id}</p>
