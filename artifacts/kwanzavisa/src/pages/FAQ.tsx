@@ -14,7 +14,7 @@ const faqs = [
       },
       {
         q: "O que é o serviço de Acesso Assistido?",
-        a: "No Acesso Assistido, a nossa equipa realiza a compra por si utilizando os métodos de pagamento da KwanzaVisa. Você indica o que pretende comprar, nós processamos o pagamento em Kwanzas e acompanha todo o processo. Ideal para compras que exigem cartões internacionais.",
+        a: "No Acesso Assistido, a nossa equipa realiza a compra por si utilizando os métodos de pagamento da ZYVA. Você indica o que pretende comprar, nós processamos o pagamento em Kwanzas e acompanha todo o processo. Ideal para compras que exigem cartões internacionais.",
       },
       {
         q: "Como funcionam as transferências internacionais?",
@@ -55,7 +55,7 @@ const faqs = [
         a: "Aceitamos transferências bancárias, pagamentos via Multicaixa Express e referências de pagamento. Todos os pagamentos são feitos em Kwanzas. Após a confirmação, processamos o seu pedido imediatamente.",
       },
       {
-        q: "É seguro fazer pagamentos através da KwanzaVisa?",
+        q: "É seguro fazer pagamentos através da ZYVA?",
         a: "Sim. Todas as transacções são processadas com os mais altos padrões de segurança. Não armazenamos dados bancários sensíveis e todos os pagamentos são confirmados manualmente pela nossa equipa para evitar fraudes.",
       },
       {
@@ -131,7 +131,7 @@ export default function FAQ() {
               Voltar ao início
             </a>
           </Link>
-          <span className="font-bold text-lg">KwanzaVisa</span>
+          <span className="font-bold text-lg">ZYVA</span>
         </div>
       </header>
 
@@ -214,7 +214,7 @@ export default function FAQ() {
       {/* Footer */}
       <footer className="border-t border-border mt-16 py-8 text-center text-sm text-muted-foreground">
         <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <span>© {new Date().getFullYear()} KwanzaVisa · K Digital</span>
+          <span>© {new Date().getFullYear()} ZYVA · K Digital</span>
           <span className="hidden sm:inline text-border">·</span>
           <Link href="/termos">
             <a className="hover:text-foreground transition-colors">Termos de Uso</a>

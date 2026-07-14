@@ -69,7 +69,7 @@ export default function ClienteDetail() {
 
   const openWhatsApp = () => {
     if (!client) return;
-    const text = `Olá ${client.name}, tudo bem? Aqui é a equipa da KwanzaVisa.`;
+    const text = `Olá ${client.name}, tudo bem? Aqui é a equipa da ZYVA.`;
     window.open(`https://wa.me/${client.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
   };
 

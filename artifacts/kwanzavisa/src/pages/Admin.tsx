@@ -30,7 +30,7 @@ export default function Admin() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <Card className="w-[400px]">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">KwanzaVisa</CardTitle>
+          <CardTitle className="text-2xl">ZYVA</CardTitle>
           <p className="text-sm text-muted-foreground mt-2">Acesso Restrito</p>
         </CardHeader>
         <CardContent>

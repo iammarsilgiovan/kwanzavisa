@@ -86,8 +86,8 @@ export default function Home() {
         }`}
       >
         <div className="container mx-auto px-6 max-w-7xl flex items-center justify-between">
-          <div className="text-xl font-bold tracking-tight cursor-pointer" onClick={() => window.scrollTo({top:0, behavior:"smooth"})}>
-            KwanzaVisa
+          <div className="text-xl font-bold tracking-tight cursor-pointer text-gradient-zyva" onClick={() => window.scrollTo({top:0, behavior:"smooth"})}>
+            ZYVA
           </div>
           
           <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-muted-foreground">
@@ -135,7 +135,7 @@ export default function Home() {
               className="flex-1 text-center lg:text-left pt-10"
             >
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1.05] mb-6">
-                Paga globalmente.<br />
+                <span className="text-gradient-zyva">Paga globalmente.</span><br />
                 <span className="text-muted-foreground">Sem limites.</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed">
@@ -164,7 +164,7 @@ export default function Home() {
               >
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
                 <div className="flex justify-between items-start relative z-10">
-                  <div className="text-xl font-bold tracking-widest">KwanzaVisa</div>
+                  <div className="text-xl font-bold tracking-widest">ZYVA</div>
                   <div className="w-12 h-8 bg-white/20 rounded flex items-center justify-center">
                     {/* Chip representation */}
                     <div className="w-8 h-5 border border-white/40 rounded-sm grid grid-cols-3 grid-rows-3 gap-[1px] p-[2px]">
@@ -355,7 +355,7 @@ export default function Home() {
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-16 border-b border-white/10 pb-12">
             <div>
-              <div className="text-2xl font-bold tracking-tight mb-2">KwanzaVisa</div>
+              <div className="text-2xl font-bold tracking-tight mb-2 text-gradient-zyva">ZYVA</div>
               <p className="text-white/60">Paga globalmente. Directamente de Angola.</p>
             </div>
             <div className="flex flex-wrap gap-6 md:gap-12 text-sm font-medium">
@@ -370,7 +370,7 @@ export default function Home() {
           </div>
           
           <div className="flex justify-between items-center text-xs text-white/40 font-medium">
-            <div>© 2026 KwanzaVisa. Todos os direitos reservados.</div>
+            <div>© 2026 ZYVA. Todos os direitos reservados.</div>
             <Link href="/admin" className="hover:text-white/80 p-2"><Lock className="w-4 h-4" /></Link>
           </div>
         </div>
@@ -680,7 +680,7 @@ const STATUS_INFO: Record<string, { label: string; color: string; bg: string; ne
   comprovativo_enviado: { label: "Comprovativo Enviado", color: "text-violet-700",bg: "bg-violet-50",  next: "Comprovativo recebido. A confirmar o pagamento." },
   pago:                 { label: "Pago",                 color: "text-green-700", bg: "bg-green-50",   next: "Pagamento confirmado. O teu pedido está em execução." },
   em_processamento:     { label: "Em Processamento",     color: "text-blue-700",  bg: "bg-blue-50",    next: "O teu pedido está a ser processado pela nossa equipa." },
-  concluido:            { label: "Concluído",            color: "text-emerald-700",bg: "bg-emerald-50",next: "Concluído. Obrigado por escolheres a KwanzaVisa." },
+  concluido:            { label: "Concluído",            color: "text-emerald-700",bg: "bg-emerald-50",next: "Concluído. Obrigado por escolheres a ZYVA." },
   cancelado:            { label: "Cancelado",            color: "text-red-700",   bg: "bg-red-50",     next: null },
 };
 

@@ -67,57 +67,57 @@
 }
 
 :root {
-  --button-outline: rgba(0,0,0, .10);
-  --badge-outline: rgba(0,0,0, .05);
+  --button-outline: rgba(124,58,237, .15);
+  --badge-outline: rgba(124,58,237, .10);
   --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .08);
+  --elevate-1: rgba(124,58,237, .03);
+  --elevate-2: rgba(124,58,237, .08);
 
-  /* Apple-inspired monochrome palette */
-  --background: 0 0% 100%;
-  --foreground: 0 0% 11%;
+  /* ZYVA-inspired Lilac & White palette */
+  --background: 250 100% 98%; /* Soft lilac white (#F5F3FF) */
+  --foreground: 260 20% 15%;  /* Very dark lilac/grey */
   
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 11%;
-  --card-border: 240 5% 84%; /* #D2D2D7 */
+  --card-foreground: 260 20% 15%;
+  --card-border: 262 30% 90%; 
   
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 11%;
-  --popover-border: 240 5% 84%;
+  --popover-foreground: 260 20% 15%;
+  --popover-border: 262 30% 90%;
   
-  --primary: 0 0% 11%; /* #1D1D1F */
+  --primary: 262 83% 58%; /* ZYVA Lilac (#7C3AED) */
   --primary-foreground: 0 0% 100%;
   
-  --secondary: 0 0% 96%; /* #F5F5F7 */
-  --secondary-foreground: 0 0% 11%;
+  --secondary: 262 60% 96%; /* Lighter lilac */
+  --secondary-foreground: 262 83% 40%;
   
-  --muted: 0 0% 96%;
-  --muted-foreground: 240 2% 44%; /* #6E6E73 */
+  --muted: 262 30% 96%;
+  --muted-foreground: 260 10% 50%;
   
-  --accent: 0 0% 96%;
-  --accent-foreground: 0 0% 11%;
+  --accent: 262 83% 94%;
+  --accent-foreground: 262 83% 58%;
   
-  --destructive: 358 100% 59%; /* #FF3B30 */
+  --destructive: 358 100% 59%; 
   --destructive-foreground: 0 0% 100%;
   
-  --border: 240 5% 84%;
-  --input: 240 5% 84%;
-  --ring: 0 0% 11%;
+  --border: 262 30% 90%;
+  --input: 262 30% 90%;
+  --ring: 262 83% 58%;
   
-  --chart-1: 0 0% 11%;
-  --chart-2: 0 0% 30%;
-  --chart-3: 0 0% 50%;
-  --chart-4: 0 0% 70%;
-  --chart-5: 0 0% 90%;
+  --chart-1: 262 83% 58%;
+  --chart-2: 262 60% 70%;
+  --chart-3: 262 40% 60%;
+  --chart-4: 262 20% 50%;
+  --chart-5: 262 10% 40%;
 
-  --sidebar: 0 0% 96%;
-  --sidebar-foreground: 0 0% 11%;
-  --sidebar-border: 240 5% 84%;
-  --sidebar-primary: 0 0% 11%;
+  --sidebar: 250 100% 98%;
+  --sidebar-foreground: 260 20% 15%;
+  --sidebar-border: 262 30% 90%;
+  --sidebar-primary: 262 83% 58%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 240 5% 84%;
-  --sidebar-accent-foreground: 0 0% 11%;
-  --sidebar-ring: 0 0% 11%;
+  --sidebar-accent: 262 60% 96%;
+  --sidebar-accent-foreground: 262 83% 40%;
+  --sidebar-ring: 262 83% 58%;
 
   --app-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Inter";
   --app-font-serif: Georgia, serif;
@@ -136,39 +136,39 @@
 
 .dark {
   /* Enforce light mode strictly as per Apple-like styling requirement unless specifically needed, but we keep dark mode tokens just in case */
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
+  --button-outline: rgba(124,58,237, .15);
+  --badge-outline: rgba(124,58,237, .10);
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
-  --background: 0 0% 0%;
-  --foreground: 0 0% 100%;
-  --card: 0 0% 11%;
-  --card-foreground: 0 0% 100%;
-  --card-border: 0 0% 20%;
-  --popover: 0 0% 11%;
-  --popover-foreground: 0 0% 100%;
-  --popover-border: 0 0% 20%;
-  --primary: 0 0% 100%;
-  --primary-foreground: 0 0% 0%;
-  --secondary: 0 0% 15%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 0 0% 15%;
-  --muted-foreground: 240 2% 60%;
-  --accent: 0 0% 15%;
-  --accent-foreground: 0 0% 100%;
+  --background: 260 20% 10%;
+  --foreground: 250 100% 98%;
+  --card: 260 20% 13%;
+  --card-foreground: 250 100% 98%;
+  --card-border: 260 20% 25%;
+  --popover: 260 20% 13%;
+  --popover-foreground: 250 100% 98%;
+  --popover-border: 260 20% 25%;
+  --primary: 262 83% 65%;
+  --primary-foreground: 260 20% 10%;
+  --secondary: 260 20% 20%;
+  --secondary-foreground: 250 100% 98%;
+  --muted: 260 20% 20%;
+  --muted-foreground: 260 10% 70%;
+  --accent: 260 20% 20%;
+  --accent-foreground: 250 100% 98%;
   --destructive: 358 100% 59%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 20%;
-  --input: 0 0% 20%;
-  --ring: 0 0% 100%;
+  --destructive-foreground: 250 100% 98%;
+  --border: 260 20% 25%;
+  --input: 260 20% 25%;
+  --ring: 262 83% 65%;
   
-  --chart-1: 0 0% 100%;
-  --chart-2: 0 0% 80%;
-  --chart-3: 0 0% 60%;
-  --chart-4: 0 0% 40%;
-  --chart-5: 0 0% 20%;
+  --chart-1: 262 83% 65%;
+  --chart-2: 262 60% 75%;
+  --chart-3: 262 40% 65%;
+  --chart-4: 262 20% 55%;
+  --chart-5: 262 10% 45%;
 }
 
 @layer base {
@@ -187,5 +187,8 @@
     content: attr(data-placeholder);
     color: hsl(var(--muted-foreground));
     pointer-events: none;
+  }
+  .text-gradient-zyva {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60;
   }
 }

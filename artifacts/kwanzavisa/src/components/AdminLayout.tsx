@@ -46,7 +46,7 @@ export function AdminLayout({ children, title, actions }: AdminLayoutProps) {
       <aside className="w-64 bg-[#1D1D1F] text-white flex flex-col fixed h-full z-10">
         <div className="p-6">
           <Link href="/admin">
-            <h2 className="text-xl font-bold tracking-tight cursor-pointer">KwanzaVisa Admin</h2>
+            <h2 className="text-xl font-bold tracking-tight cursor-pointer">ZYVA Admin</h2>
           </Link>
         </div>
         
