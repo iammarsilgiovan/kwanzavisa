@@ -83,13 +83,13 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-border last:border-0">
+    <div className="border-b border-white/5 last:border-0">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-start justify-between gap-4 py-5 text-left group"
         aria-expanded={open}
       >
-        <span className="font-semibold text-base text-foreground group-hover:text-black transition-colors">
+        <span className="font-semibold text-base text-white/85 group-hover:text-white transition-colors">
           {q}
         </span>
         <motion.div
@@ -97,7 +97,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
           transition={{ duration: 0.2 }}
           className="shrink-0 mt-0.5"
         >
-          <ChevronDown className="w-5 h-5 text-muted-foreground" />
+          <ChevronDown className="w-5 h-5 text-[#7C3AED]" />
         </motion.div>
       </button>
       <AnimatePresence initial={false}>
@@ -109,7 +109,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
             transition={{ duration: 0.25, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="pb-5 text-muted-foreground leading-relaxed text-sm">
+            <p className="pb-5 text-white/50 leading-relaxed text-sm">
               {a}
             </p>
           </motion.div>
@@ -121,17 +121,23 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 export default function FAQ() {
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans">
+    <div className="min-h-screen font-sans" style={{ background: "#0A0A0F", color: "white" }}>
       {/* Header */}
-      <header className="border-b border-border bg-white/80 backdrop-blur-md sticky top-0 z-50">
+      <header style={{ background: "rgba(10,10,15,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(124,58,237,0.15)" }} className="sticky top-0 z-50">
         <div className="container mx-auto px-6 max-w-4xl py-4 flex items-center justify-between">
           <Link href="/">
-            <a className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
+            <a className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-sm font-medium">
               <ArrowLeft className="w-4 h-4" />
               Voltar ao início
             </a>
           </Link>
-          <span className="font-bold text-lg">ZYVA</span>
+          <div className="flex items-center gap-2">
+            <div className="relative w-7 h-7">
+              <div className="absolute inset-0 rounded-lg blur-sm opacity-50 bg-[#7C3AED]"></div>
+              <img src="/ICON.png" alt="ZYVA" className="relative w-7 h-7 rounded-lg object-contain" />
+            </div>
+            <span className="font-bold text-lg text-white">ZYVA</span>
+          </div>
         </div>
       </header>
 
@@ -143,19 +149,19 @@ export default function FAQ() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-block bg-black text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-widest uppercase mb-6">
+          <span className="inline-block text-xs font-bold px-3 py-1.5 rounded-full tracking-widest uppercase mb-6" style={{ background: "rgba(124,58,237,0.15)", color: "#A78BFA", border: "1px solid rgba(124,58,237,0.3)" }}>
             Ajuda
           </span>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">
-            Perguntas Frequentes
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4 text-white">
+            Perguntas <span style={{ background: "linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Frequentes</span>
           </h1>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+          <p className="text-white/50 text-lg max-w-xl mx-auto">
             Encontra respostas às perguntas mais comuns sobre os nossos serviços.
           </p>
         </motion.div>
 
         {/* FAQ Categories */}
-        <div className="space-y-12">
+        <div className="space-y-10">
           {faqs.map((category, ci) => (
             <motion.section
               key={category.category}
@@ -163,10 +169,10 @@ export default function FAQ() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: ci * 0.1 }}
             >
-              <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4 pb-2 border-b border-border">
+              <h2 className="text-xs font-bold uppercase tracking-widest mb-4 pb-2" style={{ color: "#7C3AED", borderBottom: "1px solid rgba(124,58,237,0.2)" }}>
                 {category.category}
               </h2>
-              <div className="bg-white rounded-2xl border border-border px-6 divide-y-0">
+              <div className="rounded-2xl px-6 divide-y-0" style={{ background: "linear-gradient(135deg, rgba(30,20,60,0.7) 0%, rgba(18,12,40,0.9) 100%)", border: "1px solid rgba(124,58,237,0.2)" }}>
                 {category.items.map((item) => (
                   <FAQItem key={item.q} q={item.q} a={item.a} />
                 ))}
@@ -180,10 +186,11 @@ export default function FAQ() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-16 bg-black text-white rounded-3xl p-10 text-center"
+          className="mt-16 rounded-3xl p-10 text-center"
+          style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.2) 0%, rgba(91,33,182,0.3) 100%)", border: "1px solid rgba(124,58,237,0.35)", boxShadow: "0 0 60px rgba(124,58,237,0.1)" }}
         >
-          <h2 className="text-2xl font-bold mb-2">Ainda tens dúvidas?</h2>
-          <p className="text-white/60 mb-8 text-sm">
+          <h2 className="text-2xl font-bold mb-2 text-white">Ainda tens dúvidas?</h2>
+          <p className="text-white/50 mb-8 text-sm">
             A nossa equipa está disponível para ajudar.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -193,15 +200,15 @@ export default function FAQ() {
               rel="noopener noreferrer"
               id="faq-whatsapp-btn"
             >
-              <Button className="bg-white text-black hover:bg-white/90 rounded-full px-8 h-12 font-semibold gap-2">
+              <Button className="rounded-full px-8 h-12 font-semibold gap-2 bg-[#7C3AED] text-white hover:opacity-90 border-0" style={{ boxShadow: "0 0 20px rgba(124,58,237,0.3)" }}>
                 <MessageCircle className="w-4 h-4" />
                 WhatsApp
               </Button>
             </a>
-            <a href="mailto:suporte@kwanzavisa.com" id="faq-email-btn">
+            <a href="mailto:suporte@zyva.app" id="faq-email-btn">
               <Button
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 rounded-full px-8 h-12 font-semibold gap-2 bg-transparent"
+                className="border-white/20 text-white hover:bg-white/10 rounded-full px-8 h-12 font-semibold gap-2 bg-transparent"
               >
                 <Mail className="w-4 h-4" />
                 Email
@@ -212,16 +219,16 @@ export default function FAQ() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-16 py-8 text-center text-sm text-muted-foreground">
+      <footer className="mt-16 py-8 text-center text-sm" style={{ borderTop: "1px solid rgba(124,58,237,0.15)", color: "rgba(255,255,255,0.35)" }}>
         <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-4">
           <span>© {new Date().getFullYear()} ZYVA · K Digital</span>
-          <span className="hidden sm:inline text-border">·</span>
+          <span className="hidden sm:inline opacity-30">·</span>
           <Link href="/termos">
-            <a className="hover:text-foreground transition-colors">Termos de Uso</a>
+            <a className="hover:text-white transition-colors">Termos de Uso</a>
           </Link>
-          <span className="hidden sm:inline text-border">·</span>
+          <span className="hidden sm:inline opacity-30">·</span>
           <Link href="/ajuda">
-            <a className="hover:text-foreground transition-colors">Ajuda & FAQ</a>
+            <a className="hover:text-white transition-colors">Ajuda &amp; FAQ</a>
           </Link>
         </div>
       </footer>

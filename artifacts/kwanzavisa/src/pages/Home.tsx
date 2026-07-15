@@ -91,18 +91,9 @@ export default function Home() {
       >
         <div className="container mx-auto px-6 max-w-7xl flex items-center justify-between">
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => window.scrollTo({top:0, behavior:"smooth"})}>
-            <div className="relative w-8 h-8">
+            <div className="relative w-9 h-9">
               <div className="absolute inset-0 rounded-xl blur-md opacity-50 bg-[#7C3AED]"></div>
-              <svg viewBox="0 0 40 40" className="relative w-8 h-8">
-                <defs>
-                  <linearGradient id="zyvaLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#7C3AED" />
-                    <stop offset="100%" stopColor="#5B21B6" />
-                  </linearGradient>
-                </defs>
-                <rect width="40" height="40" rx="10" fill="url(#zyvaLogoGrad)" />
-                <path d="M14 13 L26 13 L26 16.5 L18.5 23.5 L26 23.5 L26 27 L14 27 L14 23.5 L21.5 16.5 L14 16.5 Z" fill="white" />
-              </svg>
+              <img src="/ICON.png" alt="ZYVA" className="relative w-9 h-9 rounded-xl object-contain" />
             </div>
             <span className="text-xl font-bold tracking-tight text-white font-heading">ZYVA</span>
           </div>
@@ -285,7 +276,25 @@ export default function Home() {
                   tag: null
                 }
               ].map((t, n) => (
-                <div key={n} className="relative rounded-3xl p-8 glass-card glass-card-hover overflow-hidden">
+                <div
+                  key={n}
+                  className="relative rounded-3xl p-8 overflow-hidden transition-all duration-300 group"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(30,20,60,0.85) 0%, rgba(18,12,40,0.95) 100%)",
+                    border: "1px solid rgba(124,58,237,0.25)",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
+                  }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLDivElement).style.border = "1px solid rgba(124,58,237,0.55)";
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 40px rgba(124,58,237,0.18), inset 0 1px 0 rgba(255,255,255,0.07)";
+                    (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)";
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLDivElement).style.border = "1px solid rgba(124,58,237,0.25)";
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)";
+                    (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
+                  }}
+                >
                   <span className="absolute -top-4 -right-2 text-8xl font-bold font-heading select-none text-white/[0.03]">
                     {t.num}
                   </span>

@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-10">
-      <h2 className="text-xl font-bold mb-4 text-foreground">{title}</h2>
-      <div className="text-muted-foreground leading-relaxed space-y-3 text-sm">
+      <h2 className="text-xl font-bold mb-4 text-white">{title}</h2>
+      <div className="leading-relaxed space-y-3 text-sm text-white/60">
         {children}
       </div>
     </section>
@@ -17,17 +17,23 @@ export default function Termos() {
   const lastUpdated = "8 de Julho de 2026";
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans">
+    <div className="min-h-screen font-sans" style={{ background: "#0A0A0F", color: "white" }}>
       {/* Header */}
-      <header className="border-b border-border bg-white/80 backdrop-blur-md sticky top-0 z-50">
+      <header style={{ background: "rgba(10,10,15,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(124,58,237,0.15)" }} className="sticky top-0 z-50">
         <div className="container mx-auto px-6 max-w-3xl py-4 flex items-center justify-between">
           <Link href="/">
-            <a className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
+            <a className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-sm font-medium">
               <ArrowLeft className="w-4 h-4" />
               Voltar ao início
             </a>
           </Link>
-          <span className="font-bold text-lg">ZYVA</span>
+          <div className="flex items-center gap-2">
+            <div className="relative w-7 h-7">
+              <div className="absolute inset-0 rounded-lg blur-sm opacity-50 bg-[#7C3AED]"></div>
+              <img src="/ICON.png" alt="ZYVA" className="relative w-7 h-7 rounded-lg object-contain" />
+            </div>
+            <span className="font-bold text-lg text-white">ZYVA</span>
+          </div>
         </div>
       </header>
 
@@ -39,13 +45,13 @@ export default function Termos() {
           transition={{ duration: 0.5 }}
           className="mb-12"
         >
-          <span className="inline-block bg-black text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-widest uppercase mb-6">
+          <span className="inline-block text-xs font-bold px-3 py-1.5 rounded-full tracking-widest uppercase mb-6" style={{ background: "rgba(124,58,237,0.15)", color: "#A78BFA", border: "1px solid rgba(124,58,237,0.3)" }}>
             Legal
           </span>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">
-            Termos de Uso
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4 text-white">
+            Termos de <span style={{ background: "linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Uso</span>
           </h1>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-white/40 text-sm">
             Última actualização: {lastUpdated}
           </p>
         </motion.div>
@@ -54,7 +60,8 @@ export default function Termos() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-white border border-border rounded-3xl p-8 md:p-12"
+          className="rounded-3xl p-8 md:p-12"
+          style={{ background: "linear-gradient(135deg, rgba(30,20,60,0.7) 0%, rgba(18,12,40,0.9) 100%)", border: "1px solid rgba(124,58,237,0.2)" }}
         >
           <Section title="1. Aceitação dos Termos">
             <p>
@@ -71,13 +78,13 @@ export default function Termos() {
             </p>
             <div className="space-y-3 pl-2">
               <p>
-                <strong>a) Cartão Virtual:</strong> Emissão de cartões de pagamento virtuais para utilização em compras online internacionais, entregues via WhatsApp após confirmação do pagamento.
+                <strong className="text-white/80">a) Cartão Virtual:</strong> Emissão de cartões de pagamento virtuais para utilização em compras online internacionais, entregues via WhatsApp após confirmação do pagamento.
               </p>
               <p>
-                <strong>b) Acesso Assistido:</strong> Serviço de compra assistida em que a ZYVA realiza pagamentos em nome do utilizador, utilizando os seus próprios métodos de pagamento internacionais.
+                <strong className="text-white/80">b) Acesso Assistido:</strong> Serviço de compra assistida em que a ZYVA realiza pagamentos em nome do utilizador, utilizando os seus próprios métodos de pagamento internacionais.
               </p>
               <p>
-                <strong>c) Transferências Internacionais:</strong> Serviço de transferência de fundos em que o utilizador paga em Kwanzas (AOA) e o destinatário recebe na moeda local do país de destino.
+                <strong className="text-white/80">c) Transferências Internacionais:</strong> Serviço de transferência de fundos em que o utilizador paga em Kwanzas (AOA) e o destinatário recebe na moeda local do país de destino.
               </p>
             </div>
             <p className="mt-4">
@@ -172,14 +179,14 @@ export default function Termos() {
             </p>
           </Section>
 
-          <div className="mt-10 pt-8 border-t border-border text-center">
-            <p className="text-xs text-muted-foreground">
+          <div className="mt-10 pt-8 text-center" style={{ borderTop: "1px solid rgba(124,58,237,0.2)" }}>
+            <p className="text-xs text-white/35">
               Para questões relacionadas com estes termos, contacte-nos em{" "}
               <a
-                href="mailto:suporte@kwanzavisa.com"
-                className="text-foreground font-semibold hover:underline"
+                href="mailto:suporte@zyva.app"
+                className="text-[#A78BFA] font-semibold hover:underline"
               >
-                suporte@kwanzavisa.com
+                suporte@zyva.app
               </a>
             </p>
           </div>
@@ -187,16 +194,16 @@ export default function Termos() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-8 py-8 text-center text-sm text-muted-foreground">
+      <footer className="mt-8 py-8 text-center text-sm" style={{ borderTop: "1px solid rgba(124,58,237,0.15)", color: "rgba(255,255,255,0.35)" }}>
         <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-4">
           <span>© {new Date().getFullYear()} ZYVA · K Digital</span>
-          <span className="hidden sm:inline text-border">·</span>
+          <span className="hidden sm:inline opacity-30">·</span>
           <Link href="/termos">
-            <a className="hover:text-foreground transition-colors">Termos de Uso</a>
+            <a className="hover:text-white transition-colors">Termos de Uso</a>
           </Link>
-          <span className="hidden sm:inline text-border">·</span>
+          <span className="hidden sm:inline opacity-30">·</span>
           <Link href="/ajuda">
-            <a className="hover:text-foreground transition-colors">Ajuda & FAQ</a>
+            <a className="hover:text-white transition-colors">Ajuda &amp; FAQ</a>
           </Link>
         </div>
       </footer>
