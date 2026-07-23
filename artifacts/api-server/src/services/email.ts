@@ -8,8 +8,8 @@ function getResend(): Resend | null {
   if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
   return _resend;
 }
-const FROM = "KwanzaVisa <Suporte@kwanzavisa.com>";
-const ADMIN_EMAIL = "Suporte@kwanzavisa.com";
+const FROM = process.env.RESEND_FROM_EMAIL || "KwanzaVisa <Suporte@kwanzavisa.com>";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "Suporte@kwanzavisa.com";
 const DASHBOARD_URL = process.env.DASHBOARD_URL ?? "https://zyva.base44.app/admin/dashboard";
 const FALLBACK_USD_RATE = 952;
 
@@ -62,8 +62,20 @@ function layout(content: string) {
 
 export async function sendEmail(to: string, subject: string, html: string) {
   const resend = getResend();
-  if (!resend) return;
-  await resend.emails.send({ from: FROM, to, subject, html });
+  if (!resend) {
+    console.warn(`[Email Warning] E-mail para "${to}" ("${subject}") NÃO enviado: RESEND_API_KEY não está definida no ambiente.`);
+    return;
+  }
+  try {
+    const { data, error } = await resend.emails.send({ from: FROM, to, subject, html });
+    if (error) {
+      console.error(`[Email Error] Erro ao enviar e-mail para "${to}" via Resend:`, JSON.stringify(error));
+    } else {
+      console.log(`[Email OK] E-mail enviado com sucesso para "${to}" (${subject}) [ID: ${data?.id}]`);
+    }
+  } catch (err) {
+    console.error(`[Email Exception] Exceção ao enviar e-mail para "${to}":`, err);
+  }
 }
 
 const SERVICE_LABELS: Record<string, string> = {
