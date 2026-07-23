@@ -23,6 +23,7 @@ import {
   emailStatusEmExecucaoCliente,
   emailStatusCanceladoCliente,
   emailComprovativoAdmin,
+  emailComprovativoCliente,
 } from "../services/email.js";
 
 const router: IRouter = Router();
@@ -200,12 +201,20 @@ router.post("/orders/:id/comprovativo", async (req, res): Promise<void> => {
   });
 
   try {
-    emailComprovativoAdmin({
-      id: rawId,
-      name: order.name,
-      email: order.email,
-      service: order.service,
-    }).catch((err) => {
+    Promise.all([
+      emailComprovativoAdmin({
+        id: rawId,
+        name: order.name,
+        email: order.email,
+        service: order.service,
+      }),
+      emailComprovativoCliente({
+        to: order.email,
+        id: rawId,
+        name: order.name,
+        service: order.service,
+      }),
+    ]).catch((err) => {
       req.log?.warn({ err }, "email send failed on comprovativo upload async promise");
     });
   } catch (err) {

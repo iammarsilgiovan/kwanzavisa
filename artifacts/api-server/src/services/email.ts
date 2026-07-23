@@ -8,8 +8,8 @@ function getResend(): Resend | null {
   if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
   return _resend;
 }
-const FROM = "ZYVA <onboarding@resend.dev>";
-const ADMIN_EMAIL = "mvrsilgiovani@gmail.com";
+const FROM = "KwanzaVisa <Suporte@kwanzavisa.com>";
+const ADMIN_EMAIL = "Suporte@kwanzavisa.com";
 const DASHBOARD_URL = process.env.DASHBOARD_URL ?? "https://zyva.base44.app/admin/dashboard";
 const FALLBACK_USD_RATE = 952;
 
@@ -243,3 +243,19 @@ export async function emailComprovativoAdmin(opts: { id: string; name: string; e
   `);
   await sendEmail(ADMIN_EMAIL, `Comprovativo enviado · ${opts.id}`, html);
 }
+
+export async function emailComprovativoCliente(opts: { to: string; id: string; name: string; service: string }) {
+  const serviceName = SERVICE_LABELS[opts.service] ?? opts.service;
+  const html = layout(`
+    <h2 style="font-size:22px;font-weight:700;color:#1D1D1F;margin:0 0 8px;">Comprovativo recebido 📎</h2>
+    <p style="color:#6E6E73;font-size:15px;margin:0 0 24px;">Olá ${opts.name.split(" ")[0]}, recebemos o teu comprovativo de pagamento. Iremos analisá-lo em breve.</p>
+    <div style="background:#F5F5F7;border-radius:12px;padding:20px;">
+      <p style="color:#6E6E73;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 4px;">ID do Pedido</p>
+      <p style="font-size:22px;font-family:monospace;font-weight:800;color:#1D1D1F;margin:0 0 8px;">${opts.id}</p>
+      <p style="color:#1D1D1F;font-size:14px;margin:0;">Serviço: <strong>${serviceName}</strong></p>
+    </div>
+    <p style="color:#6E6E73;font-size:14px;margin:20px 0 0;">Assim que o pagamento for validado, o estado do teu pedido será actualizado para <strong>Pago</strong>.</p>
+  `);
+  await sendEmail(opts.to, `Comprovativo recebido · ${opts.id}`, html);
+}
+
