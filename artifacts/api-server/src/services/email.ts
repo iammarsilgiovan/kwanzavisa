@@ -8,7 +8,13 @@ function getResend(): Resend | null {
   if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
   return _resend;
 }
-const FROM = process.env.RESEND_FROM_EMAIL || "ZYVA <Suporte@kwanzavisa.com>";
+function getFromAddress(): string {
+  const envFrom = process.env.RESEND_FROM_EMAIL?.trim();
+  if (!envFrom) return "ZYVA <Suporte@kwanzavisa.com>";
+  if (envFrom.includes("<") && envFrom.includes(">")) return envFrom;
+  return `ZYVA <${envFrom}>`;
+}
+const FROM = getFromAddress();
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "zyva.ao@gmail.com";
 const DASHBOARD_URL = process.env.DASHBOARD_URL ?? "https://zyva.base44.app/admin/dashboard";
 const FALLBACK_USD_RATE = 952;

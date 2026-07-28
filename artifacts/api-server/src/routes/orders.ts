@@ -135,7 +135,7 @@ router.post("/orders", async (req, res): Promise<void> => {
 
   // Emails — fire & forget, never block response
   try {
-    Promise.all([
+    Promise.allSettled([
       emailOrderCreatedCliente({
         to: order.email,
         id,
@@ -151,11 +151,9 @@ router.post("/orders", async (req, res): Promise<void> => {
         email: order.email,
         formattedDate: mapped.formattedDate,
       }),
-    ]).catch((err) => {
-      req.log?.warn({ err }, "email send failed on order create async promise");
-    });
+    ]);
   } catch (err) {
-    req.log?.warn({ err }, "email send failed on order create");
+    console.error("[Email] email send failed on order create", err);
   }
 
   res.status(201).json(mapped);
@@ -201,7 +199,7 @@ router.post("/orders/:id/comprovativo", async (req, res): Promise<void> => {
   });
 
   try {
-    Promise.all([
+    Promise.allSettled([
       emailComprovativoAdmin({
         id: rawId,
         name: order.name,
@@ -214,11 +212,9 @@ router.post("/orders/:id/comprovativo", async (req, res): Promise<void> => {
         name: order.name,
         service: order.service,
       }),
-    ]).catch((err) => {
-      req.log?.warn({ err }, "email send failed on comprovativo upload async promise");
-    });
+    ]);
   } catch (err) {
-    req.log?.warn({ err }, "email send failed on comprovativo upload");
+    console.error("[Email] email send failed on comprovativo upload", err);
   }
 
   res.json({ ok: true, status: "comprovativo_enviado" });
@@ -350,27 +346,25 @@ router.patch("/admin/orders/:id/status", async (req, res): Promise<void> => {
   try {
     const newStatus = bodyResult.data.status;
     if (newStatus === "pago") {
-      Promise.all([
+      Promise.allSettled([
         emailStatusPagoCliente({ to: order.email, id: order.id, name: order.name, service: order.service, amountUsd: mapped.amountUsd }),
         emailStatusPagoAdmin({ id: order.id, service: order.service, amountUsd: mapped.amountUsd }),
-      ]).catch((err) => {
-        req.log?.warn({ err }, "email send failed on status update async promise pago");
-      });
+      ]);
     } else if (newStatus === "em_processamento") {
       emailStatusEmExecucaoCliente({ to: order.email, id: order.id, name: order.name, service: order.service }).catch((err) => {
-        req.log?.warn({ err }, "email send failed on status update async promise em_processamento");
+        console.error("[Email] email send failed on status update em_processamento", err);
       });
     } else if (newStatus === "concluido") {
       emailStatusConcluidoCliente({ to: order.email, id: order.id, name: order.name, service: order.service }).catch((err) => {
-        req.log?.warn({ err }, "email send failed on status update async promise concluido");
+        console.error("[Email] email send failed on status update concluido", err);
       });
     } else if (newStatus === "cancelado") {
       emailStatusCanceladoCliente({ to: order.email, id: order.id, name: order.name, service: order.service }).catch((err) => {
-        req.log?.warn({ err }, "email send failed on status update async promise cancelado");
+        console.error("[Email] email send failed on status update cancelado", err);
       });
     }
   } catch (err) {
-    req.log?.warn({ err }, "email send failed on status update");
+    console.error("[Email] email send failed on status update", err);
   }
 
   res.json(mapped);
