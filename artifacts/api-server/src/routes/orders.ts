@@ -17,6 +17,7 @@ import {
 import {
   emailOrderCreatedCliente,
   emailOrderCreatedAdmin,
+  emailStatusAguardaPagamentoCliente,
   emailStatusPagoCliente,
   emailStatusPagoAdmin,
   emailStatusConcluidoCliente,
@@ -345,7 +346,11 @@ router.patch("/admin/orders/:id/status", async (req, res): Promise<void> => {
   // Trigger emails on status change — fire & forget
   try {
     const newStatus = bodyResult.data.status;
-    if (newStatus === "pago") {
+    if (newStatus === "aguarda_pagamento") {
+      emailStatusAguardaPagamentoCliente({ to: order.email, id: order.id, name: order.name, service: order.service, amountUsd: mapped.amountUsd }).catch((err) => {
+        console.error("[Email] email send failed on status update aguarda_pagamento", err);
+      });
+    } else if (newStatus === "pago") {
       Promise.allSettled([
         emailStatusPagoCliente({ to: order.email, id: order.id, name: order.name, service: order.service, amountUsd: mapped.amountUsd }),
         emailStatusPagoAdmin({ id: order.id, service: order.service, amountUsd: mapped.amountUsd }),

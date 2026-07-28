@@ -150,6 +150,36 @@ export async function emailOrderCreatedAdmin(opts: {
   await sendEmail(ADMIN_EMAIL, `Novo pedido · ${opts.id}`, html);
 }
 
+export async function emailStatusAguardaPagamentoCliente(opts: { to: string; id: string; name: string; service: string; amountUsd?: number | null }) {
+  const serviceName = SERVICE_LABELS[opts.service] ?? opts.service;
+
+  let valorHtml = "";
+  if (opts.amountUsd) {
+    const kz = await usdToKz(opts.amountUsd);
+    valorHtml = `
+      <div style="background:#000;border-radius:12px;padding:20px;margin:20px 0;">
+        <p style="color:#A1A1A6;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 6px;">Total a Pagar</p>
+        <p style="font-size:28px;font-weight:800;color:#fff;margin:0 0 4px;">${formatKz(kz)}</p>
+        <p style="color:#6E6E73;font-size:13px;margin:0;">≈ $${opts.amountUsd} USD · taxa do dia</p>
+      </div>`;
+  }
+
+  const html = layout(`
+    <h2 style="font-size:22px;font-weight:700;color:#1D1D1F;margin:0 0 8px;">Aguardando pagamento ⏳</h2>
+    <p style="color:#6E6E73;font-size:15px;margin:0 0 24px;">Olá ${opts.name.split(" ")[0]}, o teu pedido foi analisado. Por favor, efectua o pagamento para prosseguirmos.</p>
+    <div style="background:#F5F5F7;border-radius:12px;padding:20px;margin-bottom:16px;">
+      <p style="color:#6E6E73;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 4px;">ID do Pedido</p>
+      <p style="font-size:22px;font-family:monospace;font-weight:800;color:#1D1D1F;margin:0 0 8px;">${opts.id}</p>
+      <p style="color:#1D1D1F;font-size:14px;margin:0;">Serviço: <strong>${serviceName}</strong></p>
+    </div>
+    ${valorHtml}
+    <h3 style="font-size:16px;font-weight:700;color:#1D1D1F;margin:24px 0 8px;">Dados de Pagamento</h3>
+    ${PAYMENT_DETAILS_HTML}
+    <p style="color:#6E6E73;font-size:14px;margin:20px 0 0;">Após efectuar o pagamento, envia o comprovativo em <a href="https://zyva.base44.app/#rastrear" style="color:#7C3AED;font-weight:600;">Rastrear Pedido</a> na plataforma.</p>
+  `);
+  await sendEmail(opts.to, `Aguardando pagamento · ${opts.id}`, html);
+}
+
 export async function emailStatusPagoCliente(opts: { to: string; id: string; name: string; service: string; amountUsd?: number | null }) {
   const serviceName = SERVICE_LABELS[opts.service] ?? opts.service;
 
