@@ -8,7 +8,7 @@ function getResend(): Resend | null {
   if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
   return _resend;
 }
-const FROM = process.env.RESEND_FROM_EMAIL || "ZYVA <onboarding@resend.dev>";
+const FROM = process.env.RESEND_FROM_EMAIL || "ZYVA <Suporte@kwanzavisa.com>";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "zyva.ao@gmail.com";
 const DASHBOARD_URL = process.env.DASHBOARD_URL ?? "https://zyva.base44.app/admin/dashboard";
 const FALLBACK_USD_RATE = 952;
