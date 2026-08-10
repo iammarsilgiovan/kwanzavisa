@@ -174,40 +174,42 @@ export default function Relatorios() {
               <CardTitle className="text-base font-bold text-white">Desempenho por Serviço</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-white/[0.02]">
-                  <TableRow className="border-b border-white/10 hover:bg-transparent">
-                    <TableHead className="pl-6 text-xs text-white/40 uppercase tracking-wider font-bold">Serviço</TableHead>
-                    <TableHead className="text-center text-xs text-white/40 uppercase tracking-wider font-bold">Pedidos</TableHead>
-                    <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Volume (Kz)</TableHead>
-                    <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Receita Bruta</TableHead>
-                    <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Custo</TableHead>
-                    <TableHead className="text-right font-bold text-[#A78BFA] text-xs uppercase tracking-wider">Lucro</TableHead>
-                    <TableHead className="text-right pr-6 text-xs text-white/40 uppercase tracking-wider font-bold">Margem</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {report.byService.length === 0 ? (
-                    <TableRow><TableCell colSpan={7} className="text-center py-10 text-white/40">Sem dados para o período</TableCell></TableRow>
-                  ) : (
-                    report.byService.map(service => (
-                      <TableRow key={service.service} className="border-b border-white/5 hover:bg-white/[0.02]">
-                        <TableCell className="pl-6 font-semibold text-sm text-white">{getServiceLabel(service.service)}</TableCell>
-                        <TableCell className="text-center font-bold text-sm text-[#A78BFA]">{service.count}</TableCell>
-                        <TableCell className="text-right text-sm text-white/60">{service.volumeKwanza.toLocaleString('pt-PT')}</TableCell>
-                        <TableCell className="text-right text-sm text-white font-medium">{service.revenue.toLocaleString('pt-PT')}</TableCell>
-                        <TableCell className="text-right text-sm text-red-400 font-medium">{service.cost.toLocaleString('pt-PT')}</TableCell>
-                        <TableCell className="text-right font-bold text-sm text-emerald-400">{service.profit.toLocaleString('pt-PT')} Kz</TableCell>
-                        <TableCell className="text-right pr-6">
-                          <span className={`px-2 py-0.5 rounded text-xs font-semibold ${service.margin >= 20 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}`}>
-                            {service.margin.toFixed(1)}%
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-white/[0.02]">
+                    <TableRow className="border-b border-white/10 hover:bg-transparent">
+                      <TableHead className="pl-6 text-xs text-white/40 uppercase tracking-wider font-bold">Serviço</TableHead>
+                      <TableHead className="text-center text-xs text-white/40 uppercase tracking-wider font-bold">Pedidos</TableHead>
+                      <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Volume (Kz)</TableHead>
+                      <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Receita Bruta</TableHead>
+                      <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Custo</TableHead>
+                      <TableHead className="text-right font-bold text-[#A78BFA] text-xs uppercase tracking-wider">Lucro</TableHead>
+                      <TableHead className="text-right pr-6 text-xs text-white/40 uppercase tracking-wider font-bold">Margem</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {report.byService.length === 0 ? (
+                      <TableRow><TableCell colSpan={7} className="text-center py-10 text-white/40">Sem dados para o período</TableCell></TableRow>
+                    ) : (
+                      report.byService.map(service => (
+                        <TableRow key={service.service} className="border-b border-white/5 hover:bg-white/[0.02]">
+                          <TableCell className="pl-6 font-semibold text-sm text-white">{getServiceLabel(service.service)}</TableCell>
+                          <TableCell className="text-center font-bold text-sm text-[#A78BFA]">{service.count}</TableCell>
+                          <TableCell className="text-right text-sm text-white/60">{service.volumeKwanza.toLocaleString('pt-PT')}</TableCell>
+                          <TableCell className="text-right text-sm text-white font-medium">{service.revenue.toLocaleString('pt-PT')}</TableCell>
+                          <TableCell className="text-right text-sm text-red-400 font-medium">{service.cost.toLocaleString('pt-PT')}</TableCell>
+                          <TableCell className="text-right font-bold text-sm text-emerald-400">{service.profit.toLocaleString('pt-PT')} Kz</TableCell>
+                          <TableCell className="text-right pr-6">
+                            <span className={`px-2 py-0.5 rounded text-xs font-semibold ${service.margin >= 20 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}`}>
+                              {service.margin.toFixed(1)}%
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </div>

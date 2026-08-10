@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAdminGetStats, getAdminGetStatsQueryKey } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, ShoppingCart, Users, Coins, BarChart3, Wallet, LogOut, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Users, Coins, BarChart3, Wallet, LogOut, ArrowLeft, Menu, X } from "lucide-react";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -13,6 +13,7 @@ interface AdminLayoutProps {
 export function AdminLayout({ children, title, actions }: AdminLayoutProps) {
   const [, setLocation] = useLocation();
   const [location] = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { data: statsData } = useAdminGetStats({ 
     query: { 
@@ -40,12 +41,25 @@ export function AdminLayout({ children, title, actions }: AdminLayoutProps) {
   ];
 
   return (
-    <div className="min-h-screen flex bg-[#0A0A0F] text-white selection:bg-[#7C3AED] selection:text-white font-sans bg-grid">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[#0A0A0F] text-white selection:bg-[#7C3AED] selection:text-white font-sans bg-grid relative overflow-x-hidden">
+      
+      {/* Mobile Drawer Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          onClick={() => setMobileMenuOpen(false)} 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-30 lg:hidden transition-opacity"
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-[#12121A]/90 backdrop-blur-xl border-r border-white/10 text-white flex flex-col fixed h-full z-20">
-        <div className="p-6 flex items-center justify-between border-b border-white/5">
+      <aside 
+        className={`w-64 bg-[#12121A]/95 backdrop-blur-xl border-r border-white/10 text-white flex flex-col fixed top-0 bottom-0 left-0 z-40 transition-transform duration-300 ease-in-out ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
+        <div className="p-5 flex items-center justify-between border-b border-white/5">
           <Link href="/admin">
-            <div className="flex items-center gap-3 cursor-pointer">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
               <div className="relative w-8 h-8 rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#9F67F5] flex items-center justify-center font-bold text-white shadow-md shadow-[#7C3AED]/20">
                 Z
               </div>
@@ -55,9 +69,17 @@ export function AdminLayout({ children, title, actions }: AdminLayoutProps) {
               </div>
             </div>
           </Link>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setMobileMenuOpen(false)} 
+            className="lg:hidden text-white/60 hover:text-white hover:bg-white/5 h-8 w-8 rounded-lg"
+          >
+            <X className="w-5 h-5" />
+          </Button>
         </div>
         
-        <nav className="flex-1 px-3 space-y-1.5 mt-6">
+        <nav className="flex-1 px-3 space-y-1.5 mt-4 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.href === "/admin" 
@@ -67,6 +89,7 @@ export function AdminLayout({ children, title, actions }: AdminLayoutProps) {
             return (
               <Link key={item.href} href={item.href}>
                 <div 
+                  onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm font-medium ${
                     isActive 
                       ? 'bg-[#7C3AED] text-white shadow-lg shadow-[#7C3AED]/25 font-semibold' 
@@ -105,15 +128,25 @@ export function AdminLayout({ children, title, actions }: AdminLayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 flex flex-col min-h-screen">
-        <header className="h-16 px-8 flex items-center justify-between border-b border-white/10 bg-[#0A0A0F]/80 backdrop-blur-xl sticky top-0 z-10">
-          <h1 className="text-xl font-bold text-white font-heading">{title}</h1>
-          <div className="flex items-center gap-4">
+      <main className="flex-1 lg:ml-64 flex flex-col min-h-screen min-w-0">
+        <header className="h-16 px-4 sm:px-8 flex items-center justify-between border-b border-white/10 bg-[#0A0A0F]/90 backdrop-blur-xl sticky top-0 z-20">
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setMobileMenuOpen(true)} 
+              className="lg:hidden text-white/70 hover:text-white hover:bg-white/5 h-9 w-9 rounded-xl border border-white/10"
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+            <h1 className="text-lg sm:text-xl font-bold text-white font-heading truncate">{title}</h1>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-4">
             {actions}
           </div>
         </header>
         
-        <div className="p-8 flex-1">
+        <div className="p-4 sm:p-6 lg:p-8 flex-1">
           <div className="max-w-6xl mx-auto space-y-6">
             {children}
           </div>

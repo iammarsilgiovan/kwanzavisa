@@ -249,35 +249,37 @@ export default function Dashboard() {
               </Link>
             </CardHeader>
             <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-white/[0.02]">
-                  <TableRow className="border-b border-white/10 hover:bg-transparent">
-                    <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">ID</TableHead>
-                    <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Cliente</TableHead>
-                    <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Serviço</TableHead>
-                    <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Valor</TableHead>
-                    <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Estado</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentOrdersData?.orders?.map(order => (
-                    <TableRow key={order.id} className="border-b border-white/5 hover:bg-white/[0.02]">
-                      <TableCell className="font-mono text-xs font-bold text-[#A78BFA]">{order.id}</TableCell>
-                      <TableCell className="font-medium text-sm text-white">{order.name}</TableCell>
-                      <TableCell className="text-sm text-white/70">{getServiceLabel(order.service)}</TableCell>
-                      <TableCell className="text-sm text-white font-medium">
-                        {order.amountUsd ? `$${order.amountUsd}` : order.amountKwanza ? `${order.amountKwanza.toLocaleString('pt-PT')} Kz` : '-'}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(order.status)}</TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-white/[0.02]">
+                    <TableRow className="border-b border-white/10 hover:bg-transparent">
+                      <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">ID</TableHead>
+                      <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Cliente</TableHead>
+                      <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Serviço</TableHead>
+                      <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Valor</TableHead>
+                      <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Estado</TableHead>
                     </TableRow>
-                  ))}
-                  {(!recentOrdersData?.orders || recentOrdersData.orders.length === 0) && (
-                    <TableRow>
-                      <TableCell colSpan={5} className="text-center py-10 text-white/40">Nenhum pedido recente</TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {recentOrdersData?.orders?.map(order => (
+                      <TableRow key={order.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                        <TableCell className="font-mono text-xs font-bold text-[#A78BFA]">{order.id}</TableCell>
+                        <TableCell className="font-medium text-sm text-white">{order.name}</TableCell>
+                        <TableCell className="text-sm text-white/70">{getServiceLabel(order.service)}</TableCell>
+                        <TableCell className="text-sm text-white font-medium">
+                          {order.amountUsd ? `$${order.amountUsd}` : order.amountKwanza ? `${order.amountKwanza.toLocaleString('pt-PT')} Kz` : '-'}
+                        </TableCell>
+                        <TableCell>{getStatusBadge(order.status)}</TableCell>
+                      </TableRow>
+                    ))}
+                    {(!recentOrdersData?.orders || recentOrdersData.orders.length === 0) && (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center py-10 text-white/40">Nenhum pedido recente</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </div>

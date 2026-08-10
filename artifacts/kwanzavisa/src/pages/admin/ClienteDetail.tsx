@@ -156,7 +156,8 @@ export default function ClienteDetail() {
           <CardTitle className="text-base font-bold text-white">Histórico de Pedidos</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <Table>
+          <div className="overflow-x-auto">
+            <Table>
             <TableHeader className="bg-white/[0.02]">
               <TableRow className="border-b border-white/10 hover:bg-transparent">
                 <TableHead className="pl-6 text-xs text-white/40 uppercase tracking-wider font-bold">ID</TableHead>
@@ -191,6 +192,7 @@ export default function ClienteDetail() {
               )}
             </TableBody>
           </Table>
+        </div>
         </CardContent>
       </Card>
     </AdminLayout>

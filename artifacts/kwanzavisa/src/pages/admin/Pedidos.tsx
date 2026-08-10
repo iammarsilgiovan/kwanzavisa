@@ -229,8 +229,8 @@ export default function Pedidos() {
     <AdminLayout title="Gestão de Pedidos">
       {/* Filters Card */}
       <Card className="bg-[#12121A] border-white/10 text-white rounded-2xl shadow-xl">
-        <CardContent className="p-5 flex flex-col md:flex-row gap-4 items-end">
-          <div className="flex-1 min-w-[200px] space-y-1.5">
+        <CardContent className="p-4 sm:p-5 flex flex-col lg:flex-row gap-4 items-stretch lg:items-end">
+          <div className="flex-1 min-w-0 space-y-1.5">
             <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Pesquisar</label>
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-3.5 text-white/40" />
@@ -238,47 +238,50 @@ export default function Pedidos() {
                 placeholder="ID, Nome, Email..." 
                 value={searchQuery} 
                 onChange={e => setSearchQuery(e.target.value)} 
-                className="pl-9 bg-[#0A0A0F] border-white/10 text-white focus-visible:ring-[#7C3AED] h-11 rounded-xl text-sm"
+                className="pl-9 bg-[#0A0A0F] border-white/10 text-white focus-visible:ring-[#7C3AED] h-11 rounded-xl text-sm w-full"
               />
             </div>
           </div>
-          <div className="w-[190px] space-y-1.5">
-            <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Estado</label>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="bg-[#0A0A0F] border-white/10 text-white h-11 rounded-xl text-sm"><SelectValue placeholder="Todos" /></SelectTrigger>
-              <SelectContent className="bg-[#12121A] border-white/10 text-white">
-                {STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="w-[190px] space-y-1.5">
-            <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Serviço</label>
-            <Select value={serviceFilter} onValueChange={setServiceFilter}>
-              <SelectTrigger className="bg-[#0A0A0F] border-white/10 text-white h-11 rounded-xl text-sm"><SelectValue placeholder="Todos" /></SelectTrigger>
-              <SelectContent className="bg-[#12121A] border-white/10 text-white">
-                {SERVICE_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex gap-2">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Data Inicial</label>
-              <Input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="bg-[#0A0A0F] border-white/10 text-white h-11 rounded-xl text-sm" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-4 items-end">
+            <div className="w-full sm:w-[170px] space-y-1.5">
+              <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Estado</label>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="bg-[#0A0A0F] border-white/10 text-white h-11 rounded-xl text-sm w-full"><SelectValue placeholder="Todos" /></SelectTrigger>
+                <SelectContent className="bg-[#12121A] border-white/10 text-white">
+                  {STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Data Final</label>
-              <Input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="bg-[#0A0A0F] border-white/10 text-white h-11 rounded-xl text-sm" />
+            <div className="w-full sm:w-[170px] space-y-1.5">
+              <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Serviço</label>
+              <Select value={serviceFilter} onValueChange={setServiceFilter}>
+                <SelectTrigger className="bg-[#0A0A0F] border-white/10 text-white h-11 rounded-xl text-sm w-full"><SelectValue placeholder="Todos" /></SelectTrigger>
+                <SelectContent className="bg-[#12121A] border-white/10 text-white">
+                  {SERVICE_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
+            <div className="grid grid-cols-2 gap-2 sm:w-[260px]">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Inicial</label>
+                <Input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="bg-[#0A0A0F] border-white/10 text-white h-11 rounded-xl text-xs px-2 w-full" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Final</label>
+                <Input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="bg-[#0A0A0F] border-white/10 text-white h-11 rounded-xl text-xs px-2 w-full" />
+              </div>
+            </div>
+            <Button variant="outline" onClick={downloadCSV} className="h-11 rounded-xl border-white/10 text-white hover:bg-white/5 w-full sm:w-auto">
+              Exportar CSV
+            </Button>
           </div>
-          <Button variant="outline" onClick={downloadCSV} className="h-11 rounded-xl border-white/10 text-white hover:bg-white/5">
-            Exportar CSV
-          </Button>
         </CardContent>
       </Card>
 
       {/* Orders Table */}
       <Card className="bg-[#12121A] border-white/10 text-white rounded-2xl shadow-xl overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-white/5 border-b border-white/10">
               <TableRow className="hover:bg-transparent border-white/10">
@@ -351,6 +354,7 @@ export default function Pedidos() {
               )}
             </TableBody>
           </Table>
+        </div>
 
           {/* Pagination */}
           {ordersData && ordersData.total > ordersData.limit && (

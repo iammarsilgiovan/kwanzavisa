@@ -132,38 +132,40 @@ export default function Saldos() {
           <CardTitle className="text-base font-bold text-white">Histórico de Actualizações</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-white/[0.02]">
-              <TableRow className="border-b border-white/10 hover:bg-transparent">
-                <TableHead className="pl-6 text-xs text-white/40 uppercase tracking-wider font-bold">Data</TableHead>
-                <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Conta</TableHead>
-                <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Valor Anterior</TableHead>
-                <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Novo Valor</TableHead>
-                <TableHead className="text-right pr-6 text-xs text-white/40 uppercase tracking-wider font-bold">Actualizado por</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow><TableCell colSpan={5} className="text-center py-10 text-white/40">A carregar...</TableCell></TableRow>
-              ) : !balancesData?.history || balancesData.history.length === 0 ? (
-                <TableRow><TableCell colSpan={5} className="text-center py-10 text-white/40">Sem histórico</TableCell></TableRow>
-              ) : (
-                balancesData.history.map((h, i) => {
-                  const info = getAccountInfo(h.account);
-                  const curr = info.currency === 'AOA' ? 'Kz' : info.currency;
-                  return (
-                    <TableRow key={i} className="border-b border-white/5 hover:bg-white/[0.02]">
-                      <TableCell className="pl-6 text-xs text-white/60">{h.formattedDate}</TableCell>
-                      <TableCell className="font-semibold text-sm text-white">{info.label}</TableCell>
-                      <TableCell className="text-right text-sm text-white/40">{h.previousBalance != null ? `${h.previousBalance.toLocaleString('pt-PT')} ${curr}` : '-'}</TableCell>
-                      <TableCell className="text-right font-bold text-sm text-[#A78BFA]">{h.newBalance.toLocaleString('pt-PT')} {curr}</TableCell>
-                      <TableCell className="text-right pr-6 text-xs text-white/60">{h.updatedBy}</TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-white/[0.02]">
+                <TableRow className="border-b border-white/10 hover:bg-transparent">
+                  <TableHead className="pl-6 text-xs text-white/40 uppercase tracking-wider font-bold">Data</TableHead>
+                  <TableHead className="text-xs text-white/40 uppercase tracking-wider font-bold">Conta</TableHead>
+                  <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Valor Anterior</TableHead>
+                  <TableHead className="text-right text-xs text-white/40 uppercase tracking-wider font-bold">Novo Valor</TableHead>
+                  <TableHead className="text-right pr-6 text-xs text-white/40 uppercase tracking-wider font-bold">Actualizado por</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <TableRow><TableCell colSpan={5} className="text-center py-10 text-white/40">A carregar...</TableCell></TableRow>
+                ) : !balancesData?.history || balancesData.history.length === 0 ? (
+                  <TableRow><TableCell colSpan={5} className="text-center py-10 text-white/40">Sem histórico</TableCell></TableRow>
+                ) : (
+                  balancesData.history.map((h, i) => {
+                    const info = getAccountInfo(h.account);
+                    const curr = info.currency === 'AOA' ? 'Kz' : info.currency;
+                    return (
+                      <TableRow key={i} className="border-b border-white/5 hover:bg-white/[0.02]">
+                        <TableCell className="pl-6 text-xs text-white/60">{h.formattedDate}</TableCell>
+                        <TableCell className="font-semibold text-sm text-white">{info.label}</TableCell>
+                        <TableCell className="text-right text-sm text-white/40">{h.previousBalance != null ? `${h.previousBalance.toLocaleString('pt-PT')} ${curr}` : '-'}</TableCell>
+                        <TableCell className="text-right font-bold text-sm text-[#A78BFA]">{h.newBalance.toLocaleString('pt-PT')} {curr}</TableCell>
+                        <TableCell className="text-right pr-6 text-xs text-white/60">{h.updatedBy}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </AdminLayout>
