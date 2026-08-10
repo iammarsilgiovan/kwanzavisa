@@ -59,6 +59,41 @@ export default function Pedidos() {
   const [noteInput, setNoteInput] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
+  const openBase64File = (base64Data: string, fileName?: string) => {
+    if (!base64Data) return;
+    try {
+      let mimeType = "application/octet-stream";
+      let pureBase64 = base64Data;
+
+      if (base64Data.startsWith("data:")) {
+        const parts = base64Data.split(",");
+        const mimeMatch = parts[0].match(/:(.*?);/);
+        if (mimeMatch) mimeType = mimeMatch[1];
+        pureBase64 = parts[1] || "";
+      }
+
+      const binaryStr = atob(pureBase64);
+      const len = binaryStr.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryStr.charCodeAt(i);
+      }
+
+      const blob = new Blob([bytes], { type: mimeType });
+      const blobUrl = URL.createObjectURL(blob);
+      window.open(blobUrl, "_blank");
+    } catch {
+      const win = window.open("", "_blank");
+      if (win) {
+        if (base64Data.startsWith("data:image")) {
+          win.document.write(`<!DOCTYPE html><html><head><title>${fileName || "Comprovativo"}</title></head><body style="margin:0;background:#0A0A0F;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="${base64Data}" style="max-width:100%;max-height:100vh;object-fit:contain;" /></body></html>`);
+        } else {
+          win.document.write(`<!DOCTYPE html><html><head><title>${fileName || "Comprovativo"}</title></head><body style="margin:0;"><iframe src="${base64Data}" style="width:100vw;height:100vh;border:none;"></iframe></body></html>`);
+        }
+      }
+    }
+  };
+
   const params: any = { page, limit: 20 };
   if (statusFilter !== "todos") params.status = statusFilter;
   if (serviceFilter !== "todos") params.service = serviceFilter;
@@ -399,14 +434,13 @@ export default function Pedidos() {
 
                             <div className="flex gap-2 pt-1">
                               {comp.base64Data && (
-                                <a 
-                                  href={comp.base64Data} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 text-xs text-violet-400 hover:text-violet-300 font-semibold"
+                                <button 
+                                  type="button"
+                                  onClick={() => openBase64File(comp.base64Data, comp.fileName)}
+                                  className="inline-flex items-center gap-1.5 text-xs text-violet-400 hover:text-violet-300 font-semibold cursor-pointer border-0 bg-transparent"
                                 >
                                   <ExternalLink className="w-3 h-3" /> Abrir Original
-                                </a>
+                                </button>
                               )}
                               {comp.base64Data && (
                                 <a 
@@ -509,9 +543,13 @@ export default function Pedidos() {
           <DialogContent className="max-w-4xl bg-[#0A0A0F] border-white/10 text-white rounded-2xl p-4 flex flex-col items-center justify-center">
             <img src={previewImage} alt="Comprovativo Ampliado" className="max-h-[80vh] w-auto object-contain rounded-lg" />
             <div className="mt-4 flex gap-3">
-              <a href={previewImage} target="_blank" rel="noopener noreferrer" className="text-xs text-violet-400 hover:underline flex items-center gap-1 font-semibold">
+              <button 
+                type="button"
+                onClick={() => openBase64File(previewImage)}
+                className="text-xs text-violet-400 hover:underline flex items-center gap-1 font-semibold cursor-pointer border-0 bg-transparent"
+              >
                 <ExternalLink className="w-3.5 h-3.5" /> Abrir no Separador
-              </a>
+              </button>
               <Button size="sm" variant="outline" onClick={() => setPreviewImage(null)} className="border-white/10 text-white hover:bg-white/5 rounded-lg text-xs">
                 Fechar
               </Button>
