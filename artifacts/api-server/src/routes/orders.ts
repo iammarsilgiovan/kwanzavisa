@@ -299,19 +299,39 @@ router.get("/admin/orders/:id/detail", async (req, res): Promise<void> => {
 
   const [order, notes, history, costRow] = await Promise.all([
     db.select().from(ordersTable).where(eq(ordersTable.id, params.data.id)).then(r => r[0]),
-    db.select().from(orderNotesTable).where(eq(orderNotesTable.orderId, params.data.id)).orderBy(sql`${orderNotesTable.createdAt} DESC`).limit(1),
+    db.select().from(orderNotesTable).where(eq(orderNotesTable.orderId, params.data.id)).orderBy(sql`${orderNotesTable.createdAt} DESC`),
     db.select().from(orderStatusHistoryTable).where(eq(orderStatusHistoryTable.orderId, params.data.id)).orderBy(sql`${orderStatusHistoryTable.createdAt} DESC`),
     db.select().from(orderCostsTable).where(eq(orderCostsTable.orderId, params.data.id)).then(r => r[0]),
   ]);
 
   if (!order) { res.status(404).json({ error: "Pedido não encontrado" }); return; }
 
-  // Filter out comprovativo notes from the note shown to client
-  const visibleNote = notes[0]?.note?.startsWith("__comprovativo__") ? null : (notes[0]?.note ?? null);
+  // Extract comprovativo uploads saved as __comprovativo__:fileName:mimeType:base64Data
+  const comprovativos = notes
+    .filter(n => n.note && n.note.startsWith("__comprovativo__:"))
+    .map(n => {
+      const parts = n.note.split(":");
+      const fileName = parts[1] || "comprovativo";
+      const mimeType = parts[2] || "application/octet-stream";
+      const base64Data = parts.slice(3).join(":");
+      return {
+        id: n.id,
+        fileName,
+        mimeType,
+        base64Data,
+        createdAt: n.createdAt.toISOString(),
+        formattedDate: formatDate(n.createdAt),
+      };
+    });
+
+  // Filter out comprovativos from internal admin notes
+  const internalNotes = notes.filter(n => n.note && !n.note.startsWith("__comprovativo__:"));
+  const visibleNote = internalNotes[0]?.note ?? null;
 
   res.json({
     ...mapOrder(order),
     note: visibleNote,
+    comprovativos,
     costKwanza: costRow?.costKwanza ? parseFloat(costRow.costKwanza) : null,
     statusHistory: history.map(h => ({
       fromStatus: h.fromStatus,

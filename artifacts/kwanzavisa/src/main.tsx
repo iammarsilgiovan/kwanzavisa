@@ -10,9 +10,10 @@ if (apiBaseUrl) {
 
 // Configurar o token de autenticação administrativa para o cliente de API
 setAuthTokenGetter(() => {
+  const token = localStorage.getItem("kv_admin_auth_token");
+  if (token) return token;
   const isAdmin = localStorage.getItem("kv_admin_auth") === "true";
   return isAdmin ? "kwanza2025admin" : null;
 });
 
 createRoot(document.getElementById("root")!).render(<App />);
-

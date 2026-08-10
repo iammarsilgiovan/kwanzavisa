@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import healthRouter from "./health";
 import ordersRouter from "./orders";
 import exchangeRouter from "./exchange";
+import adminAuthRouter from "./admin_auth";
 import adminExchangeRouter from "./admin_exchange";
 import adminClientsRouter from "./admin_clients";
 import adminReportsRouter from "./admin_reports";
@@ -12,6 +13,7 @@ const router: IRouter = Router();
 
 router.use(healthRouter);
 router.use(exchangeRouter);
+router.use(adminAuthRouter);
 
 // Proteger todas as rotas administrativas sob o prefixo /admin
 router.use("/admin", adminAuth);

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Search } from "lucide-react";
 import { 
   useAdminListClients,
   getAdminListClientsQueryKey
@@ -23,51 +24,59 @@ export default function ClientesList() {
   });
 
   return (
-    <AdminLayout title="Clientes">
-      <Card className="mb-6">
-        <CardContent className="p-4 flex gap-4 items-end">
-          <div className="flex-1 max-w-md">
-            <label className="text-xs text-gray-500 mb-1 block">Pesquisar Clientes</label>
-            <Input 
-              placeholder="Nome, Email ou WhatsApp..." 
-              value={searchQuery} 
-              onChange={e => setSearchQuery(e.target.value)} 
-            />
+    <AdminLayout title="Gestão de Clientes">
+      <Card className="bg-[#12121A] border-white/10 text-white rounded-2xl shadow-xl mb-6">
+        <CardContent className="p-5 flex gap-4 items-end">
+          <div className="flex-1 max-w-md space-y-1.5">
+            <label className="text-xs font-semibold text-white/50 uppercase tracking-wider block">Pesquisar Clientes</label>
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-3.5 text-white/40" />
+              <Input 
+                placeholder="Nome, Email ou WhatsApp..." 
+                value={searchQuery} 
+                onChange={e => setSearchQuery(e.target.value)} 
+                className="pl-9 bg-[#0A0A0F] border-white/10 text-white focus-visible:ring-[#7C3AED] h-11 rounded-xl text-sm"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-[#12121A] border-white/10 text-white rounded-2xl shadow-xl overflow-hidden">
         <CardContent className="p-0">
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="pl-6">Nome</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>WhatsApp</TableHead>
-                <TableHead className="text-center">Total Pedidos</TableHead>
-                <TableHead className="text-right">Total Gasto (Kz)</TableHead>
-                <TableHead className="text-right">Último Pedido</TableHead>
-                <TableHead className="text-right pr-6">Acções</TableHead>
+            <TableHeader className="bg-white/5 border-b border-white/10">
+              <TableRow className="hover:bg-transparent border-white/10">
+                <TableHead className="pl-6 text-xs text-white/50 font-bold uppercase tracking-wider">Nome</TableHead>
+                <TableHead className="text-xs text-white/50 font-bold uppercase tracking-wider">Email</TableHead>
+                <TableHead className="text-xs text-white/50 font-bold uppercase tracking-wider">WhatsApp</TableHead>
+                <TableHead className="text-center text-xs text-white/50 font-bold uppercase tracking-wider">Total Pedidos</TableHead>
+                <TableHead className="text-right text-xs text-white/50 font-bold uppercase tracking-wider">Total Gasto</TableHead>
+                <TableHead className="text-right text-xs text-white/50 font-bold uppercase tracking-wider">Último Pedido</TableHead>
+                <TableHead className="text-right pr-6 text-xs text-white/50 font-bold uppercase tracking-wider">Acções</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={7} className="text-center py-8 text-gray-500">A carregar clientes...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={7} className="text-center py-12 text-white/50">A carregar clientes...</TableCell></TableRow>
               ) : !clientsData?.clients || clientsData.clients.length === 0 ? (
-                <TableRow><TableCell colSpan={7} className="text-center py-8 text-gray-500">Nenhum cliente encontrado.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={7} className="text-center py-12 text-white/50">Nenhum cliente encontrado.</TableCell></TableRow>
               ) : (
                 clientsData.clients.map(client => (
-                  <TableRow key={client.email}>
-                    <TableCell className="pl-6 font-medium">{client.name}</TableCell>
-                    <TableCell className="text-sm text-gray-600">{client.email}</TableCell>
-                    <TableCell className="text-sm font-mono text-gray-600">{client.whatsapp}</TableCell>
-                    <TableCell className="text-center font-medium">{client.totalOrders}</TableCell>
-                    <TableCell className="text-right font-medium">{client.totalSpentKwanza.toLocaleString()} Kz</TableCell>
-                    <TableCell className="text-right text-sm text-gray-500">{client.lastOrderDate ? new Date(client.lastOrderDate).toLocaleDateString() : '-'}</TableCell>
+                  <TableRow key={client.email} className="border-b border-white/5 hover:bg-white/[0.02]">
+                    <TableCell className="pl-6 font-semibold text-sm text-white">{client.name}</TableCell>
+                    <TableCell className="text-sm text-white/70">{client.email}</TableCell>
+                    <TableCell className="text-sm font-mono text-white/70">{client.whatsapp}</TableCell>
+                    <TableCell className="text-center font-bold text-sm text-[#A78BFA]">{client.totalOrders}</TableCell>
+                    <TableCell className="text-right font-bold text-sm text-white">{client.totalSpentKwanza.toLocaleString('pt-PT')} Kz</TableCell>
+                    <TableCell className="text-right text-xs text-white/50">{client.lastOrderDate ? new Date(client.lastOrderDate).toLocaleDateString() : '-'}</TableCell>
                     <TableCell className="text-right pr-6">
-                      <Button variant="outline" size="sm" onClick={() => setLocation(`/admin/clientes/${encodeURIComponent(client.email)}`)}>
-                        Ver ficha
+                      <Button 
+                        size="sm" 
+                        onClick={() => setLocation(`/admin/clientes/${encodeURIComponent(client.email)}`)}
+                        className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-lg text-xs"
+                      >
+                        Ver Ficha
                       </Button>
                     </TableCell>
                   </TableRow>
