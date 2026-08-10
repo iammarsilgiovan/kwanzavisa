@@ -811,11 +811,14 @@ function OrderForm() {
   );
 }
 
+// Statuses where the client should NOT be able to upload a comprovativo
+const NO_UPLOAD_STATUSES = new Set(["cancelado", "concluido", "comprovativo_enviado", "pago", "em_processamento"]);
+
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string; next: string | null }> = {
-  pendente:             { label: "Pendente",             color: "text-gray-400",  bg: "bg-white/5 border border-white/5",   next: null },
-  em_contacto:          { label: "Em Contacto",          color: "text-blue-400",  bg: "bg-blue-500/10 border border-blue-500/20",    next: null },
+  pendente:             { label: "Pendente",             color: "text-gray-400",  bg: "bg-white/5 border border-white/5",   next: "Podes enviar o comprovativo de pagamento antecipadamente através da área abaixo." },
+  em_contacto:          { label: "Em Contacto",          color: "text-blue-400",  bg: "bg-blue-500/10 border border-blue-500/20",    next: "A nossa equipa está em contacto contigo. Podes já enviar o comprovativo abaixo." },
   aguarda_pagamento:    { label: "Aguarda Pagamento",    color: "text-amber-400", bg: "bg-amber-500/10 border border-amber-500/20",   next: "Efectua o pagamento e envia o comprovativo abaixo." },
-  comprovativo_enviado: { label: "Comprovativo Enviado", color: "text-violet-400",bg: "bg-violet-500/10 border border-violet-500/20",  next: "Comprovativo recebido. A confirmar o pagamento." },
+  comprovativo_enviado: { label: "A Verificar Pagamento", color: "text-violet-400",bg: "bg-violet-500/10 border border-violet-500/20",  next: "Comprovativo recebido. A nossa equipa está a verificar o pagamento." },
   pago:                 { label: "Pago",                 color: "text-green-400", bg: "bg-green-500/10 border border-green-500/20",   next: "Pagamento confirmado. O teu pedido está em execução." },
   em_processamento:     { label: "Em Processamento",     color: "text-purple-400",  bg: "bg-purple-500/10 border border-purple-500/20",    next: "O teu pedido está a ser processado pela nossa equipa." },
   concluido:            { label: "Concluído",            color: "text-emerald-400",bg: "bg-emerald-500/10 border border-emerald-500/20",next: "Concluído. Obrigado por escolheres a ZYVA." },
@@ -923,10 +926,11 @@ function OrderCard({ order, onUploaded }: { order: LookupOrder; onUploaded: (id:
         </div>
       )}
 
-      {/* Inline upload for aguarda_pagamento */}
-      {order.status === "aguarda_pagamento" && !uploaded && (
-        <div className="mx-6 mb-5 p-4 border border-dashed border-white/10 rounded-xl bg-[#12121A] space-y-3">
+      {/* Inline upload — available for any active status where payment hasn't been verified yet */}
+      {!NO_UPLOAD_STATUSES.has(order.status) && !uploaded && (
+        <div className="mx-6 mb-5 p-4 border border-dashed border-amber-500/20 rounded-xl bg-amber-500/5 space-y-3">
           <p className="text-sm font-semibold text-white">Enviar Comprovativo de Pagamento</p>
+          <p className="text-xs text-white/40">Podes enviar o comprovativo mesmo antes de recebermos a confirmação do pagamento.</p>
           <input
             type="file"
             accept="image/*,application/pdf"
@@ -944,11 +948,11 @@ function OrderCard({ order, onUploaded }: { order: LookupOrder; onUploaded: (id:
         </div>
       )}
 
-      {/* Uploaded confirmation */}
+      {/* Uploaded confirmation — shown after local upload OR when status is already comprovativo_enviado */}
       {(uploaded || order.status === "comprovativo_enviado") && (
         <div className="mx-6 mb-5 flex items-center gap-2 text-violet-400 text-sm font-medium bg-violet-500/10 border border-violet-500/20 px-4 py-3 rounded-xl">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
-          Comprovativo enviado. Aguarda confirmação.
+          Comprovativo enviado. A nossa equipa está a verificar o pagamento.
         </div>
       )}
     </div>
