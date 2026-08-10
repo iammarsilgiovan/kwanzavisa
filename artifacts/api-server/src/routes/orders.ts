@@ -135,27 +135,27 @@ router.post("/orders", async (req, res): Promise<void> => {
   const mapped = mapOrder(order);
 
   // Emails — fire & forget, never block response
-  try {
-    Promise.allSettled([
-      emailOrderCreatedCliente({
-        to: order.email,
-        id,
-        service: order.service,
-        amountUsd: mapped.amountUsd,
-        name: order.name,
-      }),
-      emailOrderCreatedAdmin({
-        id,
-        service: order.service,
-        amountUsd: mapped.amountUsd,
-        name: order.name,
-        email: order.email,
-        formattedDate: mapped.formattedDate,
-      }),
-    ]);
-  } catch (err) {
-    console.error("[Email] email send failed on order create", err);
-  }
+  Promise.allSettled([
+    emailOrderCreatedCliente({
+      to: order.email,
+      id,
+      service: order.service,
+      amountUsd: mapped.amountUsd,
+      name: order.name,
+    }),
+    emailOrderCreatedAdmin({
+      id,
+      service: order.service,
+      amountUsd: mapped.amountUsd,
+      name: order.name,
+      email: order.email,
+      formattedDate: mapped.formattedDate,
+    }),
+  ]).then((results) => {
+    results.forEach((r) => {
+      if (r.status === "rejected") console.error("[Email] email send failed on order create", r.reason);
+    });
+  });
 
   res.status(201).json(mapped);
 });
@@ -199,24 +199,25 @@ router.post("/orders/:id/comprovativo", async (req, res): Promise<void> => {
     changedBy: "cliente",
   });
 
-  try {
-    Promise.allSettled([
-      emailComprovativoAdmin({
-        id: rawId,
-        name: order.name,
-        email: order.email,
-        service: order.service,
-      }),
-      emailComprovativoCliente({
-        to: order.email,
-        id: rawId,
-        name: order.name,
-        service: order.service,
-      }),
-    ]);
-  } catch (err) {
-    console.error("[Email] email send failed on comprovativo upload", err);
-  }
+  // Emails — fire & forget
+  Promise.allSettled([
+    emailComprovativoAdmin({
+      id: rawId,
+      name: order.name,
+      email: order.email,
+      service: order.service,
+    }),
+    emailComprovativoCliente({
+      to: order.email,
+      id: rawId,
+      name: order.name,
+      service: order.service,
+    }),
+  ]).then((results) => {
+    results.forEach((r) => {
+      if (r.status === "rejected") console.error("[Email] email send failed on comprovativo upload", r.reason);
+    });
+  });
 
   res.json({ ok: true, status: "comprovativo_enviado" });
 });
@@ -354,7 +355,11 @@ router.patch("/admin/orders/:id/status", async (req, res): Promise<void> => {
       Promise.allSettled([
         emailStatusPagoCliente({ to: order.email, id: order.id, name: order.name, service: order.service, amountUsd: mapped.amountUsd }),
         emailStatusPagoAdmin({ id: order.id, service: order.service, amountUsd: mapped.amountUsd }),
-      ]);
+      ]).then((results) => {
+        results.forEach((r) => {
+          if (r.status === "rejected") console.error("[Email] email send failed on status update pago", r.reason);
+        });
+      });
     } else if (newStatus === "em_processamento") {
       emailStatusEmExecucaoCliente({ to: order.email, id: order.id, name: order.name, service: order.service }).catch((err) => {
         console.error("[Email] email send failed on status update em_processamento", err);

@@ -14,7 +14,7 @@ function getFromAddress(): string {
   if (envFrom.includes("<") && envFrom.includes(">")) return envFrom;
   return `ZYVA <${envFrom}>`;
 }
-const FROM = getFromAddress();
+// FROM is computed lazily inside sendEmail() to ensure env vars are loaded
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "zyva.ao@gmail.com";
 const DASHBOARD_URL = process.env.DASHBOARD_URL ?? "https://zyva.base44.app/admin/dashboard";
 const FALLBACK_USD_RATE = 952;
@@ -72,8 +72,9 @@ export async function sendEmail(to: string, subject: string, html: string) {
     console.warn(`[Email Warning] E-mail para "${to}" ("${subject}") NÃO enviado: RESEND_API_KEY não está definida no ambiente.`);
     return;
   }
+  const from = getFromAddress();
   try {
-    const { data, error } = await resend.emails.send({ from: FROM, to, subject, html });
+    const { data, error } = await resend.emails.send({ from, to, subject, html });
     if (error) {
       console.error(`[Email Error] Erro ao enviar e-mail para "${to}" via Resend:`, JSON.stringify(error));
     } else {
