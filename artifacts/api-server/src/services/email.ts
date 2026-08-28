@@ -45,10 +45,9 @@ async function usdToKz(amountUsd: number): Promise<number> {
 
 const PAYMENT_DETAILS_HTML = `
   <table style="width:100%;border-collapse:collapse;margin:16px 0;">
-    <tr><td style="padding:8px 0;border-bottom:1px solid #E5E5EA;"><span style="color:#6E6E73;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">IBAN</span><br><span style="font-size:15px;font-weight:700;color:#1D1D1F;">0006 0000 02167174301 34</span></td></tr>
-    <tr><td style="padding:8px 0;border-bottom:1px solid #E5E5EA;"><span style="color:#6E6E73;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Nome</span><br><span style="font-size:15px;font-weight:700;color:#1D1D1F;">K Digital Prestação de Serviços</span></td></tr>
-    <tr><td style="padding:8px 0;border-bottom:1px solid #E5E5EA;"><span style="color:#6E6E73;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Entidade</span><br><span style="font-size:15px;font-weight:700;color:#1D1D1F;">10116 — Paypay África</span></td></tr>
-    <tr><td style="padding:8px 0;"><span style="color:#6E6E73;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Referência</span><br><span style="font-size:15px;font-weight:700;color:#1D1D1F;">935975173</span></td></tr>
+    <tr><td style="padding:8px 0;border-bottom:1px solid #E5E5EA;"><span style="color:#6E6E73;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Entidade</span><br><span style="font-size:15px;font-weight:700;color:#1D1D1F;">935975173</span></td></tr>
+    <tr><td style="padding:8px 0;border-bottom:1px solid #E5E5EA;"><span style="color:#6E6E73;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Referência</span><br><span style="font-size:15px;font-weight:700;color:#1D1D1F;">10116</span></td></tr>
+    <tr><td style="padding:8px 0;"><span style="color:#6E6E73;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Nome</span><br><span style="font-size:15px;font-weight:700;color:#1D1D1F;">K Digital Prestação de Serviços</span></td></tr>
   </table>
 `;
 

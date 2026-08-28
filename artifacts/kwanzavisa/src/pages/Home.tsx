@@ -613,10 +613,9 @@ function OrderForm() {
 
   if (successData) {
     const paymentRows = [
-      { label: "IBAN", value: "0006 0000 02167174301 34" },
+      { label: "Entidade", value: "935975173" },
+      { label: "Referência", value: "10116" },
       { label: "Nome", value: "K Digital Prestação de Serviços" },
-      { label: "Entidade", value: "10116 — Paypay África" },
-      { label: "Referência", value: "935975173" },
     ];
     return (
       <div className="glass-card border border-white/10 p-8 md:p-12 rounded-3xl">

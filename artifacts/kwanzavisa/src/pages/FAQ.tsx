@@ -48,7 +48,7 @@ const faqs = [
     items: [
       {
         q: "Como faço o pagamento em Kwanzas?",
-        a: "Após submeter o pedido, a nossa equipa contacta-o via WhatsApp com os detalhes do pagamento, incluindo o IBAN ou conta para transferência. O pagamento deve ser feito em Kwanzas (AOA) e confirmado antes do processamento.",
+        a: "Após submeter o pedido, receberá os dados de pagamento por referência (Entidade: 935975173 / Referência: 10116). O pagamento deve ser feito em Kwanzas (AOA) e confirmado antes do processamento.",
       },
       {
         q: "Quais são as formas de pagamento aceites?",
