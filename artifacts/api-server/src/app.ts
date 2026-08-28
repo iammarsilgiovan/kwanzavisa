@@ -6,6 +6,7 @@ import pinoHttp from "pino-http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import router from "./routes/index.js";
+import { trackSiteAccess } from "./routes/admin_analytics.js";
 import { logger } from "./lib/logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -72,6 +73,7 @@ const apiLimiter = rateLimit({
 });
 
 app.use("/api", apiLimiter);
+app.use("/api", trackSiteAccess);
 app.use("/api", router);
 
 if (process.env.NODE_ENV === "production") {

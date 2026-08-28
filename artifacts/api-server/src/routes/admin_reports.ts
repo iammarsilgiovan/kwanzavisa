@@ -26,17 +26,19 @@ router.get("/admin/reports", async (req, res): Promise<void> => {
 
   const completed = allOrders.filter(o => o.status === "concluido");
   const cancelled = allOrders.filter(o => o.status === "cancelado");
+  // Pedidos cancelados são excluídos do volume
+  const nonCancelledOrders = allOrders.filter(o => o.status !== "cancelado");
 
-  const volumeUsd = allOrders.reduce((s, o) => s + (o.amountUsd ? parseFloat(o.amountUsd) : 0), 0);
-  const volumeKwanza = allOrders.reduce((s, o) => s + (o.amountKwanza ? parseFloat(o.amountKwanza) : 0), 0);
+  const volumeUsd = nonCancelledOrders.reduce((s, o) => s + (o.amountUsd ? parseFloat(o.amountUsd) : 0), 0);
+  const volumeKwanza = nonCancelledOrders.reduce((s, o) => s + (o.amountKwanza ? parseFloat(o.amountKwanza) : 0), 0);
   const grossRevenue = completed.reduce((s, o) => s + (o.amountKwanza ? parseFloat(o.amountKwanza) : 0), 0);
-  const totalCost = allOrders.reduce((s, o) => s + (costMap[o.id] ?? 0), 0);
+  const totalCost = nonCancelledOrders.reduce((s, o) => s + (costMap[o.id] ?? 0), 0);
   const netProfit = grossRevenue - totalCost;
   const margin = grossRevenue > 0 ? (netProfit / grossRevenue) * 100 : 0;
   const completionRate = allOrders.length > 0 ? (completed.length / allOrders.length) * 100 : 0;
 
   const serviceMap: Record<string, { count: number; volumeKwanza: number; revenue: number; cost: number }> = {};
-  for (const o of allOrders) {
+  for (const o of nonCancelledOrders) {
     if (!serviceMap[o.service]) serviceMap[o.service] = { count: 0, volumeKwanza: 0, revenue: 0, cost: 0 };
     serviceMap[o.service].count++;
     serviceMap[o.service].volumeKwanza += o.amountKwanza ? parseFloat(o.amountKwanza) : 0;

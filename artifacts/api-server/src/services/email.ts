@@ -308,3 +308,24 @@ export async function emailComprovativoCliente(opts: { to: string; id: string; n
   await sendEmail(opts.to, `Comprovativo recebido · ${opts.id}`, html);
 }
 
+export async function sendAdminOtpEmail(code: string): Promise<void> {
+  const adminEmail = process.env.ADMIN_EMAIL || "mvrsilgiovani@gmail.com";
+  const html = layout(`
+    <p style="color:#1D1D1F;font-size:22px;font-weight:800;margin:0 0 8px;">Código de Acesso</p>
+    <p style="color:#6E6E73;font-size:15px;margin:0 0 24px;">
+      Foi solicitado um código de verificação para aceder ao painel de administração ZYVA.
+      Este código é válido por <strong>10 minutos</strong>.
+    </p>
+    <div style="background:linear-gradient(135deg,#7C3AED15,#9F67F515);border:2px solid #7C3AED40;border-radius:16px;padding:28px;text-align:center;margin:0 0 24px;">
+      <p style="color:#6E6E73;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 12px;">Código de Verificação</p>
+      <p style="font-size:42px;font-family:monospace;font-weight:900;color:#7C3AED;margin:0;letter-spacing:12px;">${code}</p>
+    </div>
+    <div style="background:#FFF3CD;border:1px solid #FFC107;border-radius:10px;padding:14px 18px;margin:0 0 20px;">
+      <p style="color:#856404;font-size:13px;margin:0;">
+        ⚠️ Se não foi você a solicitar este código, ignore este email e altere a sua senha de imediato.
+      </p>
+    </div>
+    <p style="color:#6E6E73;font-size:13px;margin:0;">Este código expira automaticamente após 10 minutos e só pode ser usado uma vez.</p>
+  `);
+  await sendEmail(adminEmail, "🔐 Código de verificação — ZYVA Admin", html);
+}

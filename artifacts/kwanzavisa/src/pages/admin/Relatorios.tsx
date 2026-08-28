@@ -136,11 +136,13 @@ export default function Relatorios() {
             <Card className="bg-[#12121A] border-white/10 text-white rounded-2xl p-5 shadow-lg">
               <p className="text-xs text-white/40 uppercase tracking-wider font-semibold mb-1">Volume Kz</p>
               <p className="text-xl font-bold text-white font-heading">{report.volumeKwanza.toLocaleString('pt-PT')} Kz</p>
+              <p className="text-[10px] text-white/30 mt-1">excl. cancelados</p>
             </Card>
 
             <Card className="bg-[#12121A] border-white/10 text-white rounded-2xl p-5 shadow-lg">
               <p className="text-xs text-white/40 uppercase tracking-wider font-semibold mb-1">Volume USD</p>
               <p className="text-xl font-bold text-emerald-400 font-heading">${report.volumeUsd.toLocaleString()}</p>
+              <p className="text-[10px] text-white/30 mt-1">excl. cancelados</p>
             </Card>
           </div>
 

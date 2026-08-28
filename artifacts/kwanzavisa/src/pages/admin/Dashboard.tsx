@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { AdminLayout } from "@/components/AdminLayout";
@@ -19,15 +19,32 @@ import {
   getAdminListOrdersQueryKey
 } from "@workspace/api-client-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
-import { ArrowUpRight, TrendingUp, DollarSign, Users, ShoppingBag, Clock } from "lucide-react";
+import { ArrowUpRight, TrendingUp, DollarSign, Users, ShoppingBag, Clock, Globe, Activity } from "lucide-react";
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
   const [usdRateInput, setUsdRateInput] = useState("");
+  const [visitPeriod, setVisitPeriod] = useState<"6h" | "1d" | "7d" | "30d">("1d");
+  const [visitCount, setVisitCount] = useState<number | null>(null);
+  const [visitLoading, setVisitLoading] = useState(false);
 
   const isAuthenticated = localStorage.getItem('kv_admin_auth') === 'true';
+  const authToken = localStorage.getItem('kv_admin_auth_token') ?? '';
+
+  // Buscar acessos ao site
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    setVisitLoading(true);
+    fetch(`/api/admin/site-visits?period=${visitPeriod}`, {
+      headers: { Authorization: `Bearer ${authToken}` }
+    })
+      .then(r => r.json())
+      .then(d => setVisitCount(d.count ?? 0))
+      .catch(() => setVisitCount(0))
+      .finally(() => setVisitLoading(false));
+  }, [visitPeriod, isAuthenticated, authToken]);
 
   const { data: exchangeRates } = useAdminGetExchangeRates({
     query: { enabled: isAuthenticated, queryKey: getAdminGetExchangeRatesQueryKey() }
@@ -130,6 +147,50 @@ export default function Dashboard() {
                 <Button onClick={() => handleUpdateRate(usdRateInput)} className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white h-11 px-5 rounded-xl font-semibold text-sm border-0">
                   Actualizar Taxa
                 </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Acessos ao Site */}
+        <Card className="bg-[#12121A] border-white/10 text-white rounded-2xl shadow-xl overflow-hidden">
+          <CardHeader className="bg-white/5 border-b border-white/10 py-4 px-6">
+            <CardTitle className="text-base font-bold text-white flex items-center gap-2">
+              <Globe className="w-4 h-4 text-[#A78BFA]" />
+              Acessos ao Site
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="flex-1">
+                <p className="text-xs text-white/50 uppercase tracking-wider font-semibold mb-1">Visitantes no Período</p>
+                <div className="flex items-end gap-3">
+                  <span
+                    className="text-5xl font-black text-white font-heading transition-all duration-300"
+                    style={{ opacity: visitLoading ? 0.3 : 1 }}
+                  >
+                    {visitLoading ? '...' : (visitCount?.toLocaleString('pt-PT') ?? '—')}
+                  </span>
+                  <span className="text-white/40 text-sm mb-2 flex items-center gap-1">
+                    <Activity className="w-3.5 h-3.5 text-emerald-400" />
+                    acessos
+                  </span>
+                </div>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {(['6h', '1d', '7d', '30d'] as const).map(p => (
+                  <button
+                    key={p}
+                    onClick={() => setVisitPeriod(p)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 border ${
+                      visitPeriod === p
+                        ? 'bg-[#7C3AED] border-[#7C3AED] text-white shadow-lg shadow-[#7C3AED]/30'
+                        : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    {p === '6h' ? 'Últ. 6 horas' : p === '1d' ? '1 Dia' : p === '7d' ? '7 Dias' : '30 Dias'}
+                  </button>
+                ))}
               </div>
             </div>
           </CardContent>
