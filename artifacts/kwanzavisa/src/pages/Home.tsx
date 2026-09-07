@@ -613,8 +613,8 @@ function OrderForm() {
 
   if (successData) {
     const paymentRows = [
-      { label: "Entidade", value: "935975173" },
-      { label: "Referência", value: "10116" },
+      { label: "Entidade", value: "00930" },
+      { label: "Referência", value: "935975173" },
       { label: "Nome", value: "K Digital Prestação de Serviços" },
     ];
     return (
