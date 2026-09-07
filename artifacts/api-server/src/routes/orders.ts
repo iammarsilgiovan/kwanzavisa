@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq, or, ilike, sql, count, countDistinct, and, gte, lte } from "drizzle-orm";
+import { eq, or, ilike, sql, count, countDistinct, and, gte, lte, ne } from "drizzle-orm";
 import { db, ordersTable, orderSequenceTable, orderNotesTable, orderStatusHistoryTable, orderCostsTable } from "@workspace/db";
 import {
   CreateOrderBody,
@@ -490,7 +490,7 @@ router.get("/admin/stats", async (_req, res): Promise<void> => {
     db.select({
       usd: sql<string>`COALESCE(SUM(CASE WHEN currency = 'USD' THEN amount_usd::numeric ELSE 0 END), 0)`,
       kz: sql<string>`COALESCE(SUM(amount_kwanza::numeric), 0)`,
-    }).from(ordersTable).where(gte(ordersTable.createdAt, startOfMonth)),
+    }).from(ordersTable).where(and(gte(ordersTable.createdAt, startOfMonth), ne(ordersTable.status, "cancelado"))),
     db.select({ total: sql<string>`COALESCE(SUM(amount_kwanza::numeric), 0)` }).from(ordersTable).where(eq(ordersTable.status, "concluido")),
     db.select({ total: sql<string>`COALESCE(SUM(cost_kwanza::numeric), 0)` }).from(orderCostsTable),
   ]);
